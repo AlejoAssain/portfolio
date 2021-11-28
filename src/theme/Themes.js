@@ -7,7 +7,9 @@ export const lightTheme = {
   navBg: "#D4ECDD",
   activeLink: "#000",
   sliderBg: "#FFF",
-  sliderText: "#2196F3"
+  sliderText: "#2196F3",
+  sayHiButtonBg: "#2196F3",
+  sayHiButtonText: "#D4ECDD"
 }
 
 export const darkTheme = {
@@ -17,5 +19,7 @@ export const darkTheme = {
   navBg: "#152D35",
   activeLink: "#FFF",
   sliderBg: "#2196F3",
-  sliderText: "#FFF"
+  sliderText: "#FFF",
+  sayHiButtonBg: "#D4ECDD",
+  sayHiButtonText: "#152D35"
 }

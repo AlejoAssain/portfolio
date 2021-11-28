@@ -13,7 +13,7 @@ const iconStyle = {
 
 const NavbarContainer = styled.div`
   width: 100%;
-  position: sticky;
+  position: fixed;
   top: 0;
   z-index: 80;
   background-color: ${ ({theme}) => theme.navBg };
