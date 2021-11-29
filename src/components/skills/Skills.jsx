@@ -1,9 +1,139 @@
 import SectionContainer from "../SectionContainer";
+import styled from "styled-components";
+import { motion } from "framer-motion";
+import reactLogo from "./reactLogo.svg"
+import pythonLogo from "./pythonLogo.svg"
+
+const SkillsWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  @media (max-width: 750px) {
+    flex-direction: column;
+    margin: 0 20px;
+  }
+`
+
+const SkillsBox = styled.div`
+  margin: 0;
+  border: 2px solid ${ ({theme}) => theme.text};
+  border-radius: 50px;
+  height: 50vh;
+  min-height: 500px;
+  min-width: 290px;
+  max-width: 400px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  &.skills-be {
+    margin-right: 4vw;
+    @media (max-width: 750px) {
+      margin: 0;
+      margin-top: 200px;
+    }
+  }
+  &.skills-fe {
+    margin-left: 4vw;
+    @media (max-width: 750px) {
+      margin: 0;
+      margin-top: 100px;
+    }
+  }
+`
+
+const Text = styled.div`
+  display: block;
+  padding: 5px;
+  &.skills-title {
+    align-self: center;
+    font-size: 25px;
+    font-weight: 600;
+    padding-top: 40px;
+    padding-bottom: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  & .python-logo {
+    margin-right: 20px;
+  }
+  &.skills-subtitle {
+    font-size: 20px;
+    padding-bottom: 120px;
+  }
+  &.skills-section-sub {
+    font-size: 20px;
+    font-weight: 600;
+    padding-bottom: 30px;
+    
+  }
+  &.skills-section-desc {
+    font-size: 20px;
+    line-height: 30px;
+    padding-bottom: 30px;
+  }
+`
+
+const SectionLogo = ({src, logoName, className}) => {
+  return (  
+    <motion.img
+      className={className}
+      style={{
+        display: "inline",
+        height: (logoName === "python") ? "60px" : "60px",
+      }}
+      src={src}
+      animate={{
+        rotate: 360,
+      }}
+      transition={{
+        ease: "linear",
+        duration: 6,
+        repeat: Infinity
+      }}
+    />         
+  )
+}
+
+// I'm passionate about putting together the product the user's can't see
 
 const Skills = () => {
   return (
     <SectionContainer>
-      <h1>Skills section</h1>
+      <SkillsWrapper>
+        <SkillsBox className="skills-be">          
+          <Text className="skills-title">
+            <SectionLogo className="python-logo" logoNama="python" src={pythonLogo}/>
+            Backend Developer
+          </Text>
+          <Text className="skills-subtitle">
+            I'm passionate about putting together the product the user's can't see
+          </Text>
+          <Text className="skills-section-sub">
+            Skills:
+          </Text>
+          <Text className="skills-section-desc">
+            Flask, Django, Express, SQLite, PostgreSQL, SQLAlchemy...
+          </Text>
+        </SkillsBox>
+        <SkillsBox className="skills-fe">
+          <Text className="skills-title">
+            <SectionLogo logoNama="react" src={reactLogo}/>              
+            Frontend Developer
+          </Text>
+          <Text className="skills-subtitle">
+            I love to design and develop responsive and dynamic software
+          </Text>
+          <Text className="skills-section-sub">
+            Skills:
+          </Text>
+          <Text className="skills-section-desc">
+            HTML, CSS, JS, React.js, Redux...
+          </Text>
+        </SkillsBox>
+      </SkillsWrapper>
     </SectionContainer>
   );
 }

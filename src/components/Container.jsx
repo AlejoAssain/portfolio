@@ -13,7 +13,7 @@ const Container = styled.div`
   align-items: center; */
   color: ${ ({theme}) => theme.text };
   background-color: ${ ({theme}) => theme.bg };
-  overflow: hidden;
+  overflow-x: hidden;
 `
 
 export default Container
