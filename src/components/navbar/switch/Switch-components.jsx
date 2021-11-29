@@ -1,4 +1,5 @@
 import styled from "styled-components"
+import { motion } from "framer-motion"
 
 export const SwitchWrapper = styled.div`
   margin-left: 7px;
@@ -17,7 +18,7 @@ export const SwitchInput = styled.div`
   width: 0;
   height: 0;
 `
-export const SwitchSlider = styled.div`
+export const SwitchSlider = styled(motion.div)`
   position: absolute;
   cursor: pointer;
   height: 26px;

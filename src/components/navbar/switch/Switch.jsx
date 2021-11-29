@@ -4,7 +4,12 @@ const Switch = ({changeTheme}) => {
   return (
     <SwitchWrapper>
       <SwitchInput />
-      <SwitchSlider onClick={changeTheme} />
+      <SwitchSlider 
+        onClick={changeTheme} 
+        initial={{
+          
+        }}
+      />
     </SwitchWrapper>
   )
 }

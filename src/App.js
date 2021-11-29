@@ -4,7 +4,11 @@ import { useState } from 'react';
 import Container from "./components/Container"
 import Navbar from "./components/navbar/Navbar"
 import Home from "./components/home/Home"
-import { Routes, Route } from "react-router"
+import About from "./components/about/About";
+import Skills from "./components/skills/Skills";
+import { Routes, Route, useLocation } from "react-router"
+import { AnimatePresence } from "framer-motion";
+
 
 const App = () => {
 
@@ -18,19 +22,26 @@ const App = () => {
     }
   }
 
-  console.log(`Theme: ${theme.themeName}`)
-  
+  const location = useLocation()
+
+  // console.log(`Theme: ${theme.themeName}`)
+  // console.log(location.pathname)
+
   return (
     <>
       <ThemeProvider theme={theme}>
         <Container>
-          <Navbar changeTheme={toggleTheme} themeName={theme.themeName} />
-          
-          <Routes>
-            <Route path="/" element={<Home />} /> 
-            <Route path="/about" element={<h1>about page</h1>} /> 
-            <Route path="/contact" element={<h1>contact page</h1>} /> 
-          </Routes>
+          <AnimatePresence>
+            <Navbar changeTheme={toggleTheme} themeName={theme.themeName} key={theme.themeName} />
+            
+          </AnimatePresence>
+          <AnimatePresence exitBeforeEnter>
+            <Routes location={location} key={location.pathname}>
+              <Route path="/" element={<Home />} /> 
+              <Route path="/about" element={<About />} /> 
+              <Route path="/skills" element={<Skills />} /> 
+            </Routes>
+          </AnimatePresence>
         </Container>
       </ThemeProvider>
     </>

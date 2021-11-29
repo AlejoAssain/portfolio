@@ -4,6 +4,7 @@ import Logo from "./Logo"
 import Menu from "./menu/Menu"
 import Switch from "./switch/Switch"
 import { BsFillMoonFill, BsFillSunFill } from "react-icons/bs"
+import { motion } from "framer-motion"
 
 const iconStyle = {
   marginLeft: "10px",
@@ -11,13 +12,14 @@ const iconStyle = {
   flex: ""
 }
 
-const NavbarContainer = styled.div`
+const NavbarContainer = styled(motion.div)`
   width: 100%;
   position: fixed;
   top: 0;
   z-index: 80;
   background-color: ${ ({theme}) => theme.navBg };
-  border-bottom: 2px solid ${ ({theme}) => theme.text};
+  color: ${ ({theme}) => theme.navText};
+  border-bottom: 2px solid ${ ({theme}) => theme.navText};
 `
 
 const NavbarWrapper = styled.div`
@@ -44,10 +46,13 @@ const Navbar = ({changeTheme, themeName}) => {
     setMenuState(!menuState)
   }
 
-  console.log(menuState)
-
   return (
-    <NavbarContainer>
+    <NavbarContainer
+      initial={{opacity: 0}}
+      animate={{opacity: 1}}
+      exit={{opacity: 0}}
+      transition={{duration: 0.5}}
+    >
       <NavbarWrapper>
         <Logo />
         <MenuWrapper>

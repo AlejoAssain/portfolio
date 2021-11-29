@@ -1,5 +1,6 @@
 import styled from "styled-components"
 import { VscThreeBars } from "react-icons/vsc"
+import { motion } from "framer-motion"
 
 export const MenuWrapper = styled.ul`
   height: 100%;
@@ -20,7 +21,7 @@ export const MenuWrapper = styled.ul`
   }
 `
 
-export const MenuItem = styled.li`
+export const Item = styled(motion.li)`
   height: 100%;
   padding: 0.5rem 1.5rem;
   display: flex;
@@ -31,19 +32,30 @@ export const MenuItem = styled.li`
 
   & a {
     text-decoration: none;
-    color: ${ ({theme}) => theme.text };
+    color: ${ ({theme}) => theme.navText };
+    height: 100%;
+    width: 100%;
   }
-
   & .active {
-    padding-bottom: 5px;
-    border-bottom: 1px solid ${ ({theme}) => theme.activeLink};
     color: ${ ({theme}) => theme.activeLink};
+    transition: color 1s;
   }
-
   @media (max-width: 750px) {
     
   }
 `
+
+export const MenuItem = ({children}) => {
+  return (
+    <Item
+      whileHover={{scale:1.2}}
+      whileTap={{scale:0.9}}
+    >
+      {children}
+    </Item>
+  )
+}
+
 
 export const MenuIcon = styled(VscThreeBars)`
   cursor: pointer;

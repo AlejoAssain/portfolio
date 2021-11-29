@@ -20,3 +20,8 @@ body {
   height: 100%;
   width: 100%;
 }
+
+.section-container {
+  min-width: 100vw;
+  min-height: 100vh;
+}
