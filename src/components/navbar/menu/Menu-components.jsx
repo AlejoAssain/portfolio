@@ -1,6 +1,7 @@
 import styled from "styled-components"
 import { VscThreeBars } from "react-icons/vsc"
 import { motion } from "framer-motion"
+import { NavLink } from "react-router-dom"
 
 export const MenuWrapper = styled.ul`
   height: 100%;
@@ -30,22 +31,23 @@ export const Item = styled(motion.li)`
   font-size: 1rem;
   font-weight: 400;
 
-  & a {
-    text-decoration: none;
-    color: ${ ({theme}) => theme.navText };
-    height: 100%;
-    width: 100%;
-  }
-  & .active {
-    color: ${ ({theme}) => theme.activeLink};
-    transition: color 1s;
-  }
+  
   @media (max-width: 750px) {
     
   }
 `
 
-export const MenuItem = ({children}) => {
+export const LinkContainer = styled(NavLink)`  
+  text-decoration: none;
+  color: ${ ({theme}) => theme.navText };
+    
+  &.active {
+    color: ${ ({theme}) => theme.activeLink};
+    transition: color 1s;
+  }
+`
+
+export const MenuLink = ({children}) => {
   return (
     <Item
       whileHover={{scale:1.2}}
