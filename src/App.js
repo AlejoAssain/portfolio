@@ -8,6 +8,7 @@ import About from "./components/about/About";
 import Skills from "./components/skills/Skills";
 import { Routes, Route, useLocation } from "react-router"
 import { AnimatePresence } from "framer-motion";
+import ParticlesBackground from "./components/ParticlesBackground";
 
 
 const App = () => {
@@ -30,10 +31,10 @@ const App = () => {
   return (
     <>
       <ThemeProvider theme={theme}>
+      <ParticlesBackground />
         <Container>
           <AnimatePresence>
             <Navbar changeTheme={toggleTheme} themeName={theme.themeName} key={theme.themeName} />
-            
           </AnimatePresence>
           <AnimatePresence exitBeforeEnter>
             <Routes location={location} key={location.pathname}>

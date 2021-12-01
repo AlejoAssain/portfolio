@@ -12,8 +12,9 @@ const Container = styled.div`
   justify-content: center;
   align-items: center; */
   color: ${ ({theme}) => theme.text };
-  background-color: ${ ({theme}) => theme.bg };
+  /* background-color: ${ ({theme}) => theme.bg }; */
   overflow-x: hidden;
+  z-index: 10;
 `
 
 export default Container

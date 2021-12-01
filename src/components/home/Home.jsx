@@ -2,8 +2,9 @@ import styled from "styled-components";
 import DescriptionBox from "./DescriptionBox";
 import Avatar from "./Avatar";
 import SectionContainer from "../SectionContainer";
+import { motion } from "framer-motion";
 
-const HomeWrapper = styled.div`
+const HomeWrapper = styled(motion.div)`
   border-bottom: 3px solid ${({theme}) => theme.text};
   display: flex;
   flex-direction: row;
@@ -14,7 +15,9 @@ const HomeWrapper = styled.div`
 const Home = () => {
   return (
     <SectionContainer>
-      <HomeWrapper>
+      <HomeWrapper
+        whileHover={{ scale: 1.1 }}
+      >
         <DescriptionBox />
         <Avatar />
       </HomeWrapper>

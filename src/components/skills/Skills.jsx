@@ -10,11 +10,11 @@ const SkillsWrapper = styled.div`
   justify-content: center;
   @media (max-width: 750px) {
     flex-direction: column;
-    margin: 0 20px;
+    margin: 20px;
   }
 `
 
-const SkillsBox = styled.div`
+const Box = styled(motion.div)`
   margin: 0;
   border: 2px solid ${ ({theme}) => theme.text};
   border-radius: 50px;
@@ -31,17 +31,30 @@ const SkillsBox = styled.div`
     margin-right: 4vw;
     @media (max-width: 750px) {
       margin: 0;
-      margin-top: 200px;
+      margin-top: 100px;
     }
   }
   &.skills-fe {
     margin-left: 4vw;
     @media (max-width: 750px) {
       margin: 0;
-      margin-top: 100px;
+      margin-top: 150px;
+      margin-bottom: 150px;
     }
   }
 `
+
+const SkillsBox = ({children, className}) => {
+  return (
+    <Box
+      className={className}
+      whileHover={{
+        scale: 1.1
+      }}
+    >
+      {children}
+    </Box>)
+}
 
 const Text = styled.div`
   display: block;
@@ -97,8 +110,6 @@ const SectionLogo = ({src, logoName, className}) => {
   )
 }
 
-// I'm passionate about putting together the product the user's can't see
-
 const Skills = () => {
   return (
     <SectionContainer>
@@ -109,7 +120,7 @@ const Skills = () => {
             Backend Developer
           </Text>
           <Text className="skills-subtitle">
-            I'm passionate about putting together the product the user's can't see
+            I'm passionate about putting together the software the user's can't see
           </Text>
           <Text className="skills-section-sub">
             Skills:
