@@ -19,7 +19,7 @@ const Box = styled(motion.div)`
   border: 2px solid ${ ({theme}) => theme.text};
   border-radius: 50px;
   height: 50vh;
-  min-height: 500px;
+  min-height: 65vh;
   min-width: 290px;
   max-width: 400px;
   padding: 20px;
@@ -29,13 +29,16 @@ const Box = styled(motion.div)`
   justify-content: center;
   &.skills-be {
     margin-right: 4vw;
+    margin-left: 1vw;
     @media (max-width: 750px) {
       margin: 0;
       margin-top: 100px;
+      
     }
   }
   &.skills-fe {
     margin-left: 4vw;
+    margin-right: 1vw;
     @media (max-width: 750px) {
       margin: 0;
       margin-top: 150px;

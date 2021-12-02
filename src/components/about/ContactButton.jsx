@@ -5,7 +5,7 @@ import styled from 'styled-components';
 const ButtonContainer = styled(motion.button)`
   max-width: 300px;
   align-self: center;
-  margin-bottom: 30px;
+  margin-bottom: 5px;
   font-size: 20px;
   padding: 15px;
   border-radius: 20px;
