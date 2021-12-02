@@ -19,7 +19,7 @@ const Box = styled(motion.div)`
   border: 2px solid ${ ({theme}) => theme.text};
   border-radius: 50px;
   height: 50vh;
-  min-height: 65vh;
+  min-height: 440px;
   min-width: 290px;
   max-width: 400px;
   padding: 20px;
@@ -27,6 +27,7 @@ const Box = styled(motion.div)`
   flex-direction: column;
   align-items: flex-start;
   justify-content: center;
+  margin-top: 100px;
   &.skills-be {
     margin-right: 4vw;
     margin-left: 1vw;
@@ -41,7 +42,7 @@ const Box = styled(motion.div)`
     margin-right: 1vw;
     @media (max-width: 750px) {
       margin: 0;
-      margin-top: 150px;
+      margin-top: 200px;
       margin-bottom: 150px;
     }
   }

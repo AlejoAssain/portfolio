@@ -12,7 +12,7 @@ import Home from "./components/home/Home"
 import About from "./components/about/About";
 import Skills from "./components/skills/Skills";
 import Footer from "./components/footer/Footer";
-import ContactForm from "./components/contact/ContactForm";
+// import ContactForm from "./components/contact/ContactForm";
 
 
 const App = () => {
@@ -42,7 +42,7 @@ const App = () => {
               <Route path="/" element={<Home />} /> 
               <Route path="/about" element={<About />} /> 
               <Route path="/skills" element={<Skills />} /> 
-              <Route path="/contact" element={<ContactForm />} />
+              {/* <Route path="/contact" element={<ContactForm />} /> */}
             </Routes>
           </AnimatePresence>
           <AnimatePresence>

@@ -2,7 +2,7 @@ import SectionContainer from "../SectionContainer";
 import styled from "styled-components"
 import { motion } from "framer-motion";
 import rocket from "./rocket.svg"
-import ContactButton from "./ContactButton";
+// import ContactButton from "./ContactButton";
 
 const AboutWrapper = styled(motion.div)`
   margin: 0 5vw;
@@ -29,7 +29,7 @@ const AboutWrapper = styled(motion.div)`
 const Text = styled.div`
   max-width: 70vw;
   padding: 40px;
-  font-size: 2.8vh;
+  font-size: 17px;
   @media (max-width: 750px) {
     font-size: 20px;
     max-width: 80vw;
@@ -82,7 +82,7 @@ const About = () => {
           At this stage of my learning path, I'm feeling ready to get my first tech job. I know that as a first experience I will be learning a lot, but in the
           other hand, I'm sure that I will be put all my efforts to add value to the company that gives me that first job...
         </Text>
-        <ContactButton />
+        {/* <ContactButton /> */}
       </AboutWrapper>        
     </SectionContainer>
   )
