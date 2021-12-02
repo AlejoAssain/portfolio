@@ -14,6 +14,7 @@ const Container = styled.div`
   color: ${ ({theme}) => theme.text };
   /* background-color: ${ ({theme}) => theme.bg }; */
   overflow-x: hidden;
+  overflow-y: auto;
   z-index: 10;
 `
 

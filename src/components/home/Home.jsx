@@ -10,6 +10,12 @@ const HomeWrapper = styled(motion.div)`
   flex-direction: row;
   align-items: center;
   justify-content: center;
+
+  @media (max-width: 750px) {
+    margin-top: 50px;
+    flex-direction: column;
+    max-height: 80vh;
+  }
 `
 
 const Home = () => {
@@ -17,6 +23,14 @@ const Home = () => {
     <SectionContainer>
       <HomeWrapper
         whileHover={{ scale: 1.1 }}
+        // drag
+        // dragConstraints={{
+        //   left: -20,
+        //   right: 20,
+        //   top: 10,
+        //   bottom: -10,
+        // }}
+
       >
         <DescriptionBox />
         <Avatar />

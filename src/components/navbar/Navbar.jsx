@@ -19,7 +19,7 @@ const NavbarContainer = styled(motion.div)`
   z-index: 80;
   background-color: ${ ({theme}) => theme.navBg };
   color: ${ ({theme}) => theme.navText};
-  border-bottom: 2px solid ${ ({theme}) => theme.navText};
+  /* border-bottom: 2px solid ${ ({theme}) => theme.navText}; */
 `
 
 const NavbarWrapper = styled.div`

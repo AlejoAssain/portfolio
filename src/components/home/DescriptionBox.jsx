@@ -5,6 +5,7 @@ const Text = styled.div`
   max-height: 100%;
   box-sizing: content-box;
   font-size: 2rem;
+  
   &.home-box-title {
     font-size: 5vh;
     font-weight: 600;

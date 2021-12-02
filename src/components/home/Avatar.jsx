@@ -9,11 +9,19 @@ const AvatarContainer = styled.div`
   justify-content: center;
   border-left: 2px solid ${ ({theme}) => theme.text};
   padding-left: 4vw;
+
+  @media (max-width: 750px) {
+    border: none;
+  }
 `
 
 const AvatarImage = styled.img`
   height: 50vh;
   width: auto;
+  @media (max-width: 750px) {
+    max-height: 40vh;
+  }
+
 `
 
 const Avatar = () => {

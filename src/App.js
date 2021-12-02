@@ -1,14 +1,18 @@
 import { lightTheme, darkTheme } from "./theme/Themes"
 import { ThemeProvider } from "styled-components"
 import { useState } from 'react';
+import { Routes, Route, useLocation } from "react-router"
+import { AnimatePresence } from "framer-motion";
+import ParticlesBackground from "./components/ParticlesBackground";
+
+// custom components
 import Container from "./components/Container"
 import Navbar from "./components/navbar/Navbar"
 import Home from "./components/home/Home"
 import About from "./components/about/About";
 import Skills from "./components/skills/Skills";
-import { Routes, Route, useLocation } from "react-router"
-import { AnimatePresence } from "framer-motion";
-import ParticlesBackground from "./components/ParticlesBackground";
+import Footer from "./components/footer/Footer";
+import ContactForm from "./components/contact/ContactForm";
 
 
 const App = () => {
@@ -25,13 +29,10 @@ const App = () => {
 
   const location = useLocation()
 
-  // console.log(`Theme: ${theme.themeName}`)
-  // console.log(location.pathname)
-
   return (
     <>
       <ThemeProvider theme={theme}>
-      <ParticlesBackground />
+        <ParticlesBackground themeName={theme.themeName} />
         <Container>
           <AnimatePresence>
             <Navbar changeTheme={toggleTheme} themeName={theme.themeName} key={theme.themeName} />
@@ -41,7 +42,11 @@ const App = () => {
               <Route path="/" element={<Home />} /> 
               <Route path="/about" element={<About />} /> 
               <Route path="/skills" element={<Skills />} /> 
+              <Route path="/contact" element={<ContactForm />} />
             </Routes>
+          </AnimatePresence>
+          <AnimatePresence>
+            <Footer />
           </AnimatePresence>
         </Container>
       </ThemeProvider>

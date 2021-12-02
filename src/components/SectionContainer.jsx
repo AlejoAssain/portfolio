@@ -50,11 +50,7 @@ const getAnimation = (currentPath, previousPath) => {
     } else if (currentPath === "/about") {
       enterDirection = "right"
     }
-
-  } else {
-    console.log("not coming from another page")
   }
-
   return animations(enterDirection)
 }
 

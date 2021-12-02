@@ -5,6 +5,8 @@ const Menu = ({menuState, toggleMenuState}) => {
 
   const location = useLocation()
 
+  const closeMenu = () => (menuState === true) ? toggleMenuState() : null
+
   return (
     <>
       <MenuIcon onClick={toggleMenuState} />
@@ -14,6 +16,7 @@ const Menu = ({menuState, toggleMenuState}) => {
           to="/"                  
           state={location.pathname}
           className="nav-link"
+          onClick={closeMenu}
         >
           <MenuLink>
             Home
@@ -24,6 +27,7 @@ const Menu = ({menuState, toggleMenuState}) => {
           to="/skills"                  
           state={location.pathname}
           className="nav-link"
+          onClick={closeMenu}
         >
           <MenuLink>
             My Skills
@@ -34,6 +38,7 @@ const Menu = ({menuState, toggleMenuState}) => {
           to="/about"                  
           state={location.pathname}
           className="nav-link"
+          onClick={closeMenu}
         >
           <MenuLink>
             About Me

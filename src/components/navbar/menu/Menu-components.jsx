@@ -9,13 +9,14 @@ export const MenuWrapper = styled.ul`
   justify-content: center;
   align-items: center;
   @media (max-width: 750px) {
+    transition: all 1s;
     display: ${ ({menuState}) => menuState ? "flex" : "none"};
     position: fixed;
     background-color: ${ ({theme}) => theme.navBg};
     z-index: 100;
     flex-direction: column;
     padding: 0;
-    top: 49px;
+    top: 47px;
     left: 0;
     width: 100vw;
     height: 20vh;
@@ -40,7 +41,7 @@ export const Item = styled(motion.li)`
 export const LinkContainer = styled(NavLink)`  
   text-decoration: none;
   color: ${ ({theme}) => theme.navText };
-    
+
   &.active {
     color: ${ ({theme}) => theme.activeLink};
     transition: color 1s;

@@ -116,7 +116,7 @@ const Skills = () => {
       <SkillsWrapper>
         <SkillsBox className="skills-be">          
           <Text className="skills-title">
-            <SectionLogo className="python-logo" logoNama="python" src={pythonLogo}/>
+            <SectionLogo className="python-logo" logoNama="python" src={pythonLogo} />
             Backend Developer
           </Text>
           <Text className="skills-subtitle">
