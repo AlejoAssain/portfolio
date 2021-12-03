@@ -6,11 +6,7 @@ import { useState } from "react"
 import ArrowContainer from "./ArrowContainer";
 import { FiArrowLeft, FiArrowRight } from "react-icons/fi"
 
-const randomIntFromInterval = (min, max) => Math.floor(Math.random() * (max - min + 1) + min)
-
-
-const rndInt = randomIntFromInterval(1, 6)
-console.log(rndInt)
+// const randomIntFromInterval = (min, max) => Math.floor(Math.random() * (max - min + 1) + min)
 
 const ProjectsWrapper = styled.div`
   display: flex;
@@ -31,7 +27,7 @@ const projectsData = [
 
 const Projects = () => {
 
-  const [projectNumber, setProjectNumber] = useState(randomIntFromInterval(0, projectsData.length - 1))
+  const [projectNumber, setProjectNumber] = useState(0)
 
   const nextProject = () => {
     setProjectNumber(projectNumber + 1)

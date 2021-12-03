@@ -1,7 +1,5 @@
 import styled from "styled-components";
 
-import ArrowContainer from "./ArrowContainer";
-
 const ProjectWrapper = styled.div`
   display: flex;
   flex-direction: column;
