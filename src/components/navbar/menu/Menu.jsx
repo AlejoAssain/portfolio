@@ -19,7 +19,7 @@ const Menu = ({menuState, toggleMenuState}) => {
           onClick={closeMenu}
         >
           <MenuLink>
-            Home
+            Inicio
           </MenuLink>
         </LinkContainer>          
         <LinkContainer 
@@ -30,7 +30,18 @@ const Menu = ({menuState, toggleMenuState}) => {
           onClick={closeMenu}
         >
           <MenuLink>
-            My Skills
+            Habilidades
+          </MenuLink>
+        </LinkContainer>
+        <LinkContainer 
+          end 
+          to="/projects"                  
+          state={location.pathname}
+          className="nav-link"
+          onClick={closeMenu}
+        >
+          <MenuLink>
+            Proyectos
           </MenuLink>
         </LinkContainer>            
         <LinkContainer 
@@ -41,7 +52,7 @@ const Menu = ({menuState, toggleMenuState}) => {
           onClick={closeMenu}
         >
           <MenuLink>
-            About Me
+            Sobre Mi
           </MenuLink>
         </LinkContainer>        
       </MenuWrapper>

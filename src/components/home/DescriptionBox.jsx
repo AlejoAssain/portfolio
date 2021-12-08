@@ -33,13 +33,13 @@ const DescriptionBox = () => {
   return (
     <DescriptionContainer>
       <Text className="home-box-title">
-        Hi, I'm Alejo!
+        Hola, soy Alejo!
       </Text>
       <Text className="home-box-subtitle">
-        I'm a Fullstack Software Developer
+        Soy Fullstack Software Developer
       </Text>
       <Text className="home-box-desc">
-        Navigate through this page to know more about me!
+        Navega por esta página para saber más sobre mi!
       </Text>
     </DescriptionContainer>
   )

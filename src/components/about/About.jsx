@@ -2,7 +2,7 @@ import SectionContainer from "../SectionContainer";
 import styled from "styled-components"
 import { motion } from "framer-motion";
 import rocket from "./rocket.svg"
-// import ContactButton from "./ContactButton";
+
 
 const AboutWrapper = styled(motion.div)`
   margin: 0 5vw;
@@ -70,19 +70,14 @@ const About = () => {
         }}
       >
         <Text>
-          I'm a 21 years old Software Developer from Córdoba, Argentina. I've been learning the basics of the Software Engenieering for the last
-          3 years, by myself and in Systems Engineering career at Universidad Tecnológica Nacional - Facultad Regional Córdoba.
+          Hola! Soy un desarrollador de software de 21 años. Vivo en Córdoba, Argentina. Aprendí a programar a los 17 años y en ese momento me converti en fan de crear tecnología. Además desde 2018 estoy cursando Ing. en Sistemas de Información en la Universidad Tecnológica Nacional.
         </Text>
         <Text>
-          In 2021 I decided to put myself 100% on learning web development. So I started taking some courses, like "100 Days of Code: The Complete
-          Python Pro Bootcamp for 2022" and "React - Definitive guide: Hooks Router Redux Next", with the basics that I generated with this guides,
-          I started my journey as a Fullstack developer, doing Backend development with Flask and Django (learning Express too), and Frontend with React.js.
+          En mi carrera aprendí a programar con Python y en 2021 decidí empezar a aplicar mis conocimientos al desarrollo web. Empecé aprendiendo HTML y CSS, además aprendí Flask para hacer Backend. Tenía conocimientos previos de SQL, así q utilizando SQLAlchemy, aprendí a manejar bases de datos desde el Backend.
         </Text>
         <Text>
-          At this stage of my learning path, I'm feeling ready to get my first tech job. I know that as a first experience I will be learning a lot, but in the
-          other hand, I'm sure that I will be put all my efforts to add value to the company that gives me that first job...
+          Actualmente me considero capaz de realizar ambas partes del desarrollo y me encuentro buscando mi primer trabajo dentro del área de TI...
         </Text>
-        {/* <ContactButton /> */}
       </AboutWrapper>        
     </SectionContainer>
   )

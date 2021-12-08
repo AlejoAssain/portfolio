@@ -2,7 +2,6 @@ import Particles from "react-tsparticles";
 import { lightTheme, darkTheme } from "../theme/Themes";
 
 
-
 const ParticlesBackground = ({themeName}) => {
 
   const particlesConfig = {

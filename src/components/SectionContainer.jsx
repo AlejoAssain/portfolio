@@ -47,6 +47,12 @@ const getAnimation = (currentPath, previousPath) => {
         enterDirection = "left"
       }
     
+    } else if (currentPath === "/projects") {
+      if (previousPath === "/skills") {
+        enterDirection = "right"
+      } else {
+        enterDirection = "left"
+      }
     } else if (currentPath === "/about") {
       enterDirection = "right"
     }

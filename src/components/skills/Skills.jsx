@@ -124,7 +124,7 @@ const Skills = () => {
             Backend Developer
           </Text>
           <Text className="skills-subtitle">
-            I'm passionate about putting together the software the user's can't see
+            Me apasiona crear el Software que el usuario no ve
           </Text>
           <Text className="skills-section-sub">
             Skills:
@@ -139,7 +139,7 @@ const Skills = () => {
             Frontend Developer
           </Text>
           <Text className="skills-subtitle">
-            I love to design and develop responsive and dynamic software
+            Me encanta diseñar y desarrollar Software dinamico y responsivo
           </Text>
           <Text className="skills-section-sub">
             Skills:
