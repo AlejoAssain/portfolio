@@ -76,7 +76,7 @@ const About = () => {
           En mi carrera aprendí a programar con Python y en 2021 decidí empezar a aplicar mis conocimientos al desarrollo web. Empecé aprendiendo HTML y CSS, además aprendí Flask para hacer Backend. Tenía conocimientos previos de SQL, así que utilizando SQLAlchemy, aprendí a manejar bases de datos desde el Backend.
         </Text>
         <Text>
-          Actualmente me considero capaz de realizar ambas partes del desarrollo y me encuentro buscando mi primer trabajo dentro del área de TI...
+          Actualmente me considero capaz de realizar ambas partes del desarrollo y me encuentro buscando mi primer trabajo dentro del área de IT...
         </Text>
       </AboutWrapper>        
     </SectionContainer>
