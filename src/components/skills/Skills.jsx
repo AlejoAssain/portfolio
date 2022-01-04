@@ -145,7 +145,7 @@ const Skills = () => {
             Skills:
           </Text>
           <Text className="skills-section-desc">
-            HTML, CSS, JS, React.js, Redux...
+            HTML, CSS, JS, React.js, Redux, Next.js...
           </Text>
         </SkillsBox>
       </SkillsWrapper>
