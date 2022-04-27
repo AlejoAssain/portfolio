@@ -11,6 +11,7 @@ const IconLogo = styled.div`
   align-items: center;
   font-weight: 500;
   font-size: 1.4rem;
+  user-select: none;
 `
 
 const Logo = () => {

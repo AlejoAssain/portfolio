@@ -1,7 +1,9 @@
 import SectionContainer from "../SectionContainer";
 import styled from "styled-components"
 import { motion } from "framer-motion";
-import rocket from "./rocket.svg"
+import rocket from "./rocket.svg";
+import applicationTexts from "../../static/applicationTexts";
+import { useLanguage } from "../../useLanguage";
 
 
 const AboutWrapper = styled(motion.div)`
@@ -61,6 +63,9 @@ const Rocket = () => {
 }
 
 const About = () => {
+  const { language } = useLanguage()
+
+
   return (
     <SectionContainer>
       <Rocket />
@@ -70,13 +75,13 @@ const About = () => {
         }}
       >
         <Text>
-          Hola! Soy un desarrollador de software de 21 años. Vivo en Córdoba, Argentina. Comencé a programar a los 17 años y en ese momento me convertí en fan de crear tecnología. Además, desde 2018, curso la carrera de Ing. en Sistemas de Información en la Universidad Tecnológica Nacional.
+          { applicationTexts[language].aboutMe.text1}
         </Text>
         <Text>
-          En mi carrera aprendí a programar con Python y en 2021 decidí empezar a aplicar mis conocimientos al desarrollo web. Empecé familiarizandome con HTML y CSS, además aprendí Flask para desarrollar Backend. Tenía conocimientos previos de SQL, así que utilizando SQLAlchemy, logré manejar bases de datos con Flask.
+          { applicationTexts[language].aboutMe.text2}
         </Text>
         <Text>
-          Actualmente me considero capaz de realizar ambas partes del desarrollo y me encuentro buscando mi primer trabajo dentro del área de IT...
+          { applicationTexts[language].aboutMe.text3}
         </Text>
       </AboutWrapper>        
     </SectionContainer>

@@ -23,14 +23,13 @@ const Home = () => {
     <SectionContainer>
       <HomeWrapper
         whileHover={{ scale: 1.1 }}
-        // drag
-        // dragConstraints={{
-        //   left: -20,
-        //   right: 20,
-        //   top: 10,
-        //   bottom: -10,
-        // }}
-
+        drag
+        dragConstraints={{
+          left: -20,
+          right: 20,
+          top: 10,
+          bottom: -10,
+        }}
       >
         <DescriptionBox />
         <Avatar />

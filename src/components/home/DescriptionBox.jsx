@@ -1,4 +1,7 @@
-import styled from "styled-components"
+import styled from "styled-components";
+import applicationTexts from "../../static/applicationTexts";
+import { useLanguage } from "../../useLanguage"
+
 
 const Text = styled.div`
   max-width: 100%;
@@ -30,16 +33,20 @@ const DescriptionContainer = styled.div`
 `
 
 const DescriptionBox = () => {
+  const { language } = useLanguage()
+
+  const descriptionTexts = applicationTexts[language].descriptionBox
+
   return (
     <DescriptionContainer>
       <Text className="home-box-title">
-        Hola, soy Alejo!
+        { descriptionTexts.title }
       </Text>
       <Text className="home-box-subtitle">
-        Soy Fullstack Software Developer
+        { descriptionTexts.subtitle }
       </Text>
       <Text className="home-box-desc">
-        Navega por esta página para saber más sobre mi!
+        { descriptionTexts.text }
       </Text>
     </DescriptionContainer>
   )

@@ -3,6 +3,8 @@ import styled from "styled-components";
 import { motion } from "framer-motion";
 import reactLogo from "./reactLogo.svg"
 import pythonLogo from "./pythonLogo.svg"
+import { useLanguage } from "../../useLanguage";
+import applicationTexts from "../../static/applicationTexts";
 
 const SkillsWrapper = styled.div`
   display: flex;
@@ -115,37 +117,39 @@ const SectionLogo = ({src, logoName, className}) => {
 }
 
 const Skills = () => {
+  const { language } = useLanguage()
+
   return (
     <SectionContainer>
       <SkillsWrapper>
         <SkillsBox className="skills-be">          
           <Text className="skills-title">
             <SectionLogo className="python-logo" logoNama="python" src={pythonLogo} />
-            Backend Developer
+            { applicationTexts[language].skills.be.title }
           </Text>
           <Text className="skills-subtitle">
-            Me apasiona crear el Software que el usuario no ve
+            { applicationTexts[language].skills.be.text }
           </Text>
           <Text className="skills-section-sub">
-            Skills:
+            { applicationTexts[language].skills.be.skillsTitle }
           </Text>
           <Text className="skills-section-desc">
-            Flask, Django, Express, SQLite, PostgreSQL, SQLAlchemy...
+            { applicationTexts[language].skills.be.skillsDescription }
           </Text>
         </SkillsBox>
         <SkillsBox className="skills-fe">
           <Text className="skills-title">
             <SectionLogo logoNama="react" src={reactLogo}/>              
-            Frontend Developer
+            { applicationTexts[language].skills.fe.title }
           </Text>
           <Text className="skills-subtitle">
-            Me encanta diseñar y desarrollar Software dinamico y responsivo
+            { applicationTexts[language].skills.fe.text }
           </Text>
           <Text className="skills-section-sub">
-            Skills:
+            { applicationTexts[language].skills.fe.skillsTitle }
           </Text>
           <Text className="skills-section-desc">
-            HTML, CSS, JS, React.js, Redux, Next.js...
+            { applicationTexts[language].skills.fe.skillsDescription }
           </Text>
         </SkillsBox>
       </SkillsWrapper>

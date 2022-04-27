@@ -1,7 +1,10 @@
 import { MenuWrapper, MenuLink, LinkContainer, MenuIcon } from "./Menu-components"
 import { useLocation } from "react-router"
+import applicationTexts from "../../../static/applicationTexts"
+import { useLanguage } from "../../../useLanguage"
 
 const Menu = ({menuState, toggleMenuState}) => {
+  const { language } = useLanguage()
 
   const location = useLocation()
 
@@ -19,7 +22,7 @@ const Menu = ({menuState, toggleMenuState}) => {
           onClick={closeMenu}
         >
           <MenuLink>
-            Inicio
+            { applicationTexts[language].menu.home }
           </MenuLink>
         </LinkContainer>          
         <LinkContainer 
@@ -30,7 +33,7 @@ const Menu = ({menuState, toggleMenuState}) => {
           onClick={closeMenu}
         >
           <MenuLink>
-            Habilidades
+            { applicationTexts[language].menu.skills }
           </MenuLink>
         </LinkContainer>
         <LinkContainer 
@@ -41,7 +44,7 @@ const Menu = ({menuState, toggleMenuState}) => {
           onClick={closeMenu}
         >
           <MenuLink>
-            Proyectos
+            { applicationTexts[language].menu.projects }
           </MenuLink>
         </LinkContainer>            
         <LinkContainer 
@@ -52,7 +55,7 @@ const Menu = ({menuState, toggleMenuState}) => {
           onClick={closeMenu}
         >
           <MenuLink>
-            Sobre Mi
+            { applicationTexts[language].menu.aboutMe }
           </MenuLink>
         </LinkContainer>        
       </MenuWrapper>

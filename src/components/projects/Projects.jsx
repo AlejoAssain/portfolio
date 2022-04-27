@@ -5,11 +5,9 @@ import Project from "./Project";
 import { useState } from "react"
 import ArrowContainer from "./ArrowContainer";
 import { FiArrowLeft, FiArrowRight } from "react-icons/fi"
+import { useLanguage } from "../../useLanguage";
+import projectsData from "./projectsData";
 
-// images
-import blogImg from "./projectsImg/blogProject.png"
-import cartAppImg from "./projectsImg/cartProject.png"
-import notesAppImg from "./projectsImg/notesProject.png"
 
 const randomIntFromInterval = (min, max) => Math.floor(Math.random() * (max - min + 1) + min)
 
@@ -21,29 +19,10 @@ const ProjectsWrapper = styled.div`
   width: 100vw;
   height: 100vh;
 `
-const projectsData = [
-  {
-    title: "My Personal Blog",
-    description: "Este es mi blog personal, hecho con Flask. Acá implementé algunas tecnologías interesantes como autenticación, una BD con PostgreSQL y más",
-    url: "https://alejo-blog.herokuapp.com/",
-    image: blogImg
-  },
-  {
-    title: "Shopping Cart App",
-    description: "Esta aplicación fue desarrollada con React.js y me sirvió para poner en práctica los hooks de React. Simula el funcionamiento de un carrito de compras",
-    url: "https://alejo-shopping-cart.vercel.app/",
-    image: cartAppImg
-  },
-  {
-    title: "Notes App",
-    description: "Aplicación desarrollada con React.js. Me sirvió para practicar manejo de estado en React atraves de hooks",
-    url: "https://alejo-notes-app.vercel.app/",
-    image: notesAppImg
-  },
-]
 
 const Projects = () => {
-
+  const { language } = useLanguage()
+  
   const [projectNumber, setProjectNumber] = useState(randomIntFromInterval(0, projectsData.length - 1))
 
   const prevProject = () => {
@@ -70,10 +49,10 @@ const Projects = () => {
         </ArrowContainer>
         <AnimatePresence>
           <Project
-            title={projectsData[projectNumber].title}
-            description={projectsData[projectNumber].description}
-            url={projectsData[projectNumber].url}
-            image={projectsData[projectNumber].image}
+            title={ projectsData[projectNumber].title }
+            description={ projectsData[projectNumber].description[language] }
+            url={ projectsData[projectNumber].url }
+            gitHubUrl={ projectsData[projectNumber].gitHubUrl }
           />        
         </AnimatePresence>
         <ArrowContainer onClick={nextProject}>

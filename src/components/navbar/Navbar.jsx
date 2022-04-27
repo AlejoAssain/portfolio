@@ -1,10 +1,12 @@
 import styled from "styled-components"
 import { useState } from "react"
+import { motion } from "framer-motion"
+
+import { BsFillMoonFill, BsFillSunFill } from "react-icons/bs"
 import Logo from "./Logo"
 import Menu from "./menu/Menu"
 import Switch from "./switch/Switch"
-import { BsFillMoonFill, BsFillSunFill } from "react-icons/bs"
-import { motion } from "framer-motion"
+import LanguageSelector from "./LanguageSelector"
 
 const iconStyle = {
   marginLeft: "10px",
@@ -38,7 +40,7 @@ const MenuWrapper = styled.div`
   align-items: center;
 `
 
-const Navbar = ({changeTheme, themeName}) => {
+const Navbar = ({changeLanguage, changeTheme, themeName}) => {
 
   const [menuState, setMenuState] = useState(false)
 
@@ -62,6 +64,7 @@ const Navbar = ({changeTheme, themeName}) => {
             : <BsFillSunFill style={iconStyle} />
           }
           <Switch changeTheme={changeTheme} />
+          <LanguageSelector changeLanguage={changeLanguage} />
         </MenuWrapper>
       </NavbarWrapper>
     </NavbarContainer>

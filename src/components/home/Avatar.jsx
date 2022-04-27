@@ -18,6 +18,7 @@ const AvatarContainer = styled.div`
 const AvatarImage = styled.img`
   height: 50vh;
   width: auto;
+  pointer-events: none;
   @media (max-width: 750px) {
     max-height: 40vh;
   }

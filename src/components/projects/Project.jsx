@@ -1,5 +1,8 @@
 import styled from "styled-components";
 import { motion } from "framer-motion"
+import { useLanguage } from "../../useLanguage";
+import applicationTexts from "../../static/applicationTexts";
+import { BsGithub } from "react-icons/bs"
 
 const ProjectWrapper = styled(motion.div)`
   display: flex;
@@ -10,18 +13,19 @@ const ProjectWrapper = styled(motion.div)`
   border-radius: 40px;
   width: 350px;
   overflow: hidden;
-`
-
-const ProjectImage = styled.img`
-  display: block;
-  width: 350px;
-  margin-bottom: 20px;
+  user-select: none;
 `
 
 const Title = styled.div`
-  font-size: 23px; 
+  width: 100%;
+  
+  font-size: 30px; 
+  margin-top: 25px;
   margin-bottom: 20px;
   padding: 0 10px;
+  padding-bottom: 15px;
+  
+  border-bottom: 2px solid ${ ({theme}) => theme.text };
 `
 
 const Description = styled.div`
@@ -30,7 +34,7 @@ const Description = styled.div`
   padding: 0 10px;
 `
 
-const VisitButton = styled.button`
+const VisitButton = styled(motion.button)`
   border: 2px solid ${ ({theme}) => theme.text };
   background-color: ${ ({theme}) => theme.text};
   color: ${ ({theme}) => theme.bg};
@@ -41,9 +45,26 @@ const VisitButton = styled.button`
   margin-bottom: 20px;
   border-radius: 10px;
   cursor: pointer;
+  user-select: none;
 `
 
-const Project = ({title, description, url, image}) => {
+const ButtonsWrapper = styled.div`
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+`
+
+
+const GitHubButton = styled(motion.div)`
+  margin-left: 30px;
+  margin-bottom: 20px;
+`
+
+const Project = ({title, description, url, gitHubUrl}) => {
+  const { language } = useLanguage()
+
   return (       
     <ProjectWrapper
       initial={{
@@ -57,20 +78,28 @@ const Project = ({title, description, url, image}) => {
       }}
       key={title}
     >
-      <ProjectImage src={image} />
       <Title>
         {title}
       </Title>
       <Description>
         {description}
       </Description>
-      <VisitButton
-        onClick={ () => {
-          window.open(url)
-        }}
-      >
-        Visitar
-      </VisitButton>
+      <ButtonsWrapper>
+        <GitHubButton
+          onClick={ () => {
+            window.open(gitHubUrl)
+          }}
+        >
+          <BsGithub size={ "2rem" } />
+        </GitHubButton>
+        <VisitButton
+          onClick={ () => {
+            window.open(url)
+          }}
+        >
+          { applicationTexts[language].projects.buttonText }
+        </VisitButton>
+      </ButtonsWrapper>
     </ProjectWrapper>
   );
 }
