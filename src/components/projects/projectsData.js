@@ -12,7 +12,7 @@ const projectsData = [
     description: {
       es: "Esta aplicación fue desarrollada con React.js y me sirvió para poner en práctica los hooks de React. Simula el funcionamiento de un carrito de compras",
       en: "This app was developed with React.js and it helped me to practice React hooks. It simulates a shopping cart functionality"},
-    url: "https://alejo-shopping-cart.vercel.app/",
+    url: "https://alejo-shopping-cart-react-ts.vercel.app/",
     gitHubUrl: "https://github.com/AlejoAssain/shopping-cart-react"
   },
   {
