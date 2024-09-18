@@ -2,7 +2,7 @@ import SectionContainer from "../SectionContainer";
 import styled from "styled-components"
 import { motion } from "framer-motion";
 import rocket from "./rocket.svg";
-import applicationTexts from "../../static/applicationTexts";
+import applicationTexts from "../../static/applicationTexts.js";
 import { useLanguage } from "../../useLanguage";
 
 

@@ -1,12 +1,6 @@
-import styled from "styled-components"
-import { useState } from "react"
-import { motion } from "framer-motion"
-
-import { BsFillMoonFill, BsFillSunFill } from "react-icons/bs"
-import Logo from "./Logo"
-import Menu from "./menu/Menu"
-import Switch from "./switch/Switch"
-import LanguageSelector from "./LanguageSelector"
+import styled, { useTheme } from 'styled-components';
+import { motion } from 'framer-motion';
+import { useState } from 'react';
 
 const iconStyle = {
   marginLeft: "10px",
@@ -40,13 +34,19 @@ const MenuWrapper = styled.div`
   align-items: center;
 `
 
-const Navbar = ({changeLanguage, changeTheme, themeName}) => {
+interface Props {
+  changeTheme: () => void;
+  themeName: string;
+}
 
+export const Navbar = ({changeTheme, themeName}: Props) => {
   const [menuState, setMenuState] = useState(false)
 
   const toggleMenuState = () => {
     setMenuState(!menuState)
   }
+
+  const
 
   return (
     <NavbarContainer
@@ -64,11 +64,9 @@ const Navbar = ({changeLanguage, changeTheme, themeName}) => {
             : <BsFillSunFill style={iconStyle} />
           }
           <Switch changeTheme={changeTheme} />
-          <LanguageSelector changeLanguage={changeLanguage} />
+          <LanguageSelector />
         </MenuWrapper>
       </NavbarWrapper>
     </NavbarContainer>
   )
 }
-
-export default Navbar

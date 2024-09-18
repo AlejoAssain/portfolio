@@ -1,12 +1,9 @@
-import React from 'react';
-import applicationTexts from '../../static/applicationTexts';
+import styled from 'styled-components';
+import { motion } from 'framer-motion';
 import { useState } from 'react';
-import { RiArrowDownSFill } from "react-icons/ri"
-import styled from "styled-components";
-import { motion } from "framer-motion";
 
-import { useLanguage } from '../../useLanguage';
-
+import { useLanguage } from '../../providers';
+import { applicationTexts } from '../../static/applicationTexts';
 
 const SectionWrapper = styled.div`
   display: flex;
@@ -45,16 +42,15 @@ const ArrowContainer = styled(motion.div)`
   justify-content: center;
 `
 
-const LanguageSelector = () => {
+export const LanguageSelector = () => {
   const {language, changeLanguage} = useLanguage();
 
   const [showMenu, setShowMenu] = useState(false);
 
-  const toggleShowMenu = () => setShowMenu(!showMenu)
-  
+  const toggleShowMenu = () => setShowMenu(!showMenu);
 
-  let languagesName = []
-  for (let key in applicationTexts) {
+  const languagesName: string[] = []
+  for (const key in applicationTexts) {
     languagesName.push(key.toUpperCase())
   }
   
@@ -98,5 +94,3 @@ const LanguageSelector = () => {
     </SectionWrapper> 
   );
 }
-
-export default LanguageSelector;

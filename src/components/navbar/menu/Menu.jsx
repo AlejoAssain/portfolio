@@ -1,6 +1,6 @@
 import { MenuWrapper, MenuLink, LinkContainer, MenuIcon } from "./Menu-components"
 import { useLocation } from "react-router"
-import applicationTexts from "../../../static/applicationTexts"
+import applicationTexts from "../../../static/applicationTexts.js"
 import { useLanguage } from "../../../useLanguage"
 
 const Menu = ({menuState, toggleMenuState}) => {

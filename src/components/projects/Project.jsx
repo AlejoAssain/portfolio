@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import { motion } from "framer-motion"
 import { useLanguage } from "../../useLanguage";
-import applicationTexts from "../../static/applicationTexts";
+import applicationTexts from "../../static/applicationTexts.js";
 import { BsGithub } from "react-icons/bs"
 
 const ProjectWrapper = styled(motion.div)`

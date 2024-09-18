@@ -1,7 +1,7 @@
 // import ar from "./flags/ar.svg"
 // import us from "./flags/us.svg"
 
-const applicationTexts =  {
+export const applicationTexts =  {
   en: {
     // countryFlag: us,
     descriptionBox: {
@@ -74,6 +74,3 @@ const applicationTexts =  {
     }
   }
 }
-
-
-export default applicationTexts

@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import reactLogo from "./reactLogo.svg"
 import pythonLogo from "./pythonLogo.svg"
 import { useLanguage } from "../../useLanguage";
-import applicationTexts from "../../static/applicationTexts";
+import applicationTexts from "../../static/applicationTexts.js";
 
 const SkillsWrapper = styled.div`
   display: flex;
