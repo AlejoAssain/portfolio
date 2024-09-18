@@ -1,11 +1,17 @@
 import { useState } from 'react';
 import { AnimatePresence } from 'framer-motion';
 import { Route, Routes, useLocation } from 'react-router-dom';
+import { ThemeProvider } from 'styled-components';
 
 import { darkTheme, lightTheme } from './themes';
-import { ThemeProvider } from 'styled-components';
 import Container from './components/Container.tsx';
 import { ParticlesBackground } from './components/ParticlesBackground';
+import { Navbar } from './components/navbar/Navbar.tsx';
+import Home from './components/home/Home.tsx';
+import { Projects } from './components/projects/Projects.tsx';
+import { Skills } from './components/skills/Skills.tsx';
+import { About } from './components/about/About.tsx';
+import { Footer } from './components/footer/Footer.tsx';
 
 const App = () => {
   const [theme, setTheme] = useState(darkTheme);
@@ -32,7 +38,7 @@ const App = () => {
                 key={theme.themeName}
               />
             </AnimatePresence>
-            <AnimatePresence exitBeforeEnter>
+            <AnimatePresence mode='wait'>
               <Routes location={location} key={location.pathname}>
                 <Route path="/" element={<Home />} />
                 <Route path="/about" element={<About />} />

@@ -1,6 +1,10 @@
-import { SwitchWrapper, SwitchInput, SwitchSlider } from "./Switch-components"
+import { SwitchWrapper, SwitchInput, SwitchSlider } from "./Switch-components.js"
 
-const Switch = ({changeTheme}) => {
+interface Props {
+  changeTheme: () => void;
+}
+
+export const Switch = ({changeTheme}: Props) => {
   return (
     <SwitchWrapper>
       <SwitchInput />
@@ -13,5 +17,3 @@ const Switch = ({changeTheme}) => {
     </SwitchWrapper>
   )
 }
-
-export default Switch

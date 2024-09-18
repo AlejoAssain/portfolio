@@ -25,12 +25,10 @@ const AvatarImage = styled.img`
 
 `
 
-const Avatar = () => {
+export const Avatar = () => {
   return (
     <AvatarContainer className="avatar-container">
       <AvatarImage src={avatar}/>     
     </AvatarContainer>
   );
 }
-
-export default Avatar

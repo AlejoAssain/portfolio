@@ -1,6 +1,6 @@
-import styled from "styled-components";
-import applicationTexts from "../../static/applicationTexts.js";
-import { useLanguage } from "../../useLanguage"
+import styled from 'styled-components';
+import { useLanguage } from '../../providers';
+import { applicationTexts } from '../../static/applicationTexts.ts';
 
 
 const Text = styled.div`
@@ -32,10 +32,11 @@ const DescriptionContainer = styled.div`
   text-align: end;
 `
 
-const DescriptionBox = () => {
-  const { language } = useLanguage()
+export const DescriptionBox = () => {
+  const { language } = useLanguage();
 
-  const descriptionTexts = applicationTexts[language].descriptionBox
+  const descriptionTexts = language === 'en' ? applicationTexts[language].descriptionBox :
+    applicationTexts['es'].descriptionBox;
 
   return (
     <DescriptionContainer>
@@ -51,5 +52,3 @@ const DescriptionBox = () => {
     </DescriptionContainer>
   )
 }
-
-export default DescriptionBox

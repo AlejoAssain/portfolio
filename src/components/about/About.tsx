@@ -1,9 +1,9 @@
-import SectionContainer from "../SectionContainer";
+import SectionContainer from "../SectionContainer.js";
 import styled from "styled-components"
 import { motion } from "framer-motion";
 import rocket from "./rocket.svg";
-import applicationTexts from "../../static/applicationTexts.js";
-import { useLanguage } from "../../useLanguage";
+import { applicationTexts } from "../../static/applicationTexts.js";
+import { useLanguage } from "../../providers";
 
 
 const AboutWrapper = styled(motion.div)`
@@ -62,7 +62,7 @@ const Rocket = () => {
   )
 }
 
-const About = () => {
+export const About = () => {
   const { language } = useLanguage()
 
 
@@ -75,17 +75,24 @@ const About = () => {
         }}
       >
         <Text>
-          { applicationTexts[language].aboutMe.text1}
+          {
+            language === 'en' ? applicationTexts[language].aboutMe.text1 :
+              applicationTexts['es'].aboutMe.text1
+          }
         </Text>
         <Text>
-          { applicationTexts[language].aboutMe.text2}
+          {
+            language === 'en' ? applicationTexts[language].aboutMe.text2 :
+              applicationTexts['es'].aboutMe.text2
+          }
         </Text>
         <Text>
-          { applicationTexts[language].aboutMe.text3}
+          {
+            language === 'en' ? applicationTexts[language].aboutMe.text3 :
+              applicationTexts['es'].aboutMe.text3
+          }
         </Text>
       </AboutWrapper>        
     </SectionContainer>
   )
 }
-
-export default About

@@ -1,7 +1,7 @@
 import styled from "styled-components";
-import DescriptionBox from "./DescriptionBox";
-import Avatar from "./Avatar";
-import SectionContainer from "../SectionContainer";
+import { DescriptionBox } from "./DescriptionBox.js";
+import { Avatar } from "./Avatar.js";
+import { SectionContainer } from "../SectionContainer.js";
 import { motion } from "framer-motion";
 
 const HomeWrapper = styled(motion.div)`

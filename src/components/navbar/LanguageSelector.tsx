@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 import { motion } from 'framer-motion';
 import { useState } from 'react';
+import { RiArrowDownSFill } from 'react-icons/ri';
 
 import { useLanguage } from '../../providers';
 import { applicationTexts } from '../../static/applicationTexts';
@@ -60,10 +61,9 @@ export const LanguageSelector = () => {
     >
       <label>{ language.toUpperCase() }</label>
       <ArrowContainer
-        animate={ showMenu ? ({
-          rotate: 180,
-        }) : null   
-        }
+        animate={{
+          rotate: showMenu ? 180 : 0
+        }}
         transition={{
           duration: 0.2,
           type: "tween"

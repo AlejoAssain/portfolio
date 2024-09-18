@@ -1,7 +1,7 @@
-import SectionContainer from "../SectionContainer"
+import SectionContainer from "../SectionContainer.js"
 import { Formik, Form, Field, ErrorMessage } from "formik"
-import contactFormSchema from "./ValidationData"
-import { ErrorContainer , FormLabel, FieldContainer, SubmitButton } from "./ContactForm-components"
+import contactFormSchema from "./ValidationData.js"
+import { ErrorContainer , FormLabel, FieldContainer, SubmitButton } from "./ContactForm-components.js"
 
 const ContactForm = () => {
   return (

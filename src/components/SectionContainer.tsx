@@ -15,7 +15,7 @@ const Section = styled(motion.div)`
   transition: color 1s;
 `
 
-const animations = (enterDirection) => {
+const animations = (enterDirection: string) => {
   return {
     initial: {
       x: (enterDirection === "left") ? "-100vw" : (enterDirection === "right") ? "100vw" : 0,
@@ -34,8 +34,8 @@ const animations = (enterDirection) => {
   }
 }
 
-const getAnimation = (currentPath, previousPath) => {
-  let enterDirection
+const getAnimation = (currentPath: string, previousPath: string) => {
+  let enterDirection;
   if (previousPath) {
     if (currentPath === "/") {
       enterDirection = "left"
@@ -57,10 +57,15 @@ const getAnimation = (currentPath, previousPath) => {
       enterDirection = "right"
     }
   }
-  return animations(enterDirection)
+  if (!enterDirection) {enterDirection = 'left'};
+  return animations(enterDirection);
 }
 
-const SectionContainer = (props) => {
+interface SectionContainerProps {
+  children: React.ReactNode;
+}
+
+export const SectionContainer = ({ children }: SectionContainerProps) => {
 
   const location = useLocation()
 
@@ -74,7 +79,7 @@ const SectionContainer = (props) => {
       exit={currentAnimation.exit}
       transition={currentAnimation.transition}
     >
-      {props.children}
+      {children}
     </Section>
   )
 }

@@ -1,5 +1,6 @@
-import { GiDwarfFace } from "react-icons/gi"
-import styled from "styled-components"
+import { GiDwarfFace } from 'react-icons/gi';
+import styled from 'styled-components';
+
 
 const IconLogo = styled.div`
   padding-top: 13px;
@@ -14,13 +15,11 @@ const IconLogo = styled.div`
   user-select: none;
 `
 
-const Logo = () => {
+export const Logo = () => {
   return (
     <IconLogo>
-      <GiDwarfFace size={ "1.4em" } />
+      <GiDwarfFace size={ '1.4em' } />
       Alejo
     </IconLogo>
   )
 }
-
-export default Logo

@@ -1,15 +1,18 @@
 import styled from "styled-components";
-import SectionContainer from "../SectionContainer";
+import SectionContainer from "../SectionContainer.js";
 import { AnimatePresence } from "framer-motion";
 import Project from "./Project";
 import { useState } from "react"
 import ArrowContainer from "./ArrowContainer";
 import { FiArrowLeft, FiArrowRight } from "react-icons/fi"
-import { useLanguage } from "../../useLanguage";
-import projectsData from "./projectsData";
+import { useLanguage } from "../../providers";
+import { projectsData } from "./projectsData";
 
 
-const randomIntFromInterval = (min, max) => Math.floor(Math.random() * (max - min + 1) + min)
+const randomIntFromInterval = (
+  min: number,
+  max: number) =>
+  Math.floor(Math.random() * (max - min + 1) + min)
 
 const ProjectsWrapper = styled.div`
   display: flex;
@@ -20,7 +23,7 @@ const ProjectsWrapper = styled.div`
   height: 100vh;
 `
 
-const Projects = () => {
+export const Projects = () => {
   const { language } = useLanguage()
   
   const [projectNumber, setProjectNumber] = useState(randomIntFromInterval(0, projectsData.length - 1))
@@ -50,7 +53,10 @@ const Projects = () => {
         <AnimatePresence>
           <Project
             title={ projectsData[projectNumber].title }
-            description={ projectsData[projectNumber].description[language] }
+            description={
+              language === 'en' ? projectsData[projectNumber].description[language] :
+                projectsData[projectNumber].description['es']
+            }
             url={ projectsData[projectNumber].url }
             gitHubUrl={ projectsData[projectNumber].gitHubUrl }
           />        
@@ -62,5 +68,3 @@ const Projects = () => {
     </SectionContainer>
   );
 }
-
-export default Projects;

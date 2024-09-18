@@ -1,6 +1,12 @@
-import styled, { useTheme } from 'styled-components';
+import styled from 'styled-components';
 import { motion } from 'framer-motion';
 import { useState } from 'react';
+import { BsFillMoonFill, BsFillSunFill} from 'react-icons/bs';
+import { LanguageSelector } from './LanguageSelector.tsx';
+
+import { Logo } from './Logo';
+import { Menu } from './menu/Menu';
+import { Switch } from './switch/Switch';
 
 const iconStyle = {
   marginLeft: "10px",
@@ -45,8 +51,6 @@ export const Navbar = ({changeTheme, themeName}: Props) => {
   const toggleMenuState = () => {
     setMenuState(!menuState)
   }
-
-  const
 
   return (
     <NavbarContainer

@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import { motion } from "framer-motion"
-import { useLanguage } from "../../useLanguage";
-import applicationTexts from "../../static/applicationTexts.js";
+import { useLanguage } from "../../providers";
+import { applicationTexts } from "../../static/applicationTexts";
 import { BsGithub } from "react-icons/bs"
 
 const ProjectWrapper = styled(motion.div)`
@@ -61,8 +61,14 @@ const GitHubButton = styled(motion.div)`
   margin-left: 30px;
   margin-bottom: 20px;
 `
+interface ProjectProps {
+  title: string;
+  description: string;
+  url: string;
+  gitHubUrl: string;
+}
 
-const Project = ({title, description, url, gitHubUrl}) => {
+const Project = ({title, description, url, gitHubUrl}: ProjectProps) => {
   const { language } = useLanguage()
 
   return (       
@@ -97,7 +103,10 @@ const Project = ({title, description, url, gitHubUrl}) => {
             window.open(url)
           }}
         >
-          { applicationTexts[language].projects.buttonText }
+          {
+            language === 'en' ? applicationTexts[language].projects.buttonText :
+              applicationTexts['es'].projects.buttonText
+          }
         </VisitButton>
       </ButtonsWrapper>
     </ProjectWrapper>

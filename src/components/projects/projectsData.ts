@@ -1,4 +1,4 @@
-const projectsData = [
+export const projectsData = [
   {
     title: "My Personal Blog",
     description: {
@@ -24,5 +24,3 @@ const projectsData = [
     gitHubUrl: "https://github.com/AlejoAssain/redux-practice"
   },
 ]
-
-module.exports = projectsData

@@ -2,7 +2,7 @@
 // import us from "./flags/us.svg"
 
 export const applicationTexts =  {
-  en: {
+  "en": {
     // countryFlag: us,
     descriptionBox: {
       title: "Hi, I'm Alejo!",
@@ -38,7 +38,7 @@ export const applicationTexts =  {
       buttonText: "Visit"
     }
   },
-  es: {
+  "es": {
     // countryFlag: ar,
     descriptionBox: {title: "Hola, soy Alejo!",
       subtitle: "Soy Fullstack Software Developer",

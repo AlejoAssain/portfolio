@@ -22,9 +22,14 @@ const FooterWrapper = styled(motion.div)`
     margin: 0;
     padding: 0 3px;
   }
-`
+`;
 
-const IconContainer = ({to, children}) => {
+interface IconContainerProps {
+  to: string;
+  children: React.ReactNode;
+}
+
+const IconContainer = ({to, children}: IconContainerProps) => {
   return (
     <motion.div
       whileHover={{
@@ -45,7 +50,7 @@ const IconContainer = ({to, children}) => {
   )
 }
 
-const Footer = () => {
+export const Footer = () => {
   return (
     <FooterWrapper
       initial={{
@@ -64,5 +69,3 @@ const Footer = () => {
     </FooterWrapper>
   );
 }
-
-export default Footer

@@ -3,14 +3,14 @@ import { VscThreeBars } from "react-icons/vsc"
 import { motion } from "framer-motion"
 import { NavLink } from "react-router-dom"
 
-export const MenuWrapper = styled.ul`
+export const MenuWrapper = styled.ul<{$menuState: boolean}>`
   height: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
   @media (max-width: 750px) {
     transition: all 1s;
-    display: ${ ({menuState}) => menuState ? "flex" : "none"};
+    display: ${ ({$menuState}) => $menuState ? "flex" : "none"};
     position: fixed;
     background-color: ${ ({theme}) => theme.navBg};
     z-index: 100;
@@ -48,7 +48,11 @@ export const LinkContainer = styled(NavLink)`
   }
 `
 
-export const MenuLink = ({children}) => {
+interface MenuLinkProps {
+  children: React.ReactNode
+}
+
+export const MenuLink = ({children}: MenuLinkProps) => {
   return (
     <Item
       whileHover={{scale:1.2}}

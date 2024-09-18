@@ -1,10 +1,10 @@
-import SectionContainer from "../SectionContainer";
+import SectionContainer from "../SectionContainer.js";
 import styled from "styled-components";
 import { motion } from "framer-motion";
 import reactLogo from "./reactLogo.svg"
 import pythonLogo from "./pythonLogo.svg"
-import { useLanguage } from "../../useLanguage";
-import applicationTexts from "../../static/applicationTexts.js";
+import { useLanguage } from "../../providers";
+import { applicationTexts } from "../../static/applicationTexts.js";
 
 const SkillsWrapper = styled.div`
   display: flex;
@@ -14,7 +14,7 @@ const SkillsWrapper = styled.div`
     flex-direction: column;
     margin: 20px;
   }
-`
+`;
 
 const Box = styled(motion.div)`
   margin: 0;
@@ -48,9 +48,14 @@ const Box = styled(motion.div)`
       margin-bottom: 150px;
     }
   }
-`
+`;
 
-const SkillsBox = ({children, className}) => {
+interface SkillsBoxProps {
+  children: React.ReactNode;
+  className: string;
+}
+
+const SkillsBox = ({children, className}: SkillsBoxProps) => {
   return (
     <Box
       className={className}
@@ -93,9 +98,15 @@ const Text = styled.div`
     line-height: 30px;
     padding-bottom: 30px;
   }
-`
+`;
 
-const SectionLogo = ({src, logoName, className}) => {
+interface SectionLogoProps {
+  src: string;
+  logoName: string;
+  className?: string;
+}
+
+const SectionLogo = ({src, logoName, className}: SectionLogoProps) => {
   return (  
     <motion.img
       className={className}
@@ -114,9 +125,9 @@ const SectionLogo = ({src, logoName, className}) => {
       }}
     />         
   )
-}
+};
 
-const Skills = () => {
+export const Skills = () => {
   const { language } = useLanguage()
 
   return (
@@ -124,37 +135,59 @@ const Skills = () => {
       <SkillsWrapper>
         <SkillsBox className="skills-be">          
           <Text className="skills-title">
-            <SectionLogo className="python-logo" logoNama="python" src={pythonLogo} />
-            { applicationTexts[language].skills.be.title }
+            <SectionLogo className="python-logo" logoName="python" src={pythonLogo} />
+            {
+              language === 'en' ? applicationTexts[language].skills.be.title
+                : applicationTexts['es'].skills.be.title
+            }
           </Text>
           <Text className="skills-subtitle">
-            { applicationTexts[language].skills.be.text }
+            {
+              language === 'en' ? applicationTexts[language].skills.be.text
+                : applicationTexts['es'].skills.be.text
+            }
           </Text>
           <Text className="skills-section-sub">
-            { applicationTexts[language].skills.be.skillsTitle }
+            {
+              language === 'en' ? applicationTexts[language].skills.be.skillsTitle
+                : applicationTexts['es'].skills.be.skillsTitle
+            }
           </Text>
           <Text className="skills-section-desc">
-            { applicationTexts[language].skills.be.skillsDescription }
+            {
+              language === 'en' ? applicationTexts[language].skills.be.skillsDescription
+                : applicationTexts['es'].skills.be.skillsDescription
+            }
           </Text>
         </SkillsBox>
         <SkillsBox className="skills-fe">
           <Text className="skills-title">
-            <SectionLogo logoNama="react" src={reactLogo}/>              
-            { applicationTexts[language].skills.fe.title }
+            <SectionLogo logoName="react" src={reactLogo}/>
+            {
+              language === 'en' ? applicationTexts[language].skills.fe.title
+                : applicationTexts['es'].skills.fe.title
+            }
           </Text>
           <Text className="skills-subtitle">
-            { applicationTexts[language].skills.fe.text }
+            {
+              language === 'en' ? applicationTexts[language].skills.fe.text
+                : applicationTexts['es'].skills.fe.text
+            }
           </Text>
           <Text className="skills-section-sub">
-            { applicationTexts[language].skills.fe.skillsTitle }
+            {
+              language === 'en' ? applicationTexts[language].skills.fe.skillsTitle
+                : applicationTexts['es'].skills.fe.skillsTitle
+            }
           </Text>
           <Text className="skills-section-desc">
-            { applicationTexts[language].skills.fe.skillsDescription }
+            {
+              language === 'en' ? applicationTexts[language].skills.fe.skillsDescription
+                : applicationTexts['es'].skills.fe.skillsDescription
+            }
           </Text>
         </SkillsBox>
       </SkillsWrapper>
     </SectionContainer>
   );
-}
-
-export default Skills;
+};
