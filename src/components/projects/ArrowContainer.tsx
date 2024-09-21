@@ -7,7 +7,12 @@ const Container = styled(motion.div)`
   cursor: pointer;
 `
 
-const ArrowContainer = ({children, onClick}) => {
+interface ArrowContainerProps {
+  children: React.ReactNode;
+  onClick: () => void;
+}
+
+const ArrowContainer = ({children, onClick}: ArrowContainerProps) => {
   return (
     <Container
       whileHover={{
