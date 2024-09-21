@@ -1,4 +1,4 @@
-import styled from "styled-components"
+import styled from 'styled-components';
 
 const Container = styled.div`
   position: absolute;
@@ -11,11 +11,11 @@ const Container = styled.div`
   /* display: flex;
   justify-content: center;
   align-items: center; */
-  color: ${ ({theme}) => theme.text };
-  /* background-color: ${ ({theme}) => theme.bg }; */
+  color: ${({ theme }) => theme.text};
+  /* background-color: ${({ theme }) => theme.bg}; */
   overflow-x: hidden;
   overflow-y: auto;
   z-index: 10;
-`
+`;
 
-export default Container
+export default Container;

@@ -8,7 +8,7 @@ interface Props {
   themeName: string;
 }
 
-export const ParticlesBackground = ({themeName}: Props) => {
+export const ParticlesBackground = ({ themeName }: Props) => {
   const [init, setInit] = useState(false);
 
   useEffect(() => {
@@ -21,62 +21,62 @@ export const ParticlesBackground = ({themeName}: Props) => {
 
   return (
     <>
-      { init && (
+      {init && (
         <Particles
-          id='tsparticles'
+          id="tsparticles"
           style={{
             position: 'relative',
-            zIndex: 0
+            zIndex: 0,
           }}
           options={{
             background: {
-              color: (themeName === 'dark') ? darkTheme.bg : lightTheme.bg,
+              color: themeName === 'dark' ? darkTheme.bg : lightTheme.bg,
               position: '50% 50%',
               repeat: 'no-repeat',
-              size: 'cover'
+              size: 'cover',
             },
             backgroundMask: {
               cover: {
-                color: '#d4ecdd'
-              }
+                color: '#d4ecdd',
+              },
             },
-            fullScreen: {zIndex: 1},
+            fullScreen: { zIndex: 1 },
             interactivity: {
               events: {
                 onClick: {
                   enable: true,
-                  mode: 'repulse'
+                  mode: 'repulse',
                 },
                 onHover: {
                   enable: true,
-                  mode: 'bubble'
-                }
+                  mode: 'bubble',
+                },
               },
               modes: {
                 bubble: {
                   distance: 400,
                   duration: 0.3,
                   opacity: 1,
-                  size: 4
+                  size: 4,
                 },
                 grab: {
                   distance: 400,
                   links: {
-                    opacity: 0.5
-                  }
-                }
-              }
+                    opacity: 0.5,
+                  },
+                },
+              },
             },
             particles: {
               color: {
-                value: (themeName === "dark") ? darkTheme.text : lightTheme.text
+                value: themeName === 'dark' ? darkTheme.text : lightTheme.text,
               },
               move: {
                 attract: {
                   rotate: {
                     x: 600,
-                    y: 1200
-                  }
+                    y: 1200,
+                  },
                 },
                 direction: 'bottom',
                 enable: true,
@@ -86,39 +86,38 @@ export const ParticlesBackground = ({themeName}: Props) => {
               },
               number: {
                 density: {
-                  enable: true
+                  enable: true,
                 },
-                value: 10
+                value: 10,
               },
               opacity: {
                 value: {
                   min: 0.1,
-                  max: 0.5
+                  max: 0.5,
                 },
                 animation: {
                   enable: true,
                   speed: 1,
                   mode: 'random',
-                  startValue: 'min'
-                }
+                  startValue: 'min',
+                },
               },
               size: {
                 value: {
                   min: 1,
-                  max: 10
+                  max: 10,
                 },
                 animation: {
                   enable: true,
                   speed: 40,
                   mode: 'random',
-                  startValue: 'min'
-                }
-              }
-            }
+                  startValue: 'min',
+                },
+              },
+            },
           }}
         />
       )}
     </>
-
   );
-}
+};

@@ -1,11 +1,11 @@
-import styled from "styled-components";
-import { DescriptionBox } from "./DescriptionBox.js";
-import { Avatar } from "./Avatar.js";
-import { SectionContainer } from "../SectionContainer.js";
-import { motion } from "framer-motion";
+import styled from 'styled-components';
+import { DescriptionBox } from './DescriptionBox.js';
+import { Avatar } from './Avatar.js';
+import { SectionContainer } from '../SectionContainer.js';
+import { motion } from 'framer-motion';
 
 const HomeWrapper = styled(motion.div)`
-  border-bottom: 3px solid ${({theme}) => theme.text};
+  border-bottom: 3px solid ${({ theme }) => theme.text};
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -16,7 +16,7 @@ const HomeWrapper = styled(motion.div)`
     flex-direction: column;
     max-height: 80vh;
   }
-`
+`;
 
 const Home = () => {
   return (
@@ -35,8 +35,7 @@ const Home = () => {
         <Avatar />
       </HomeWrapper>
     </SectionContainer>
-    
   );
-}
+};
 
-export default Home
+export default Home;

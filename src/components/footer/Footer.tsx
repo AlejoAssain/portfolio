@@ -1,6 +1,6 @@
-import styled from "styled-components";
-import { FaLinkedin, FaGithubSquare } from "react-icons/fa"
-import { motion } from "framer-motion";
+import styled from 'styled-components';
+import { FaLinkedin, FaGithubSquare } from 'react-icons/fa';
+import { motion } from 'framer-motion';
 
 const FooterWrapper = styled(motion.div)`
   bottom: 5vh;
@@ -11,8 +11,8 @@ const FooterWrapper = styled(motion.div)`
   font-size: 4vh;
   padding: 10px;
   transition: color 1s;
-  color: ${ ({theme}) => theme.text};
-  
+  color: ${({ theme }) => theme.text};
+
   @media (max-width: 750px) {
     flex-direction: column;
     bottom: 2px;
@@ -29,38 +29,38 @@ interface IconContainerProps {
   children: React.ReactNode;
 }
 
-const IconContainer = ({to, children}: IconContainerProps) => {
+const IconContainer = ({ to, children }: IconContainerProps) => {
   return (
     <motion.div
       whileHover={{
-        scale: 1.2
+        scale: 1.2,
       }}
       whileTap={{
-        scale: 0.9
+        scale: 0.9,
       }}
       style={{
-        cursor: "pointer",
+        cursor: 'pointer',
       }}
       onClick={() => {
-        window.open(to, "_blank")
+        window.open(to, '_blank');
       }}
     >
       {children}
     </motion.div>
-  )
-}
+  );
+};
 
 export const Footer = () => {
   return (
     <FooterWrapper
       initial={{
-        x: "-25vw"
+        x: '-25vw',
       }}
       animate={{
-        x: "1vw"
+        x: '1vw',
       }}
-    >      
-      <IconContainer to="https://linkedin.com/in/alejoassain/">  
+    >
+      <IconContainer to="https://linkedin.com/in/alejoassain/">
         <FaLinkedin />
       </IconContainer>
       <IconContainer to="https://github.com/AlejoAssain">
@@ -68,4 +68,4 @@ export const Footer = () => {
       </IconContainer>
     </FooterWrapper>
   );
-}
+};

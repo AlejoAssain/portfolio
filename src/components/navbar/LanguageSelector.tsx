@@ -13,11 +13,11 @@ const SectionWrapper = styled.div`
   margin-left: 10px;
   user-select: none;
   cursor: pointer;
-`
+`;
 
 const ListWrapper = styled.div`
-  background-color: ${ ({theme}) => theme.text};
-  color: ${ ({theme}) => theme.bg};
+  background-color: ${({ theme }) => theme.text};
+  color: ${({ theme }) => theme.bg};
   width: 50px;
   height: 50px;
   position: relative;
@@ -27,70 +27,65 @@ const ListWrapper = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: space-between;
-`
+`;
 
 const LanguageContainer = styled.div`
   width: 100%;
-  border-bottom: ${({theme}) => theme.bg};
+  border-bottom: ${({ theme }) => theme.bg};
   display: flex;
   align-items: center;
   justify-content: center;
-`
+`;
 
 const ArrowContainer = styled(motion.div)`
   display: flex;
   align-items: center;
   justify-content: center;
-`
+`;
 
 export const LanguageSelector = () => {
-  const {language, changeLanguage} = useLanguage();
+  const { language, changeLanguage } = useLanguage();
 
   const [showMenu, setShowMenu] = useState(false);
 
   const toggleShowMenu = () => setShowMenu(!showMenu);
 
-  const languagesName: string[] = []
+  const languagesName: string[] = [];
   for (const key in applicationTexts) {
-    languagesName.push(key.toUpperCase())
+    languagesName.push(key.toUpperCase());
   }
-  
+
   return (
-    <SectionWrapper
-      onClick={ toggleShowMenu }
-    >
-      <label>{ language.toUpperCase() }</label>
+    <SectionWrapper onClick={toggleShowMenu}>
+      <label>{language.toUpperCase()}</label>
       <ArrowContainer
         animate={{
-          rotate: showMenu ? 180 : 0
+          rotate: showMenu ? 180 : 0,
         }}
         transition={{
           duration: 0.2,
-          type: "tween"
+          type: 'tween',
         }}
       >
-        <RiArrowDownSFill size={ "1.5rem" } />
+        <RiArrowDownSFill size={'1.5rem'} />
       </ArrowContainer>
-      { showMenu ? 
-        <div style={{width:0, height:0}}>
-        <ListWrapper>
-          {
-            languagesName.map(langName => 
+      {showMenu ? (
+        <div style={{ width: 0, height: 0 }}>
+          <ListWrapper>
+            {languagesName.map((langName) => (
               <LanguageContainer
-                key={ langName }
-                onClick={ () => {
-                  changeLanguage(langName.toLowerCase())
-                  toggleShowMenu()
+                key={langName}
+                onClick={() => {
+                  changeLanguage(langName.toLowerCase());
+                  toggleShowMenu();
                 }}
               >
-                { langName }
-              </LanguageContainer>  
-            )
-          }
-        </ListWrapper>
+                {langName}
+              </LanguageContainer>
+            ))}
+          </ListWrapper>
         </div>
-        : null
-      }
-    </SectionWrapper> 
+      ) : null}
+    </SectionWrapper>
   );
-}
+};

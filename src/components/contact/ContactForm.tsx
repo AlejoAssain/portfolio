@@ -1,28 +1,33 @@
-import SectionContainer from "../SectionContainer.js"
-import { Formik, Form, Field, ErrorMessage } from "formik"
-import contactFormSchema from "./ValidationData.js"
-import { ErrorContainer , FormLabel, FieldContainer, SubmitButton } from "./ContactForm-components.js"
+import SectionContainer from '../SectionContainer.js';
+import { Formik, Form, Field, ErrorMessage } from 'formik';
+import contactFormSchema from './ValidationData.js';
+import {
+  ErrorContainer,
+  FormLabel,
+  FieldContainer,
+  SubmitButton,
+} from './ContactForm-components.js';
 
 const ContactForm = () => {
   return (
     <SectionContainer>
-      <Formik        
+      <Formik
         initialValues={{
-          userName:"",
-          email:"",
-          message:""
+          userName: '',
+          email: '',
+          message: '',
         }}
         validationSchema={contactFormSchema}
         onSubmit={(values) => console.log(values)}
       >
         <Form
           style={{
-            display: "flex",
-            flexDirection: "column",
-            borderRadius: "30px",
-            padding: "32px",
-            minHeight: "245px",
-            maxHeight: "65vh",         
+            display: 'flex',
+            flexDirection: 'column',
+            borderRadius: '30px',
+            padding: '32px',
+            minHeight: '245px',
+            maxHeight: '65vh',
           }}
         >
           <FormLabel>Name</FormLabel>
@@ -33,7 +38,7 @@ const ContactForm = () => {
             <ErrorMessage name="userName" />
           </ErrorContainer>
 
-          <FormLabel>Email</FormLabel>          
+          <FormLabel>Email</FormLabel>
           <FieldContainer>
             <Field type="text" name="email" />
           </FieldContainer>
@@ -41,7 +46,7 @@ const ContactForm = () => {
             <ErrorMessage name="email" />
           </ErrorContainer>
 
-          <FormLabel>Message</FormLabel> 
+          <FormLabel>Message</FormLabel>
           <FieldContainer>
             <Field as="textarea" type="text" name="message" />
           </FieldContainer>
@@ -53,6 +58,6 @@ const ContactForm = () => {
       </Formik>
     </SectionContainer>
   );
-}
+};
 
 export default ContactForm;

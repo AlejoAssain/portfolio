@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState } from "react";
+import React, { createContext, useContext, useState } from 'react';
 
 interface LanguageProviderProps {
   children: React.ReactNode;
@@ -9,22 +9,27 @@ interface ILanguageContext {
   changeLanguage: (newLanguage: string) => void;
 }
 
-export const LanguageContext = createContext<ILanguageContext | undefined>(undefined);
+export const LanguageContext = createContext<ILanguageContext | undefined>(
+  undefined,
+);
 
 export const LanguageProvider = ({ children }: LanguageProviderProps) => {
-  const [language, setLanguage] = useState("en");
+  const [language, setLanguage] = useState('en');
 
-  const changeLanguage = (newLanguage: string) : void => setLanguage(newLanguage);
+  const changeLanguage = (newLanguage: string): void =>
+    setLanguage(newLanguage);
 
   return (
-    <LanguageContext.Provider value={{
-      language,
-      changeLanguage,
-    }} >
-      { children }
+    <LanguageContext.Provider
+      value={{
+        language,
+        changeLanguage,
+      }}
+    >
+      {children}
     </LanguageContext.Provider>
-  )
-}
+  );
+};
 
 export const useLanguage = () => {
   const context = useContext(LanguageContext);

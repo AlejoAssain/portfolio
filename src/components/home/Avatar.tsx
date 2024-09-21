@@ -1,5 +1,5 @@
-import avatar from "./img/MyAvatar.png"
-import styled from "styled-components";
+import avatar from './img/MyAvatar.png';
+import styled from 'styled-components';
 
 const AvatarContainer = styled.div`
   margin: 0;
@@ -7,13 +7,13 @@ const AvatarContainer = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  border-left: 2px solid ${ ({theme}) => theme.text};
+  border-left: 2px solid ${({ theme }) => theme.text};
   padding-left: 4vw;
 
   @media (max-width: 750px) {
     border: none;
   }
-`
+`;
 
 const AvatarImage = styled.img`
   height: 50vh;
@@ -22,13 +22,12 @@ const AvatarImage = styled.img`
   @media (max-width: 750px) {
     max-height: 40vh;
   }
-
-`
+`;
 
 export const Avatar = () => {
   return (
     <AvatarContainer className="avatar-container">
-      <AvatarImage src={avatar}/>     
+      <AvatarImage src={avatar} />
     </AvatarContainer>
   );
-}
+};
