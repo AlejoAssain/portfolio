@@ -31,7 +31,6 @@ export const Item = styled(motion.li)`
   align-items: center;
   font-size: 1rem;
   font-weight: 400;
-
   
   @media (max-width: 750px) {
     
