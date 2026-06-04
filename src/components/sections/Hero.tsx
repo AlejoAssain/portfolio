@@ -1,8 +1,11 @@
-import { navItems, personalInfo } from '@/mocks/portfolio';
+import { navItems } from '@/mocks/portfolio';
 import { AnimatedSection, SocialButtons } from '@/components/shared';
 import { ArrowDown } from 'lucide-react';
+import { usePortfolioContent } from '@/hooks';
 
 export function Hero() {
+  const { personalInfo } = usePortfolioContent();
+
   const scrollToAbout = () => {
     document.getElementById('about')?.scrollIntoView({ behavior: 'smooth' });
   };

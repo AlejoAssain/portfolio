@@ -1,6 +1,6 @@
-import { projects } from '@/mocks/portfolio';
 import { AnimatedSection, SkillBadge, SpotlightCard } from '@/components/shared';
 import { ArrowUpRight, Code2, ExternalLink, PanelsTopLeft } from 'lucide-react';
+import { usePortfolioContent } from '@/hooks';
 import type { Project } from '@/types';
 
 type ProjectLink = {
@@ -66,8 +66,12 @@ function ProjectButtons({
 }
 
 export function Projects() {
-  const featuredProjects = projects.filter((p) => p.featured);
-  const otherProjects = projects.filter((p) => !p.featured);
+  const { projects } = usePortfolioContent();
+  const orderedProjects = [...projects].sort(
+    (a, b) => a.displayOrder - b.displayOrder,
+  );
+  const featuredProjects = orderedProjects.filter((p) => p.featured);
+  const otherProjects = orderedProjects.filter((p) => !p.featured);
 
   return (
     <section id="projects" className="py-24 lg:py-32">
@@ -101,8 +105,8 @@ export function Projects() {
                   </p>
 
                   <div className="flex flex-wrap gap-2 pt-2">
-                    {project.tags.map((tag) => (
-                      <SkillBadge key={tag} name={tag} />
+                    {project.skills.map((skill) => (
+                      <SkillBadge key={skill.id} name={skill.name} />
                     ))}
                   </div>
                 </div>
@@ -140,14 +144,14 @@ export function Projects() {
                       </p>
 
                       <div className="flex flex-wrap gap-1.5 mt-auto">
-                        {project.tags.slice(0, 3).map((tag) => (
+                        {project.skills.slice(0, 3).map((skill, skillIndex) => (
                           <span
-                            key={tag}
+                            key={skill.id}
                             className="text-xs text-muted-foreground font-mono"
                           >
-                            {tag}
-                            {project.tags.indexOf(tag) <
-                              Math.min(2, project.tags.length - 1) && (
+                            {skill.name}
+                            {skillIndex <
+                              Math.min(2, project.skills.length - 1) && (
                               <span className="mx-1">·</span>
                             )}
                           </span>

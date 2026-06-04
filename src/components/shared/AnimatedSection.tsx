@@ -1,6 +1,6 @@
 import { type ReactNode } from 'react'
 
-import { useInView } from '@/hooks/useInView'
+import { useInView } from '@/hooks'
 import { cn } from '@/lib/utils'
 
 interface AnimatedSectionProps {

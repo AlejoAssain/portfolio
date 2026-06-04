@@ -1,5 +1,5 @@
-import { skills } from '@/mocks/portfolio'
 import { AnimatedSection, SkillBadge } from '@/components/shared'
+import { usePortfolioContent } from '@/hooks'
 import type { Skill } from '@/types'
 
 const categories = [
@@ -12,6 +12,8 @@ const categories = [
 ] satisfies Array<{ key: Skill['category']; label: string }>
 
 export function Skills() {
+  const { skills } = usePortfolioContent()
+
   return (
     <section id="skills" className="py-24 lg:py-32 bg-card/50">
       <div className="max-w-6xl mx-auto px-6">
@@ -32,8 +34,9 @@ export function Skills() {
                 <div className="flex flex-wrap gap-2">
                   {skills
                     .filter((skill) => skill.category === category.key)
+                    .sort((a, b) => a.displayOrder - b.displayOrder)
                     .map((skill) => (
-                      <SkillBadge key={skill.name} name={skill.name} />
+                      <SkillBadge key={skill.id} name={skill.name} />
                     ))}
                 </div>
               </div>

@@ -1,9 +1,13 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 import { cn } from '@/lib/utils';
-import { navItems, personalInfo } from '@/mocks/portfolio';
+import { navItems } from '@/mocks/portfolio';
+import { usePortfolioContent } from '@/hooks';
+
+const sectionIds = navItems.map((item) => item.href.replace('#', ''));
 
 export function Header() {
+  const { personalInfo } = usePortfolioContent();
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [activeSection, setActiveSection] = useState('');
@@ -12,13 +16,12 @@ export function Header() {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 50);
 
-      const sections = navItems.map((item) => item.href.replace('#', ''));
-      for (const section of sections.reverse()) {
-        const element = document.getElementById(section);
+      for (const sectionId of [...sectionIds].reverse()) {
+        const element = document.getElementById(sectionId);
         if (element) {
           const rect = element.getBoundingClientRect();
           if (rect.top <= 100) {
-            setActiveSection(section);
+            setActiveSection(sectionId);
             break;
           }
         }
@@ -27,7 +30,7 @@ export function Header() {
 
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
-  }, [navItems]);
+  }, []);
 
   const handleNavClick = (href: string) => {
     setIsMobileMenuOpen(false);

@@ -1,7 +1,9 @@
-import { personalInfo } from '@/mocks/portfolio'
 import { AnimatedSection } from '@/components/shared'
+import { usePortfolioContent } from '@/hooks'
 
 export function About() {
+  const { personalInfo } = usePortfolioContent()
+
   return (
     <section id="about" className="py-24 lg:py-32">
       <div className="max-w-6xl mx-auto px-6">

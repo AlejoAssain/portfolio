@@ -13,12 +13,9 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
+import type { ContactMessageInput } from '@/types';
 
-export type ContactFormValues = {
-  name: string;
-  email: string;
-  message: string;
-};
+export type ContactFormValues = ContactMessageInput;
 
 type ContactFormDialogProps = {
   triggerLabel?: string;
@@ -38,7 +35,7 @@ export function ContactFormDialog({
 
     const form = event.currentTarget;
     const formData = new FormData(form);
-    const values = {
+    const values: ContactFormValues = {
       name: String(formData.get('name') ?? ''),
       email: String(formData.get('email') ?? ''),
       message: String(formData.get('message') ?? ''),

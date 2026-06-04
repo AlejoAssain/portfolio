@@ -5,14 +5,14 @@ export interface Project {
   /** Unique project id. */
   id: string;
 
+  /** Display position. */
+  displayOrder: number;
+
   /** Project display name. */
   title: string;
 
   /** Card description. */
   description: string;
-
-  /** Tech, categories, or concepts. */
-  tags: string[];
 
   /** Optional repository link. */
   github?: string;
@@ -28,6 +28,9 @@ export interface Project {
 
   /** Marks the project as featured or as other notable projects. */
   featured?: boolean;
+
+  /** Related skills shown in the project card. */
+  skills: Skill[];
 }
 
 /**
@@ -36,6 +39,9 @@ export interface Project {
 export interface Experience {
   /** Unique experience id. */
   id: string;
+
+  /** Display position. */
+  displayOrder: number;
 
   /** Role or position name. */
   role: string;
@@ -55,14 +61,20 @@ export interface Experience {
   /** Experience summary. */
   description: string;
 
-  /** Relevant tools, skills, or domains. */
-  technologies: string[];
+  /** Related skills shown in the timeline card. */
+  skills: Skill[];
 }
 
 /**
  * Skill shown in the skills section.
  */
 export interface Skill {
+  /** Unique skill id. */
+  id: string;
+
+  /** Display position. */
+  displayOrder: number;
+
   /** Skill display name. */
   name: string;
 
@@ -78,6 +90,8 @@ export interface Skill {
 
 /**
  * External profile or contact link.
+ *
+ * Static UI config, not loaded from Supabase.
  */
 export interface SocialLink {
   /** Link display name. */
@@ -92,6 +106,8 @@ export interface SocialLink {
 
 /**
  * Header navigation item.
+ *
+ * Static UI config, not loaded from Supabase.
  */
 export interface NavItem {
   /** Navigation label. */
@@ -126,3 +142,126 @@ export interface PersonalInfo {
   /** Availability or current status. */
   status: string;
 }
+
+/**
+ * Message submitted from the contact form.
+ */
+export interface ContactMessage {
+  /** Unique message id. */
+  id: string;
+
+  /** Sender name. */
+  name: string;
+
+  /** Sender email. */
+  email: string;
+
+  /** Message body. */
+  message: string;
+
+  /** Creation timestamp. */
+  createdAt: string;
+}
+
+/**
+ * Contact form payload before it is stored.
+ */
+export type ContactMessageInput = Pick<
+  ContactMessage,
+  'name' | 'email' | 'message'
+>;
+
+type Nullable<T> = T | null;
+
+/**
+ * Skill row returned by Supabase.
+ */
+export type SkillRow = {
+  id: string;
+  display_order: number;
+  name: string;
+  category: Skill['category'];
+};
+
+/**
+ * Project row returned by Supabase.
+ */
+export type ProjectRow = {
+  id: string;
+  display_order: number;
+  title: string;
+  description: string;
+  github: Nullable<string>;
+  demo: Nullable<string>;
+  landing: Nullable<string>;
+  image: Nullable<string>;
+  featured: boolean;
+};
+
+/**
+ * Project-to-skill join row returned by Supabase.
+ */
+export type ProjectSkillRow = {
+  display_order: number;
+  skills: SkillRow;
+};
+
+/**
+ * Project row with nested skills returned by Supabase.
+ */
+export type ProjectWithSkillsRow = ProjectRow & {
+  project_skills?: ProjectSkillRow[];
+};
+
+/**
+ * Experience row returned by Supabase.
+ */
+export type ExperienceRow = {
+  id: string;
+  display_order: number;
+  role: string;
+  company: string;
+  company_url: Nullable<string>;
+  period: string;
+  location: Nullable<string>;
+  description: string;
+};
+
+/**
+ * Experience-to-skill join row returned by Supabase.
+ */
+export type ExperienceSkillRow = {
+  display_order: number;
+  skills: SkillRow;
+};
+
+/**
+ * Experience row with nested skills returned by Supabase.
+ */
+export type ExperienceWithSkillsRow = ExperienceRow & {
+  experience_skills?: ExperienceSkillRow[];
+};
+
+/**
+ * Personal info row returned by Supabase.
+ */
+export type PersonalInfoRow = {
+  name: string;
+  title: string;
+  tagline: string;
+  bio: string;
+  email: string;
+  location: string;
+  status: string;
+};
+
+/**
+ * Contact message row returned by Supabase.
+ */
+export type ContactMessageRow = {
+  id: string;
+  name: string;
+  email: string;
+  message: string;
+  created_at: string;
+};
