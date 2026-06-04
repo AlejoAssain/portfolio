@@ -1,6 +1,69 @@
 import { projects } from '@/mocks/portfolio';
 import { AnimatedSection, SkillBadge, SpotlightCard } from '@/components/shared';
-import { ExternalLink, Code2, ArrowUpRight } from 'lucide-react';
+import { ArrowUpRight, Code2, ExternalLink, PanelsTopLeft } from 'lucide-react';
+import type { Project } from '@/types';
+
+type ProjectLink = {
+  label: string;
+  href: string;
+  icon: typeof Code2;
+};
+
+function getProjectLinks(project: Project): ProjectLink[] {
+  return [
+    project.github && {
+      label: 'GitHub',
+      href: project.github,
+      icon: Code2,
+    },
+    project.demo && {
+      label: 'Demo',
+      href: project.demo,
+      icon: ExternalLink,
+    },
+    project.landing && {
+      label: 'Landing',
+      href: project.landing,
+      icon: PanelsTopLeft,
+    },
+  ].filter(Boolean) as ProjectLink[];
+}
+
+function ProjectButtons({
+  project,
+  compact = false,
+}: {
+  project: Project;
+  compact?: boolean;
+}) {
+  const links = getProjectLinks(project);
+
+  if (links.length === 0) {
+    return null;
+  }
+
+  return (
+    <div className="flex flex-wrap items-center justify-end gap-2">
+      {links.map(({ label, href, icon: Icon }) => (
+        <a
+          key={label}
+          href={href}
+          target="_blank"
+          rel="noopener noreferrer"
+          className={
+            compact
+              ? 'inline-flex h-8 items-center gap-1.5 rounded-md bg-secondary px-2.5 text-xs font-medium text-secondary-foreground transition-all duration-300 hover:bg-primary hover:text-primary-foreground'
+              : 'inline-flex h-9 items-center gap-2 rounded-lg bg-secondary px-3 text-sm font-medium text-secondary-foreground transition-all duration-300 hover:bg-primary hover:text-primary-foreground'
+          }
+          aria-label={`View ${project.title} ${label}`}
+        >
+          <Icon size={compact ? 14 : 16} />
+          <span>{label}</span>
+        </a>
+      ))}
+    </div>
+  );
+}
 
 export function Projects() {
   const featuredProjects = projects.filter((p) => p.featured);
@@ -21,7 +84,7 @@ export function Projects() {
             <AnimatedSection key={project.id} delay={index * 100}>
               <SpotlightCard className="group">
                 <div className="space-y-4">
-                  <header className="flex items-start justify-between gap-4">
+                  <header className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
                     <div>
                       <span className="text-xs text-primary font-mono uppercase tracking-wider">
                         Featured Project
@@ -30,30 +93,7 @@ export function Projects() {
                         {project.title}
                       </h3>
                     </div>
-                    <div className="flex items-center gap-3">
-                      {project.github && (
-                        <a
-                          href={project.github}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="p-2 rounded-lg bg-secondary text-secondary-foreground hover:bg-primary hover:text-primary-foreground transition-all duration-300"
-                          aria-label={`View ${project.title} on GitHub`}
-                        >
-                          <Code2 size={18} />
-                        </a>
-                      )}
-                      {project.link && (
-                        <a
-                          href={project.link}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="p-2 rounded-lg bg-secondary text-secondary-foreground hover:bg-primary hover:text-primary-foreground transition-all duration-300"
-                          aria-label={`View ${project.title} live`}
-                        >
-                          <ExternalLink size={18} />
-                        </a>
-                      )}
-                    </div>
+                    <ProjectButtons project={project} />
                   </header>
 
                   <p className="text-muted-foreground leading-relaxed">
@@ -84,34 +124,11 @@ export function Projects() {
                 <AnimatedSection key={project.id} delay={index * 50}>
                   <article className="group h-full p-6 rounded-xl bg-card border border-border hover:border-primary/50 transition-all duration-300">
                     <div className="flex flex-col h-full">
-                      <header className="flex items-start justify-between gap-4 mb-4">
+                      <header className="flex flex-col gap-4 mb-4 min-[420px]:flex-row min-[420px]:items-start min-[420px]:justify-between">
                         <div className="p-2 rounded-lg bg-secondary">
                           <ArrowUpRight size={20} className="text-primary" />
                         </div>
-                        <div className="flex items-center gap-3">
-                          {project.github && (
-                            <a
-                              href={project.github}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="text-muted-foreground hover:text-primary transition-colors"
-                              aria-label={`View ${project.title} on GitHub`}
-                            >
-                              <Code2 size={18} />
-                            </a>
-                          )}
-                          {project.link && (
-                            <a
-                              href={project.link}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="text-muted-foreground hover:text-primary transition-colors"
-                              aria-label={`View ${project.title} live`}
-                            >
-                              <ExternalLink size={18} />
-                            </a>
-                          )}
-                        </div>
+                        <ProjectButtons project={project} compact />
                       </header>
 
                       <h4 className="text-lg font-semibold text-foreground group-hover:text-primary transition-colors mb-2">

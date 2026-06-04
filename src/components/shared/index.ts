@@ -1,4 +1,5 @@
 export * from './AnimatedSection'
+export * from './ContactFormDialog'
 export * from './MagneticButton'
 export * from './SkillBadge'
 export * from './SocialButtons'

@@ -34,7 +34,7 @@ Currently preparing the platform for production deployment in real-world gym env
       'Operations',
       'Process Automation',
     ],
-    github: 'https://github.com/mauriciomolinapicco/lymbo',
+    landing: 'https://lymbo.com',
     featured: true,
   },
   {
@@ -53,7 +53,6 @@ export const experiences: Experience[] = [
     id: 'lymbo',
     role: 'Co-Founder & Product Developer',
     company: 'Lymbo',
-    companyUrl: 'https://github.com/mauriciomolinapicco/lymbo',
     period: 'March 2025 - Present',
     location: 'Córdoba, Argentina',
     description: `Co-created a fitness center management platform with Mauricio Molina Picco,
@@ -171,10 +170,13 @@ export const skills: Skill[] = [
   { name: 'Workflow Optimization', category: 'product' },
 ];
 export const socialLinks: SocialLink[] = [
-  { name: 'GitHub', url: 'https://github.com', icon: 'github' },
-  { name: 'LinkedIn', url: 'https://linkedin.com', icon: 'linkedin' },
-  { name: 'Twitter', url: 'https://twitter.com', icon: 'twitter' },
-  { name: 'Email', url: 'mailto:alejoassain00@gmail.com', icon: 'mail' },
+  { name: 'GitHub', url: 'https://github.com/AlejoAssain', icon: 'github' },
+  {
+    name: 'LinkedIn',
+    url: 'https://www.linkedin.com/in/alejoassain/',
+    icon: 'linkedin',
+  },
+  { name: 'X', url: 'https://x.com/AlejoAssain', icon: 'twitter' },
 ];
 
 export const personalInfo: PersonalInfo = {
