@@ -1,5 +1,5 @@
+export { useCursorGlow } from './useCursorGlow'
 export { useInView } from './useInView'
-export { useMousePosition } from './useMousePosition'
 export {
   PortfolioContentProvider,
   usePortfolioContent,
