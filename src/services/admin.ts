@@ -39,6 +39,35 @@ function throwIfError(error: { message: string } | null) {
   }
 }
 
+async function saveDisplayOrder(
+  table: 'projects' | 'experiences' | 'skills',
+  ids: string[],
+) {
+  const results = await Promise.all(
+    ids.map((id, index) =>
+      supabase
+        .from(table)
+        .update({ display_order: index + 1 })
+        .eq('id', id),
+    ),
+  );
+
+  const failed = results.find(({ error }) => error);
+  throwIfError(failed?.error ?? null);
+}
+
+export function saveProjectOrder(ids: string[]) {
+  return saveDisplayOrder('projects', ids);
+}
+
+export function saveExperienceOrder(ids: string[]) {
+  return saveDisplayOrder('experiences', ids);
+}
+
+export function saveSkillOrder(ids: string[]) {
+  return saveDisplayOrder('skills', ids);
+}
+
 export async function getAdminContent() {
   const [projects, experiences, skills, personalInfo] = await Promise.all([
     getProjects(),

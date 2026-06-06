@@ -10,9 +10,11 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui';
+import { SortableList } from '@/components/admin';
 import {
   deleteExperience,
   saveExperience,
+  saveExperienceOrder,
   type ExperienceInput,
 } from '@/services/admin';
 import { getExperiences, getSkills } from '@/services/portfolio';
@@ -51,6 +53,7 @@ export function AdminExperiencesPage() {
   const [form, setForm] = useState<ExperienceInput>(emptyExperience);
   const [editingId, setEditingId] = useState<string>();
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [reordering, setReordering] = useState(false);
   const [error, setError] = useState('');
 
   async function load() {
@@ -108,7 +111,11 @@ export function AdminExperiencesPage() {
 
   function createExperience() {
     setEditingId(undefined);
-    setForm(emptyExperience);
+    setForm({
+      ...emptyExperience,
+      displayOrder:
+        Math.max(0, ...items.map((item) => item.displayOrder)) + 1,
+    });
     setDialogOpen(true);
   }
 
@@ -116,6 +123,30 @@ export function AdminExperiencesPage() {
     setEditingId(experience.id);
     setForm(experienceToInput(experience));
     setDialogOpen(true);
+  }
+
+  async function reorder(nextItems: Experience[]) {
+    const previousItems = items;
+    const orderedItems = nextItems.map((item, index) => ({
+      ...item,
+      displayOrder: index + 1,
+    }));
+    setItems(orderedItems);
+    setReordering(true);
+
+    try {
+      await saveExperienceOrder(orderedItems.map((item) => item.id));
+      toast.success('Experience order updated.');
+    } catch (unknownError) {
+      setItems(previousItems);
+      toast.error(
+        unknownError instanceof Error
+          ? unknownError.message
+          : 'Could not update the order.',
+      );
+    } finally {
+      setReordering(false);
+    }
   }
 
   return (
@@ -135,12 +166,12 @@ export function AdminExperiencesPage() {
         {items.length === 0 ? (
           <EmptyState>No experiences yet.</EmptyState>
         ) : (
-          <div className="divide-y">
-            {items.map((experience) => (
-              <div
-                key={experience.id}
-                className="flex items-start justify-between gap-4 py-4 first:pt-0"
-              >
+          <SortableList
+            items={items}
+            onReorder={reorder}
+            disabled={reordering}
+            renderItem={(experience) => (
+              <div className="flex items-start justify-between gap-4">
                 <div>
                   <p className="font-medium">
                     {experience.role} · {experience.company}
@@ -149,8 +180,7 @@ export function AdminExperiencesPage() {
                     {experience.period}
                   </p>
                   <p className="mt-2 text-xs text-muted-foreground">
-                    Order {experience.displayOrder} · {experience.skills.length}{' '}
-                    skills
+                    {experience.skills.length} skills
                   </p>
                 </div>
                 <div className="flex shrink-0 gap-1">
@@ -172,8 +202,8 @@ export function AdminExperiencesPage() {
                   </Button>
                 </div>
               </div>
-            ))}
-          </div>
+            )}
+          />
         )}
       </Panel>
 
@@ -193,26 +223,15 @@ export function AdminExperiencesPage() {
             </DialogDescription>
           </DialogHeader>
           <form className="space-y-4" onSubmit={submit}>
-            <div className="grid gap-4 sm:grid-cols-2">
-              <Field
-                label="ID / slug"
-                value={form.id}
-                disabled={Boolean(editingId)}
-                onChange={(event) =>
-                  setForm({ ...form, id: event.target.value })
-                }
-                required
-              />
-              <Field
-                label="Display order"
-                type="number"
-                value={form.displayOrder}
-                onChange={(event) =>
-                  setForm({ ...form, displayOrder: Number(event.target.value) })
-                }
-                required
-              />
-            </div>
+            <Field
+              label="ID / slug"
+              value={form.id}
+              disabled={Boolean(editingId)}
+              onChange={(event) =>
+                setForm({ ...form, id: event.target.value })
+              }
+              required
+            />
             <div className="grid gap-4 sm:grid-cols-2">
               <Field
                 label="Role"

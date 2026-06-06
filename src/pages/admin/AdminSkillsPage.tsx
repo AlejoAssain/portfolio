@@ -10,7 +10,8 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui';
-import { deleteSkill, saveSkill } from '@/services/admin';
+import { SortableList } from '@/components/admin';
+import { deleteSkill, saveSkill, saveSkillOrder } from '@/services/admin';
 import { getSkills } from '@/services/portfolio';
 import type { Skill } from '@/types';
 import {
@@ -42,6 +43,7 @@ export function AdminSkillsPage() {
   const [form, setForm] = useState<Skill>(emptySkill);
   const [editingId, setEditingId] = useState<string>();
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [reordering, setReordering] = useState(false);
   const [error, setError] = useState('');
 
   async function load() {
@@ -95,7 +97,11 @@ export function AdminSkillsPage() {
 
   function createSkill() {
     setEditingId(undefined);
-    setForm(emptySkill);
+    setForm({
+      ...emptySkill,
+      displayOrder:
+        Math.max(0, ...items.map((item) => item.displayOrder)) + 1,
+    });
     setDialogOpen(true);
   }
 
@@ -103,6 +109,30 @@ export function AdminSkillsPage() {
     setEditingId(skill.id);
     setForm(skill);
     setDialogOpen(true);
+  }
+
+  async function reorder(nextItems: Skill[]) {
+    const previousItems = items;
+    const orderedItems = nextItems.map((item, index) => ({
+      ...item,
+      displayOrder: index + 1,
+    }));
+    setItems(orderedItems);
+    setReordering(true);
+
+    try {
+      await saveSkillOrder(orderedItems.map((item) => item.id));
+      toast.success('Skill order updated.');
+    } catch (unknownError) {
+      setItems(previousItems);
+      toast.error(
+        unknownError instanceof Error
+          ? unknownError.message
+          : 'Could not update the order.',
+      );
+    } finally {
+      setReordering(false);
+    }
   }
 
   return (
@@ -122,16 +152,16 @@ export function AdminSkillsPage() {
         {items.length === 0 ? (
           <EmptyState>No skills yet.</EmptyState>
         ) : (
-          <div className="divide-y">
-            {items.map((skill) => (
-              <div
-                key={skill.id}
-                className="flex items-center justify-between gap-4 py-3 first:pt-0"
-              >
+          <SortableList
+            items={items}
+            onReorder={reorder}
+            disabled={reordering}
+            renderItem={(skill) => (
+              <div className="flex items-center justify-between gap-4">
                 <div>
                   <p className="font-medium">{skill.name}</p>
                   <p className="text-xs text-muted-foreground">
-                    {skill.category} · order {skill.displayOrder}
+                    {skill.category}
                   </p>
                 </div>
                 <div className="flex gap-1">
@@ -153,8 +183,8 @@ export function AdminSkillsPage() {
                   </Button>
                 </div>
               </div>
-            ))}
-          </div>
+            )}
+          />
         )}
       </Panel>
 
@@ -184,15 +214,6 @@ export function AdminSkillsPage() {
               value={form.name}
               onChange={(event) =>
                 setForm({ ...form, name: event.target.value })
-              }
-              required
-            />
-            <Field
-              label="Display order"
-              type="number"
-              value={form.displayOrder}
-              onChange={(event) =>
-                setForm({ ...form, displayOrder: Number(event.target.value) })
               }
               required
             />
