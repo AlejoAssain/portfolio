@@ -10,7 +10,7 @@ import {
   type SectionKey,
   type SectionSetting,
 } from '@/services/admin';
-import { ErrorMessage, PageHeader, Panel } from './shared';
+import { ErrorMessage, LoadingState, PageHeader, Panel } from './shared';
 
 const sectionLabels: Record<SectionKey, string> = {
   about: 'About',
@@ -34,6 +34,7 @@ export function AdminDashboardPage() {
   const [settings, setSettings] =
     useState<SectionSetting[]>(defaultSettings);
   const [error, setError] = useState('');
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     Promise.all([getAdminContent(), getSectionSettings()])
@@ -58,7 +59,8 @@ export function AdminDashboardPage() {
             ? unknownError.message
             : 'Could not load the dashboard.',
         ),
-      );
+      )
+      .finally(() => setLoading(false));
   }, []);
 
   async function toggleSection(setting: SectionSetting) {
@@ -92,41 +94,51 @@ export function AdminDashboardPage() {
       />
       <ErrorMessage error={error} />
 
-      <div className="mb-8 grid gap-4 sm:grid-cols-3">
-        {Object.entries(counts).map(([label, count]) => (
-          <div key={label} className="rounded-xl border bg-background p-5">
-            <p className="text-sm capitalize text-muted-foreground">{label}</p>
-            <p className="mt-2 text-3xl font-semibold">{count}</p>
-          </div>
-        ))}
-      </div>
-
-      <Panel title="Public section visibility">
-        <div className="divide-y">
-          {settings.map((setting) => (
-            <div
-              key={setting.section}
-              className="flex items-center justify-between gap-4 py-3 first:pt-0 last:pb-0"
-            >
-              <div>
-                <p className="font-medium">{sectionLabels[setting.section]}</p>
-                <p className="text-xs text-muted-foreground">
-                  {setting.visible
-                    ? 'Visible on the public portfolio'
-                    : 'Hidden from visitors'}
+      {loading ? (
+        <LoadingState label="Loading dashboard..." />
+      ) : !error ? (
+        <>
+          <div className="mb-8 grid gap-4 sm:grid-cols-3">
+            {Object.entries(counts).map(([label, count]) => (
+              <div key={label} className="rounded-xl border bg-background p-5">
+                <p className="text-sm capitalize text-muted-foreground">
+                  {label}
                 </p>
+                <p className="mt-2 text-3xl font-semibold">{count}</p>
               </div>
-              <Button
-                variant={setting.visible ? 'outline' : 'secondary'}
-                onClick={() => toggleSection(setting)}
-              >
-                {setting.visible ? <Eye /> : <EyeOff />}
-                {setting.visible ? 'Visible' : 'Hidden'}
-              </Button>
+            ))}
+          </div>
+
+          <Panel title="Public section visibility">
+            <div className="divide-y">
+              {settings.map((setting) => (
+                <div
+                  key={setting.section}
+                  className="flex items-center justify-between gap-4 py-3 first:pt-0 last:pb-0"
+                >
+                  <div>
+                    <p className="font-medium">
+                      {sectionLabels[setting.section]}
+                    </p>
+                    <p className="text-xs text-muted-foreground">
+                      {setting.visible
+                        ? 'Visible on the public portfolio'
+                        : 'Hidden from visitors'}
+                    </p>
+                  </div>
+                  <Button
+                    variant={setting.visible ? 'outline' : 'secondary'}
+                    onClick={() => toggleSection(setting)}
+                  >
+                    {setting.visible ? <Eye /> : <EyeOff />}
+                    {setting.visible ? 'Visible' : 'Hidden'}
+                  </Button>
+                </div>
+              ))}
             </div>
-          ))}
-        </div>
-      </Panel>
+          </Panel>
+        </>
+      ) : null}
     </>
   );
 }

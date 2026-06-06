@@ -43,17 +43,11 @@ async function saveDisplayOrder(
   table: 'projects' | 'experiences' | 'skills',
   ids: string[],
 ) {
-  const results = await Promise.all(
-    ids.map((id, index) =>
-      supabase
-        .from(table)
-        .update({ display_order: index + 1 })
-        .eq('id', id),
-    ),
-  );
-
-  const failed = results.find(({ error }) => error);
-  throwIfError(failed?.error ?? null);
+  const { error } = await supabase.rpc('reorder_admin_entities', {
+    p_entity: table,
+    p_ids: ids,
+  });
+  throwIfError(error);
 }
 
 export function saveProjectOrder(ids: string[]) {
@@ -95,64 +89,35 @@ export async function saveSkill(input: SkillInput, existingId?: string) {
 }
 
 export async function deleteSkill(id: string) {
-  const [{ error: projectError }, { error: experienceError }] =
-    await Promise.all([
-      supabase.from('project_skills').delete().eq('skill_id', id),
-      supabase.from('experience_skills').delete().eq('skill_id', id),
-    ]);
-  throwIfError(projectError);
-  throwIfError(experienceError);
-
-  const { error } = await supabase.from('skills').delete().eq('id', id);
+  const { error } = await supabase.rpc('delete_admin_entity', {
+    p_entity: 'skills',
+    p_id: id,
+  });
   throwIfError(error);
 }
 
 export async function saveProject(input: ProjectInput, existingId?: string) {
-  const payload = {
-    id: input.id,
-    display_order: input.displayOrder,
-    title: input.title,
-    description: input.description,
-    github: input.github || null,
-    demo: input.demo || null,
-    landing: input.landing || null,
-    image: input.image || null,
-    featured: Boolean(input.featured),
-  };
-
-  const projectQuery = existingId
-    ? supabase.from('projects').update(payload).eq('id', existingId)
-    : supabase.from('projects').insert(payload);
-  const { error: projectError } = await projectQuery;
-  throwIfError(projectError);
-
-  const projectId = input.id;
-  const { error: deleteError } = await supabase
-    .from('project_skills')
-    .delete()
-    .eq('project_id', projectId);
-  throwIfError(deleteError);
-
-  if (input.skillIds.length > 0) {
-    const { error } = await supabase.from('project_skills').insert(
-      input.skillIds.map((skillId, index) => ({
-        project_id: projectId,
-        skill_id: skillId,
-        display_order: index + 1,
-      })),
-    );
-    throwIfError(error);
-  }
+  const { error } = await supabase.rpc('save_project_with_skills', {
+    p_existing_id: existingId ?? null,
+    p_id: input.id,
+    p_display_order: input.displayOrder,
+    p_title: input.title,
+    p_description: input.description,
+    p_github: input.github || null,
+    p_demo: input.demo || null,
+    p_landing: input.landing || null,
+    p_image: input.image || null,
+    p_featured: Boolean(input.featured),
+    p_skill_ids: input.skillIds,
+  });
+  throwIfError(error);
 }
 
 export async function deleteProject(id: string) {
-  const { error: relationError } = await supabase
-    .from('project_skills')
-    .delete()
-    .eq('project_id', id);
-  throwIfError(relationError);
-
-  const { error } = await supabase.from('projects').delete().eq('id', id);
+  const { error } = await supabase.rpc('delete_admin_entity', {
+    p_entity: 'projects',
+    p_id: id,
+  });
   throwIfError(error);
 }
 
@@ -160,50 +125,26 @@ export async function saveExperience(
   input: ExperienceInput,
   existingId?: string,
 ) {
-  const payload = {
-    id: input.id,
-    display_order: input.displayOrder,
-    role: input.role,
-    company: input.company,
-    company_url: input.companyUrl || null,
-    period: input.period,
-    location: input.location || null,
-    description: input.description,
-  };
-
-  const experienceQuery = existingId
-    ? supabase.from('experiences').update(payload).eq('id', existingId)
-    : supabase.from('experiences').insert(payload);
-  const { error: experienceError } = await experienceQuery;
-  throwIfError(experienceError);
-
-  const experienceId = input.id;
-  const { error: deleteError } = await supabase
-    .from('experience_skills')
-    .delete()
-    .eq('experience_id', experienceId);
-  throwIfError(deleteError);
-
-  if (input.skillIds.length > 0) {
-    const { error } = await supabase.from('experience_skills').insert(
-      input.skillIds.map((skillId, index) => ({
-        experience_id: experienceId,
-        skill_id: skillId,
-        display_order: index + 1,
-      })),
-    );
-    throwIfError(error);
-  }
+  const { error } = await supabase.rpc('save_experience_with_skills', {
+    p_existing_id: existingId ?? null,
+    p_id: input.id,
+    p_display_order: input.displayOrder,
+    p_role: input.role,
+    p_company: input.company,
+    p_company_url: input.companyUrl || null,
+    p_period: input.period,
+    p_location: input.location || null,
+    p_description: input.description,
+    p_skill_ids: input.skillIds,
+  });
+  throwIfError(error);
 }
 
 export async function deleteExperience(id: string) {
-  const { error: relationError } = await supabase
-    .from('experience_skills')
-    .delete()
-    .eq('experience_id', id);
-  throwIfError(relationError);
-
-  const { error } = await supabase.from('experiences').delete().eq('id', id);
+  const { error } = await supabase.rpc('delete_admin_entity', {
+    p_entity: 'experiences',
+    p_id: id,
+  });
   throwIfError(error);
 }
 

@@ -34,25 +34,60 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     let active = true;
+    let authCheck = 0;
 
-    supabase.auth.getUser().then(async ({ data }) => {
+    async function syncAuthState(nextUser: User | null) {
+      const currentCheck = ++authCheck;
+
       try {
-        const admin = await verifyAdmin(data.user);
-        if (active) {
-          setUser(data.user);
+        const admin = await verifyAdmin(nextUser);
+        if (active && currentCheck === authCheck) {
+          setUser(nextUser);
           setIsAdmin(admin);
         }
+      } catch (error) {
+        if (active && currentCheck === authCheck) {
+          console.error('Failed to verify admin access.', error);
+          setUser(nextUser);
+          setIsAdmin(false);
+        }
       } finally {
-        if (active) setLoading(false);
+        if (active && currentCheck === authCheck) {
+          setLoading(false);
+        }
       }
-    });
+    }
+
+    supabase.auth
+      .getSession()
+      .then(({ data, error }) => {
+        if (error) throw error;
+        return syncAuthState(data.session?.user ?? null);
+      })
+      .catch((error: unknown) => {
+        if (!active) return;
+        console.error('Failed to restore the Supabase session.', error);
+        setUser(null);
+        setIsAdmin(false);
+        setLoading(false);
+      });
 
     const { data: listener } = supabase.auth.onAuthStateChange(
-      async (_event, session) => {
+      (_event, session) => {
         const nextUser = session?.user ?? null;
-        setUser(nextUser);
-        setIsAdmin(await verifyAdmin(nextUser));
-        setLoading(false);
+
+        if (!nextUser) {
+          authCheck += 1;
+          setUser(null);
+          setIsAdmin(false);
+          setLoading(false);
+          return;
+        }
+
+        setLoading(true);
+        window.setTimeout(() => {
+          void syncAuthState(nextUser);
+        }, 0);
       },
     );
 
@@ -73,14 +108,21 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           password,
         });
         if (error) throw error;
-        if (!(await verifyAdmin(data.user))) {
+        const admin = await verifyAdmin(data.user);
+        if (!admin) {
           await supabase.auth.signOut();
           throw new Error('This account does not have admin access.');
         }
+        setUser(data.user);
+        setIsAdmin(true);
+        setLoading(false);
       },
       signOut: async () => {
         const { error } = await supabase.auth.signOut();
         if (error) throw error;
+        setUser(null);
+        setIsAdmin(false);
+        setLoading(false);
       },
     }),
     [isAdmin, loading, user],

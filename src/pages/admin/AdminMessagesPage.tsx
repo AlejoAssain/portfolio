@@ -8,13 +8,20 @@ import {
   getContactMessages,
 } from '@/services/admin';
 import type { ContactMessage } from '@/types';
-import { EmptyState, ErrorMessage, PageHeader } from './shared';
+import {
+  EmptyState,
+  ErrorMessage,
+  LoadingState,
+  PageHeader,
+} from './shared';
 
 export function AdminMessagesPage() {
   const [messages, setMessages] = useState<ContactMessage[]>([]);
   const [error, setError] = useState('');
+  const [loading, setLoading] = useState(true);
 
-  async function load() {
+  async function load(initial = false) {
+    if (initial) setLoading(true);
     try {
       setMessages(await getContactMessages());
       setError('');
@@ -22,10 +29,12 @@ export function AdminMessagesPage() {
       setError(
         unknownError instanceof Error ? unknownError.message : 'Load failed.',
       );
+    } finally {
+      if (initial) setLoading(false);
     }
   }
 
-  useEffect(() => void load(), []);
+  useEffect(() => void load(true), []);
 
   async function remove(message: ContactMessage) {
     if (!window.confirm(`Delete the message from ${message.name}?`)) return;
@@ -47,7 +56,9 @@ export function AdminMessagesPage() {
         description="Messages sent through the public contact form."
       />
       <ErrorMessage error={error} />
-      {messages.length === 0 ? (
+      {loading ? (
+        <LoadingState label="Loading messages..." />
+      ) : messages.length === 0 && !error ? (
         <EmptyState>No messages yet.</EmptyState>
       ) : (
         <div className="space-y-4">
