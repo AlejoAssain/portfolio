@@ -5,20 +5,16 @@ import { Button } from '@/components/ui';
 import { savePersonalInfo } from '@/services/admin';
 import { getPersonalInfo } from '@/services/portfolio';
 import type { PersonalInfo } from '@/types';
-import { ErrorMessage, Field, PageHeader, Panel } from './shared';
-
-const emptyInfo: PersonalInfo = {
-  name: '',
-  title: '',
-  tagline: '',
-  bio: '',
-  email: '',
-  location: '',
-  status: '',
-};
+import {
+  ErrorMessage,
+  Field,
+  LoadingState,
+  PageHeader,
+  Panel,
+} from './shared';
 
 export function AdminPersonalInfoPage() {
-  const [form, setForm] = useState<PersonalInfo>(emptyInfo);
+  const [form, setForm] = useState<PersonalInfo | null>(null);
   const [error, setError] = useState('');
   const [saving, setSaving] = useState(false);
 
@@ -34,6 +30,8 @@ export function AdminPersonalInfoPage() {
 
   async function submit(event: FormEvent) {
     event.preventDefault();
+    if (!form) return;
+
     setSaving(true);
     try {
       await savePersonalInfo(form);
@@ -54,8 +52,11 @@ export function AdminPersonalInfoPage() {
         description="Content shared by the hero, about and contact areas."
       />
       <ErrorMessage error={error} />
-      <div className="max-w-2xl">
-        <Panel title="Main profile">
+      <div className="mx-auto max-w-3xl">
+        {!form && !error ? (
+          <LoadingState label="Loading personal information..." />
+        ) : form ? (
+          <Panel title="Main profile">
           <form className="space-y-4" onSubmit={submit}>
             <div className="grid gap-4 sm:grid-cols-2">
               <Field
@@ -119,11 +120,14 @@ export function AdminPersonalInfoPage() {
               }
               required
             />
-            <Button disabled={saving}>
-              {saving ? 'Saving...' : 'Save changes'}
-            </Button>
+            <div className="flex justify-end">
+              <Button disabled={saving}>
+                {saving ? 'Saving...' : 'Save changes'}
+              </Button>
+            </div>
           </form>
-        </Panel>
+          </Panel>
+        ) : null}
       </div>
     </>
   );

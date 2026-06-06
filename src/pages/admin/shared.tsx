@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react';
+import { LoaderCircle } from 'lucide-react';
 
 import { Button, Input, Label, Textarea } from '@/components/ui';
 import type { Skill } from '@/types';
@@ -106,6 +107,18 @@ export function EmptyState({ children }: { children: ReactNode }) {
     <p className="rounded-lg border border-dashed p-8 text-center text-sm text-muted-foreground">
       {children}
     </p>
+  );
+}
+
+export function LoadingState({ label = 'Loading...' }: { label?: string }) {
+  return (
+    <div
+      className="flex min-h-40 items-center justify-center gap-2 rounded-xl border bg-background text-sm text-muted-foreground"
+      role="status"
+    >
+      <LoaderCircle className="animate-spin" size={18} />
+      {label}
+    </div>
   );
 }
 

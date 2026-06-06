@@ -23,6 +23,7 @@ import {
   EmptyState,
   ErrorMessage,
   Field,
+  LoadingState,
   PageHeader,
   Panel,
   SkillPicker,
@@ -55,6 +56,7 @@ export function AdminExperiencesPage() {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [reordering, setReordering] = useState(false);
   const [error, setError] = useState('');
+  const [loading, setLoading] = useState(true);
 
   async function load() {
     try {
@@ -69,6 +71,8 @@ export function AdminExperiencesPage() {
       setError(
         unknownError instanceof Error ? unknownError.message : 'Load failed.',
       );
+    } finally {
+      setLoading(false);
     }
   }
 
@@ -163,7 +167,9 @@ export function AdminExperiencesPage() {
       />
       <ErrorMessage error={error} />
       <Panel title={`${items.length} experiences`}>
-        {items.length === 0 ? (
+        {loading ? (
+          <LoadingState label="Loading experiences..." />
+        ) : items.length === 0 ? (
           <EmptyState>No experiences yet.</EmptyState>
         ) : (
           <SortableList

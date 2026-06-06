@@ -18,6 +18,7 @@ import {
   EmptyState,
   ErrorMessage,
   Field,
+  LoadingState,
   PageHeader,
   Panel,
 } from './shared';
@@ -45,6 +46,7 @@ export function AdminSkillsPage() {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [reordering, setReordering] = useState(false);
   const [error, setError] = useState('');
+  const [loading, setLoading] = useState(true);
 
   async function load() {
     try {
@@ -54,6 +56,8 @@ export function AdminSkillsPage() {
       setError(
         unknownError instanceof Error ? unknownError.message : 'Load failed.',
       );
+    } finally {
+      setLoading(false);
     }
   }
 
@@ -149,7 +153,9 @@ export function AdminSkillsPage() {
       />
       <ErrorMessage error={error} />
       <Panel title={`${items.length} skills`}>
-        {items.length === 0 ? (
+        {loading ? (
+          <LoadingState label="Loading skills..." />
+        ) : items.length === 0 ? (
           <EmptyState>No skills yet.</EmptyState>
         ) : (
           <SortableList

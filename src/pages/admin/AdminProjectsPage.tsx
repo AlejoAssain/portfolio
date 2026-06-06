@@ -9,6 +9,7 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
+  Switch,
 } from '@/components/ui';
 import { SortableList } from '@/components/admin';
 import {
@@ -23,6 +24,7 @@ import {
   EmptyState,
   ErrorMessage,
   Field,
+  LoadingState,
   PageHeader,
   Panel,
   SkillPicker,
@@ -53,6 +55,7 @@ export function AdminProjectsPage() {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [reordering, setReordering] = useState(false);
   const [error, setError] = useState('');
+  const [loading, setLoading] = useState(true);
 
   async function load() {
     try {
@@ -67,6 +70,8 @@ export function AdminProjectsPage() {
       setError(
         unknownError instanceof Error ? unknownError.message : 'Load failed.',
       );
+    } finally {
+      setLoading(false);
     }
   }
 
@@ -161,7 +166,9 @@ export function AdminProjectsPage() {
       />
       <ErrorMessage error={error} />
       <Panel title={`${items.length} projects`}>
-        {items.length === 0 ? (
+        {loading ? (
+          <LoadingState label="Loading projects..." />
+        ) : items.length === 0 ? (
           <EmptyState>No projects yet.</EmptyState>
         ) : (
           <SortableList
@@ -286,16 +293,21 @@ export function AdminProjectsPage() {
                 }
               />
             </div>
-            <label className="flex items-center gap-2 text-sm">
-              <input
-                type="checkbox"
+            <div className="flex items-center justify-between rounded-lg border p-3">
+              <div>
+                <p className="text-sm font-medium">Featured project</p>
+                <p className="text-xs text-muted-foreground">
+                  Highlight this project in the main portfolio section.
+                </p>
+              </div>
+              <Switch
                 checked={Boolean(form.featured)}
-                onChange={(event) =>
-                  setForm({ ...form, featured: event.target.checked })
+                onCheckedChange={(featured) =>
+                  setForm({ ...form, featured })
                 }
+                aria-label="Featured project"
               />
-              Featured project
-            </label>
+            </div>
             <SkillPicker
               skills={skills}
               selected={form.skillIds}
