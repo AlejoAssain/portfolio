@@ -1,4 +1,4 @@
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 
 import { AdminLayout, ProtectedAdminRoute } from '@/components/admin';
 import { Footer, Header } from '@/components/layout';
@@ -75,6 +75,7 @@ function App() {
               <Route path="messages" element={<AdminMessagesPage />} />
             </Route>
           </Route>
+          <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
         <Toaster />
       </AuthProvider>
