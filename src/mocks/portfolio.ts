@@ -1,3 +1,5 @@
+// THIS IS MOCK DATA, ALEJO FIX ME PLS.
+
 import type {
   Experience,
   NavItem,

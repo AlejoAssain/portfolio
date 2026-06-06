@@ -7,7 +7,11 @@ import { usePortfolioContent } from '@/hooks';
 const sectionIds = navItems.map((item) => item.href.replace('#', ''));
 
 export function Header() {
-  const { personalInfo } = usePortfolioContent();
+  const { personalInfo, sectionVisibility } = usePortfolioContent();
+  const visibleNavItems = navItems.filter((item) => {
+    const section = item.href.replace('#', '');
+    return sectionVisibility[section as keyof typeof sectionVisibility];
+  });
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [activeSection, setActiveSection] = useState('');
@@ -64,7 +68,7 @@ export function Header() {
           </a>
 
           <ul className="hidden md:flex items-center gap-8">
-            {navItems.map((item) => (
+            {visibleNavItems.map((item) => (
               <li key={item.href}>
                 <button
                   onClick={() => handleNavClick(item.href)}
@@ -100,7 +104,7 @@ export function Header() {
           )}
         >
           <ul className="flex flex-col gap-4">
-            {navItems.map((item) => (
+            {visibleNavItems.map((item) => (
               <li key={item.href}>
                 <button
                   onClick={() => handleNavClick(item.href)}

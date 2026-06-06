@@ -143,6 +143,14 @@ export interface PersonalInfo {
   status: string;
 }
 
+export type SectionVisibility = {
+  about: boolean;
+  experience: boolean;
+  projects: boolean;
+  skills: boolean;
+  contact: boolean;
+};
+
 /**
  * Message submitted from the contact form.
  */

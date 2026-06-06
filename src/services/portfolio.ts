@@ -18,7 +18,16 @@ import type {
   ProjectWithSkillsRow,
   Skill,
   SkillRow,
+  SectionVisibility,
 } from '@/types';
+
+const defaultSectionVisibility: SectionVisibility = {
+  about: true,
+  experience: true,
+  projects: true,
+  skills: true,
+  contact: true,
+};
 
 export async function getSkills(): Promise<Skill[]> {
   const { data, error } = await supabase
@@ -107,18 +116,43 @@ export async function createContactMessage(
   return mapContactMessage(data as ContactMessageRow);
 }
 
+export async function getSectionVisibility(): Promise<SectionVisibility> {
+  const { data, error } = await supabase
+    .from('section_settings')
+    .select('section, visible');
+
+  if (error) {
+    console.warn(
+      'Section settings are unavailable. Showing all public sections.',
+      error,
+    );
+    return defaultSectionVisibility;
+  }
+
+  return (data ?? []).reduce(
+    (visibility, row) => ({
+      ...visibility,
+      [row.section]: row.visible,
+    }),
+    defaultSectionVisibility,
+  );
+}
+
 export async function getPortfolioContent() {
-  const [personalInfo, projects, experiences, skills] = await Promise.all([
+  const [personalInfo, projects, experiences, skills, sectionVisibility] =
+    await Promise.all([
     getPersonalInfo(),
     getProjects(),
     getExperiences(),
     getSkills(),
-  ]);
+      getSectionVisibility(),
+    ]);
 
   return {
     personalInfo,
     projects,
     experiences,
     skills,
+    sectionVisibility,
   };
 }

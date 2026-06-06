@@ -136,6 +136,28 @@ kept as fallback data only.
 This portfolio is intentionally lean today: public content is read from
 Supabase, while editing still happens directly in Supabase.
 
-The planned next step is to add a small admin view so projects, experience,
-skills, and personal info can be updated from the app without editing code or
-opening Supabase directly.
+The planned next step is to add a small admin view so portfolio content can be
+updated from the app without editing code or opening Supabase directly.
+
+Planned admin features:
+
+- [ ] Protected admin route with Supabase Auth.
+- [ ] CRUD for projects, experiences, skills, and personal info.
+- [ ] Manage project-skill and experience-skill relationships.
+- [ ] Ordering controls for projects, experiences, and skills.
+- [ ] Featured project toggle.
+- [ ] Upload a CV/resume to Supabase Storage.
+- [ ] Expose a public resume download link in the portfolio.
+- [ ] Upload and manage project photos stored in Supabase Storage.
+- [ ] Optionally upload and manage a profile picture stored in Supabase Storage.
+- [ ] Basic form validation for required fields, URLs, and text length.
+- [ ] Loading, success, and error states for admin actions.
+
+Future features:
+
+- [ ] Add a new section -> academic info or smt like that (AWS cert, Ing. en sis. UTN)
+- [ ] Draft/visible toggle for content that should be hidden without being deleted.
+- [ ] Contact messages inbox for submissions from the contact form.
+- [ ] Resume replacement flow that cleans up the previous uploaded file.
+- [ ] Storage cleanup for unused project photos or deleted content.
+- [ ] Preview changes before publishing.
