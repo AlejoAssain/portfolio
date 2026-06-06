@@ -16,3 +16,4 @@ dist/
 .next/
 .DS_Store
 .env
+AGENTS.md

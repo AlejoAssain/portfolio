@@ -14,13 +14,20 @@ import {
   skills,
 } from '@/mocks/portfolio';
 import { getPortfolioContent } from '@/services/portfolio';
-import type { Experience, PersonalInfo, Project, Skill } from '@/types';
+import type {
+  Experience,
+  PersonalInfo,
+  Project,
+  SectionVisibility,
+  Skill,
+} from '@/types';
 
 type PortfolioContent = {
   personalInfo: PersonalInfo;
   projects: Project[];
   experiences: Experience[];
   skills: Skill[];
+  sectionVisibility: SectionVisibility;
 };
 
 type PortfolioContentState = PortfolioContent & {
@@ -34,6 +41,13 @@ const fallbackContent: PortfolioContent = {
   projects,
   experiences,
   skills,
+  sectionVisibility: {
+    about: true,
+    experience: true,
+    projects: true,
+    skills: true,
+    contact: true,
+  },
 };
 
 const PortfolioContentContext = createContext<PortfolioContentState | null>(
