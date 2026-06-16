@@ -1,15 +1,12 @@
 import { supabase } from '@/lib/supabase';
 import {
-  mapContactMessage,
   mapExperience,
   mapPersonalInfo,
   mapProject,
   mapSkill,
 } from '@/mappers';
 import type {
-  ContactMessage,
   ContactMessageInput,
-  ContactMessageRow,
   Experience,
   ExperienceWithSkillsRow,
   PersonalInfo,
@@ -102,18 +99,21 @@ export async function getPersonalInfo(): Promise<PersonalInfo> {
 
 export async function createContactMessage(
   input: ContactMessageInput,
-): Promise<ContactMessage> {
-  const { data, error } = await supabase
-    .from('contact_messages')
-    .insert(input)
-    .select('*')
-    .single();
+): Promise<void> {
+  const { data, error } = await supabase.functions.invoke<{
+    ok?: boolean;
+    error?: string;
+  }>('submit-contact-message', {
+    body: input,
+  });
 
   if (error) {
     throw error;
   }
 
-  return mapContactMessage(data as ContactMessageRow);
+  if (!data?.ok) {
+    throw new Error(data?.error ?? 'Message could not be sent.');
+  }
 }
 
 export async function getSectionVisibility(): Promise<SectionVisibility> {

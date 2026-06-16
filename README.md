@@ -36,8 +36,8 @@ Supabase, sections are split into small components, and the UI is built from a
 minimal set of shared components. Local mock data remains as a fallback so the
 site can still render if the public content request fails.
 
-The next step is to add an admin view to update the displayed data without
-touching the code.
+The project also includes a protected admin area for managing portfolio content
+and reviewing contact form submissions.
 
 ## Stack
 
@@ -64,6 +64,8 @@ src/
   mocks/         Portfolio content
   services/      Supabase data access
   types/         App types
+supabase/
+  functions/     Supabase Edge Functions
 ```
 
 ## Environment
@@ -73,10 +75,20 @@ Create a `.env` file in the project root:
 ```env
 VITE_SUPABASE_URL=https://your-project-ref.supabase.co
 VITE_SUPABASE_ANON_KEY=your-supabase-publishable-or-anon-key
+VITE_TURNSTILE_SITE_KEY=your-cloudflare-turnstile-site-key
 ```
 
 Only public browser-safe Supabase keys belong here. Never put a Supabase
 `service_role` key in this frontend app.
+
+| Variable | Description |
+| --- | --- |
+| `VITE_SUPABASE_URL` | Public Supabase project URL used by the browser client. |
+| `VITE_SUPABASE_ANON_KEY` | Public Supabase publishable/anon key used by the browser client. |
+| `VITE_TURNSTILE_SITE_KEY` | Public Cloudflare Turnstile site key used to render the contact form bot check. |
+
+Private secrets, such as the Cloudflare Turnstile secret key, must be stored in
+Supabase function secrets and never exposed through Vite environment variables.
 
 ## Run Locally
 
@@ -131,33 +143,45 @@ src/mocks/portfolio.ts
 This includes navigation items and social links. The rest of the mock content is
 kept as fallback data only.
 
+## Contact Form
+
+The contact form sends submissions through a Supabase Edge Function instead of
+writing directly from the browser. The function validates Cloudflare Turnstile,
+checks a hidden honeypot field, validates the payload, and then stores the
+message in `contact_messages` with server-side credentials.
+
+```txt
+supabase/functions/submit-contact-message
+```
+
+The browser only receives the public Turnstile site key. The Turnstile secret
+key lives in Supabase function secrets as `TURNSTILE_SECRET_KEY`.
+
 ## Roadmap
 
-This portfolio is intentionally lean today: public content is read from
-Supabase, while editing still happens directly in Supabase.
-
-The planned next step is to add a small admin view so portfolio content can be
-updated from the app without editing code or opening Supabase directly.
+This portfolio is intentionally lean: public content is read from Supabase, and
+the admin area handles common content and message management tasks.
 
 Planned admin features:
 
-- [ ] Protected admin route with Supabase Auth.
-- [ ] CRUD for projects, experiences, skills, and personal info.
-- [ ] Manage project-skill and experience-skill relationships.
-- [ ] Ordering controls for projects, experiences, and skills.
-- [ ] Featured project toggle.
+- [x] Protected admin route with Supabase Auth.
+- [x] CRUD for projects, experiences, skills, and personal info.
+- [x] Manage project-skill and experience-skill relationships.
+- [x] Ordering controls for projects, experiences, and skills.
+- [x] Featured project toggle.
+- [x] Contact messages inbox for submissions from the contact form.
+- [x] Bot-protected contact submissions with Cloudflare Turnstile and Supabase Edge Functions.
 - [ ] Upload a CV/resume to Supabase Storage.
 - [ ] Expose a public resume download link in the portfolio.
 - [ ] Upload and manage project photos stored in Supabase Storage.
 - [ ] Optionally upload and manage a profile picture stored in Supabase Storage.
-- [ ] Basic form validation for required fields, URLs, and text length.
-- [ ] Loading, success, and error states for admin actions.
+- [x] Basic form validation for required fields, URLs, and text length.
+- [x] Loading, success, and error states for admin actions.
 
 Future features:
 
 - [ ] Add a new section -> academic info or smt like that (AWS cert, Ing. en sis. UTN)
 - [ ] Draft/visible toggle for content that should be hidden without being deleted.
-- [ ] Contact messages inbox for submissions from the contact form.
 - [ ] Resume replacement flow that cleans up the previous uploaded file.
 - [ ] Storage cleanup for unused project photos or deleted content.
 - [ ] Preview changes before publishing.

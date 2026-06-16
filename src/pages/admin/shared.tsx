@@ -1,7 +1,18 @@
 import type { ReactNode } from 'react';
 import { LoaderCircle } from 'lucide-react';
 
-import { Button, Input, Label, Textarea } from '@/components/ui';
+import {
+  Button,
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  Input,
+  Label,
+  Textarea,
+} from '@/components/ui';
 import type { Skill } from '@/types';
 
 export function PageHeader({
@@ -124,4 +135,51 @@ export function LoadingState({ label = 'Loading...' }: { label?: string }) {
 
 export function ErrorMessage({ error }: { error: string }) {
   return error ? <p className="text-sm text-destructive">{error}</p> : null;
+}
+
+export function DeleteConfirmDialog({
+  open,
+  title,
+  description,
+  deleting = false,
+  confirmLabel = 'Delete',
+  onOpenChange,
+  onConfirm,
+}: {
+  open: boolean;
+  title: string;
+  description: string;
+  deleting?: boolean;
+  confirmLabel?: string;
+  onOpenChange: (open: boolean) => void;
+  onConfirm: () => void;
+}) {
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>{title}</DialogTitle>
+          <DialogDescription>{description}</DialogDescription>
+        </DialogHeader>
+        <DialogFooter>
+          <Button
+            type="button"
+            variant="outline"
+            disabled={deleting}
+            onClick={() => onOpenChange(false)}
+          >
+            Cancel
+          </Button>
+          <Button
+            type="button"
+            variant="destructive"
+            disabled={deleting}
+            onClick={onConfirm}
+          >
+            {deleting ? 'Deleting...' : confirmLabel}
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
 }
