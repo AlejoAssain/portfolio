@@ -172,12 +172,18 @@ export interface ContactMessage {
 }
 
 /**
- * Contact form payload before it is stored.
+ * Contact form payload sent to the contact Edge Function.
  */
 export type ContactMessageInput = Pick<
   ContactMessage,
   'name' | 'email' | 'message'
->;
+> & {
+  /** Cloudflare Turnstile token generated in the browser. */
+  turnstileToken?: string;
+
+  /** Hidden honeypot field. Real users should leave it empty. */
+  website?: string;
+};
 
 type Nullable<T> = T | null;
 

@@ -20,6 +20,7 @@ import {
 import { getExperiences, getSkills } from '@/services/portfolio';
 import type { Experience, Skill } from '@/types';
 import {
+  DeleteConfirmDialog,
   EmptyState,
   ErrorMessage,
   Field,
@@ -53,6 +54,9 @@ export function AdminExperiencesPage() {
   const [skills, setSkills] = useState<Skill[]>([]);
   const [form, setForm] = useState<ExperienceInput>(emptyExperience);
   const [editingId, setEditingId] = useState<string>();
+  const [experienceToDelete, setExperienceToDelete] =
+    useState<Experience | null>(null);
+  const [deleting, setDeleting] = useState(false);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [reordering, setReordering] = useState(false);
   const [error, setError] = useState('');
@@ -94,16 +98,20 @@ export function AdminExperiencesPage() {
     }
   }
 
-  async function remove(id: string) {
-    if (!window.confirm('Delete this experience?')) return;
+  async function remove() {
+    if (!experienceToDelete) return;
+    setDeleting(true);
     try {
-      await deleteExperience(id);
+      await deleteExperience(experienceToDelete.id);
       toast.success('Experience deleted.');
+      setExperienceToDelete(null);
       await load();
     } catch (unknownError) {
       toast.error(
         unknownError instanceof Error ? unknownError.message : 'Delete failed.',
       );
+    } finally {
+      setDeleting(false);
     }
   }
 
@@ -201,7 +209,7 @@ export function AdminExperiencesPage() {
                   <Button
                     size="icon-sm"
                     variant="ghost"
-                    onClick={() => remove(experience.id)}
+                    onClick={() => setExperienceToDelete(experience)}
                     aria-label={`Delete ${experience.role}`}
                   >
                     <Trash2 />
@@ -304,6 +312,20 @@ export function AdminExperiencesPage() {
           </form>
         </DialogContent>
       </Dialog>
+      <DeleteConfirmDialog
+        open={Boolean(experienceToDelete)}
+        title="Delete experience?"
+        description={
+          experienceToDelete
+            ? `This will permanently delete "${experienceToDelete.role}" at ${experienceToDelete.company}.`
+            : ''
+        }
+        deleting={deleting}
+        onOpenChange={(open) => {
+          if (!open) setExperienceToDelete(null);
+        }}
+        onConfirm={remove}
+      />
     </>
   );
 }

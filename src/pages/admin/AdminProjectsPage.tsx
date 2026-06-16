@@ -21,6 +21,7 @@ import {
 import { getProjects, getSkills } from '@/services/portfolio';
 import type { Project, Skill } from '@/types';
 import {
+  DeleteConfirmDialog,
   EmptyState,
   ErrorMessage,
   Field,
@@ -52,6 +53,8 @@ export function AdminProjectsPage() {
   const [skills, setSkills] = useState<Skill[]>([]);
   const [form, setForm] = useState<ProjectInput>(emptyProject);
   const [editingId, setEditingId] = useState<string>();
+  const [projectToDelete, setProjectToDelete] = useState<Project | null>(null);
+  const [deleting, setDeleting] = useState(false);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [reordering, setReordering] = useState(false);
   const [error, setError] = useState('');
@@ -93,16 +96,20 @@ export function AdminProjectsPage() {
     }
   }
 
-  async function remove(id: string) {
-    if (!window.confirm('Delete this project?')) return;
+  async function remove() {
+    if (!projectToDelete) return;
+    setDeleting(true);
     try {
-      await deleteProject(id);
+      await deleteProject(projectToDelete.id);
       toast.success('Project deleted.');
+      setProjectToDelete(null);
       await load();
     } catch (unknownError) {
       toast.error(
         unknownError instanceof Error ? unknownError.message : 'Delete failed.',
       );
+    } finally {
+      setDeleting(false);
     }
   }
 
@@ -205,7 +212,7 @@ export function AdminProjectsPage() {
                   <Button
                     size="icon-sm"
                     variant="ghost"
-                    onClick={() => remove(project.id)}
+                    onClick={() => setProjectToDelete(project)}
                     aria-label={`Delete ${project.title}`}
                   >
                     <Trash2 />
@@ -324,6 +331,20 @@ export function AdminProjectsPage() {
           </form>
         </DialogContent>
       </Dialog>
+      <DeleteConfirmDialog
+        open={Boolean(projectToDelete)}
+        title="Delete project?"
+        description={
+          projectToDelete
+            ? `This will permanently delete "${projectToDelete.title}".`
+            : ''
+        }
+        deleting={deleting}
+        onOpenChange={(open) => {
+          if (!open) setProjectToDelete(null);
+        }}
+        onConfirm={remove}
+      />
     </>
   );
 }

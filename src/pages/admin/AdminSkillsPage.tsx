@@ -15,6 +15,7 @@ import { deleteSkill, saveSkill, saveSkillOrder } from '@/services/admin';
 import { getSkills } from '@/services/portfolio';
 import type { Skill } from '@/types';
 import {
+  DeleteConfirmDialog,
   EmptyState,
   ErrorMessage,
   Field,
@@ -43,6 +44,8 @@ export function AdminSkillsPage() {
   const [items, setItems] = useState<Skill[]>([]);
   const [form, setForm] = useState<Skill>(emptySkill);
   const [editingId, setEditingId] = useState<string>();
+  const [skillToDelete, setSkillToDelete] = useState<Skill | null>(null);
+  const [deleting, setDeleting] = useState(false);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [reordering, setReordering] = useState(false);
   const [error, setError] = useState('');
@@ -79,17 +82,20 @@ export function AdminSkillsPage() {
     }
   }
 
-  async function remove(id: string) {
-    if (!window.confirm('Delete this skill? Related links may also be removed.'))
-      return;
+  async function remove() {
+    if (!skillToDelete) return;
+    setDeleting(true);
     try {
-      await deleteSkill(id);
+      await deleteSkill(skillToDelete.id);
       toast.success('Skill deleted.');
+      setSkillToDelete(null);
       await load();
     } catch (unknownError) {
       toast.error(
         unknownError instanceof Error ? unknownError.message : 'Delete failed.',
       );
+    } finally {
+      setDeleting(false);
     }
   }
 
@@ -182,7 +188,7 @@ export function AdminSkillsPage() {
                   <Button
                     size="icon-sm"
                     variant="ghost"
-                    onClick={() => remove(skill.id)}
+                    onClick={() => setSkillToDelete(skill)}
                     aria-label={`Delete ${skill.name}`}
                   >
                     <Trash2 />
@@ -254,6 +260,20 @@ export function AdminSkillsPage() {
           </form>
         </DialogContent>
       </Dialog>
+      <DeleteConfirmDialog
+        open={Boolean(skillToDelete)}
+        title="Delete skill?"
+        description={
+          skillToDelete
+            ? `This will permanently delete "${skillToDelete.name}". Related links may also be removed.`
+            : ''
+        }
+        deleting={deleting}
+        onOpenChange={(open) => {
+          if (!open) setSkillToDelete(null);
+        }}
+        onConfirm={remove}
+      />
     </>
   );
 }

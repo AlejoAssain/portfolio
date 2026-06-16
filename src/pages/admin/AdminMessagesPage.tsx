@@ -9,6 +9,7 @@ import {
 } from '@/services/admin';
 import type { ContactMessage } from '@/types';
 import {
+  DeleteConfirmDialog,
   EmptyState,
   ErrorMessage,
   LoadingState,
@@ -17,6 +18,9 @@ import {
 
 export function AdminMessagesPage() {
   const [messages, setMessages] = useState<ContactMessage[]>([]);
+  const [messageToDelete, setMessageToDelete] =
+    useState<ContactMessage | null>(null);
+  const [deleting, setDeleting] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(true);
 
@@ -36,16 +40,20 @@ export function AdminMessagesPage() {
 
   useEffect(() => void load(true), []);
 
-  async function remove(message: ContactMessage) {
-    if (!window.confirm(`Delete the message from ${message.name}?`)) return;
+  async function remove() {
+    if (!messageToDelete) return;
+    setDeleting(true);
     try {
-      await deleteContactMessage(message.id);
+      await deleteContactMessage(messageToDelete.id);
       toast.success('Message deleted.');
+      setMessageToDelete(null);
       await load();
     } catch (unknownError) {
       toast.error(
         unknownError instanceof Error ? unknownError.message : 'Delete failed.',
       );
+    } finally {
+      setDeleting(false);
     }
   }
 
@@ -81,7 +89,7 @@ export function AdminMessagesPage() {
                 <Button
                   size="icon-sm"
                   variant="ghost"
-                  onClick={() => remove(message)}
+                  onClick={() => setMessageToDelete(message)}
                   aria-label={`Delete message from ${message.name}`}
                 >
                   <Trash2 />
@@ -97,6 +105,20 @@ export function AdminMessagesPage() {
           ))}
         </div>
       )}
+      <DeleteConfirmDialog
+        open={Boolean(messageToDelete)}
+        title="Delete message?"
+        description={
+          messageToDelete
+            ? `This will permanently delete the message from ${messageToDelete.name}.`
+            : ''
+        }
+        deleting={deleting}
+        onOpenChange={(open) => {
+          if (!open) setMessageToDelete(null);
+        }}
+        onConfirm={remove}
+      />
     </>
   );
 }
