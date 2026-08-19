@@ -17,3 +17,9 @@ dist/
 .DS_Store
 .env
 AGENTS.md
+
+# Generation intermediates and local tooling debris
+assets/generated/
+output/
+alejo-pics/
+.playwright-mcp/

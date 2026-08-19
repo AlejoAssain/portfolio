@@ -1,8 +1,13 @@
 import { useEffect, useState } from 'react';
 
-import { cn } from '@/lib/utils';
-import { navItems } from '@/mocks/portfolio';
+import { GlowCTA } from '@/components/shared';
 import { usePortfolioContent } from '@/hooks';
+import { cn } from '@/lib/utils';
+import { isPastHero, onScroll, scrollToSection } from '@/lib/lenis';
+import { navItems } from '@/mocks/portfolio';
+
+import { MobileNav } from './MobileNav';
+import { NavPill } from './NavPill';
 
 const sectionIds = navItems.map((item) => item.href.replace('#', ''));
 
@@ -12,116 +17,61 @@ export function Header() {
     const section = item.href.replace('#', '');
     return sectionVisibility[section as keyof typeof sectionVisibility];
   });
-  const [isScrolled, setIsScrolled] = useState(false);
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [activeSection, setActiveSection] = useState('');
+  const [isSolid, setIsSolid] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 50);
+      setIsSolid(isPastHero());
 
+      let current = '';
       for (const sectionId of [...sectionIds].reverse()) {
         const element = document.getElementById(sectionId);
-        if (element) {
-          const rect = element.getBoundingClientRect();
-          if (rect.top <= 100) {
-            setActiveSection(sectionId);
-            break;
-          }
+        if (element && element.getBoundingClientRect().top <= 100) {
+          current = sectionId;
+          break;
         }
       }
+      setActiveSection(current);
     };
 
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
+    return onScroll(handleScroll);
   }, []);
-
-  const handleNavClick = (href: string) => {
-    setIsMobileMenuOpen(false);
-    const element = document.querySelector(href);
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
-    }
-  };
 
   return (
     <header
       className={cn(
-        'fixed top-0 left-0 right-0 z-50 transition-all duration-300',
-        isScrolled
-          ? 'bg-background/80 backdrop-blur-lg border-b border-border'
-          : 'bg-transparent',
+        'fixed top-0 left-0 right-0 z-50 transition-colors duration-300',
+        isSolid && 'bg-background border-b border-border',
       )}
     >
-      <nav className="max-w-6xl mx-auto px-6 py-4">
-        <div className="flex items-center justify-between">
-          <a
-            href="#"
-            className="text-xl font-semibold text-foreground hover:text-primary transition-colors"
+      <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
+        <a
+          href="#"
+          aria-label={personalInfo.name}
+          className="block h-9 w-9 bg-foreground opacity-90 transition-opacity hover:opacity-100 [mask-image:url(/logo.png)] [mask-position:center] [mask-repeat:no-repeat] [mask-size:contain] [-webkit-mask-image:url(/logo.png)] [-webkit-mask-position:center] [-webkit-mask-repeat:no-repeat] [-webkit-mask-size:contain]"
+        />
+
+        <NavPill
+          items={visibleNavItems}
+          activeHref={`#${activeSection}`}
+          onNavigate={scrollToSection}
+        />
+
+        <div className="flex items-center gap-2">
+          <GlowCTA
+            onClick={() => scrollToSection('#contact')}
+            className="hidden sm:inline-flex"
           >
-            {personalInfo.name
-              .split(' ')
-              .map((part) => part[0])
-              .join('')
-              .slice(0, 2)
-              .toUpperCase()}
-          </a>
-
-          <ul className="hidden md:flex items-center gap-8">
-            {visibleNavItems.map((item) => (
-              <li key={item.href}>
-                <button
-                  onClick={() => handleNavClick(item.href)}
-                  className={cn(
-                    'text-sm font-medium transition-colors relative',
-                    activeSection === item.href.replace('#', '')
-                      ? 'text-primary'
-                      : 'text-muted-foreground hover:text-foreground',
-                  )}
-                >
-                  {item.label}
-                  {activeSection === item.href.replace('#', '') && (
-                    <span className="absolute -bottom-1 left-0 right-0 h-px bg-primary" />
-                  )}
-                </button>
-              </li>
-            ))}
-          </ul>
-
-          <button
-            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            className="md:hidden p-2 text-foreground hover:text-primary transition-colors"
-            aria-label="Toggle menu"
-          >
-            {isMobileMenuOpen ? '✕' : '☰'}
-          </button>
+            Say hello
+          </GlowCTA>
+          <MobileNav
+            items={visibleNavItems}
+            activeHref={`#${activeSection}`}
+            onNavigate={scrollToSection}
+          />
         </div>
-
-        <div
-          className={cn(
-            'md:hidden overflow-hidden transition-all duration-300',
-            isMobileMenuOpen ? 'max-h-64 pt-4' : 'max-h-0',
-          )}
-        >
-          <ul className="flex flex-col gap-4">
-            {visibleNavItems.map((item) => (
-              <li key={item.href}>
-                <button
-                  onClick={() => handleNavClick(item.href)}
-                  className={cn(
-                    'text-sm font-medium transition-colors',
-                    activeSection === item.href.replace('#', '')
-                      ? 'text-primary'
-                      : 'text-muted-foreground hover:text-foreground',
-                  )}
-                >
-                  {item.label}
-                </button>
-              </li>
-            ))}
-          </ul>
-        </div>
-      </nav>
+      </div>
     </header>
   );
 }

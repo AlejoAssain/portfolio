@@ -3,6 +3,24 @@
 
 @custom-variant dark (&:is(.dark *));
 
+@font-face {
+  font-family: 'Instrument Sans';
+  src: url('/Instrument_Sans/InstrumentSans-VariableFont_wdth,wght.ttf') format('truetype-variations');
+  font-weight: 400 700;
+  font-stretch: 75% 100%;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Instrument Sans';
+  src: url('/Instrument_Sans/InstrumentSans-Italic-VariableFont_wdth,wght.ttf') format('truetype-variations');
+  font-weight: 400 700;
+  font-stretch: 75% 100%;
+  font-style: italic;
+  font-display: swap;
+}
+
 :root {
   --background: oklch(0.98 0 0);
   --foreground: oklch(0.15 0 0);
@@ -49,7 +67,7 @@
 }
 
 @theme inline {
-  --font-sans: 'Inter', system-ui, sans-serif;
+  --font-sans: 'Instrument Sans', system-ui, sans-serif;
   --font-mono: 'JetBrains Mono', monospace;
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -80,9 +98,6 @@
   * {
     @apply border-border;
   }
-  html {
-    @apply scroll-smooth;
-  }
   body {
     @apply bg-background text-foreground font-sans antialiased;
   }
@@ -110,4 +125,34 @@
 ::selection {
   background: var(--primary);
   color: var(--primary-foreground);
+}
+
+/* Glow CTA ring */
+@property --glow-angle {
+  syntax: '<angle>';
+  inherits: false;
+  initial-value: 0deg;
+}
+
+.glow-cta-ring {
+  background: conic-gradient(
+    from var(--glow-angle),
+    var(--primary),
+    transparent 35%,
+    var(--primary) 65%,
+    var(--primary)
+  );
+  animation: glow-spin 6s linear infinite;
+}
+
+@keyframes glow-spin {
+  to {
+    --glow-angle: 360deg;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .glow-cta-ring {
+    animation: none;
+  }
 }
