@@ -1,0 +1,103 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-08-19T04:27:16Z",
+  "title": "Design System: Alejo Assain — Portfolio",
+  "extensions": {
+    "colorMeta": {
+      "paper": { "role": "neutral", "displayName": "Deep Green-Black", "canonical": "oklch(21.0% 0.014 140.4)", "tonalRamp": ["#040703", "#1c211b", "#373c36", "#5a6058", "#828880", "#a9b0a8", "#ccd3cb", "#eaf1e8"] },
+      "surface": { "role": "neutral", "displayName": "Raised Green Surface", "canonical": "oklch(24.7% 0.017 137.9)", "tonalRamp": ["#040703", "#1b2119", "#363d34", "#596057", "#81897f", "#a9b1a6", "#ccd4c9", "#e9f1e6"] },
+      "ink": { "role": "neutral", "displayName": "Broken White Ink", "canonical": "oklch(94.1% 0.012 121.7)", "tonalRamp": ["#050603", "#1e201a", "#393c35", "#5c5f57", "#85877f", "#acafa7", "#cfd2ca", "#edf0e7"] },
+      "ink-soft": { "role": "neutral", "displayName": "Soft Sage Ink", "canonical": "oklch(70.5% 0.023 130.1)", "tonalRamp": ["#040701", "#1c2216", "#363d30", "#596053", "#81897b", "#a9b1a2", "#ccd4c5", "#e9f2e2"] },
+      "code": { "role": "primary", "displayName": "Terminal Blue", "canonical": "oklch(72.1% 0.145 258.9)", "tonalRamp": ["#03003e", "#001162", "#003484", "#235aae", "#4d85dc", "#74aeff", "#96d2ff", "#b2f0ff"] },
+      "signal": { "role": "secondary", "displayName": "Signal Orange-Red", "canonical": "oklch(70.7% 0.187 34.1)", "tonalRamp": ["#320000", "#5b0000", "#810000", "#ae1700", "#e04e2d", "#ff7958", "#ff9e7b", "#ffbc97"] },
+      "line": { "role": "neutral", "displayName": "Faint Green Line", "canonical": "oklch(31.1% 0.018 138.7)", "tonalRamp": ["#030703", "#1b2119", "#363d34", "#586056", "#81897e", "#a8b1a6", "#cbd4c9", "#e8f2e6"] }
+    },
+    "typographyMeta": {
+      "display": { "displayName": "Display", "purpose": "Hero headline only." },
+      "h1": { "displayName": "H1", "purpose": "Page title." },
+      "h2": { "displayName": "H2", "purpose": "Section titles." },
+      "h3": { "displayName": "H3", "purpose": "Card titles." },
+      "h4": { "displayName": "H4", "purpose": "Subtitles." },
+      "body-lg": { "displayName": "Body Large", "purpose": "Lead paragraphs, section intros." },
+      "body": { "displayName": "Body", "purpose": "Base paragraph text." },
+      "body-sm": { "displayName": "Body Small", "purpose": "Auxiliary text, captions." },
+      "mono-xs": { "displayName": "Mono XS", "purpose": "Terminal-flavored labels: timestamps, experience periods, skill tags." }
+    },
+    "motion": [
+      { "name": "ease-out-snap", "value": "cubic-bezier(0.16, 1, 0.3, 1)", "purpose": "Entrances and reveals (GSAP: power4.out)." },
+      { "name": "ease-in-out-soft", "value": "cubic-bezier(0.65, 0, 0.35, 1)", "purpose": "Hover and micro-interactions." },
+      { "name": "scroll-linked", "value": "linear", "purpose": "ScrollTrigger with scrub — follows scroll 1:1, no extra curve on top." },
+      { "name": "duration-micro", "value": "150ms", "purpose": "Hover/press feedback." },
+      { "name": "duration-base", "value": "450ms", "purpose": "Section reveals, card entrance." },
+      { "name": "duration-signature", "value": "900-1400ms", "purpose": "The signature hood-drop moment." }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Default CTA — Terminal Blue background, no glow on any state.",
+      "html": "<button class=\"ds-btn-primary\">View project</button>",
+      "css": ".ds-btn-primary { background: #6BA5FF; color: #151A14; font-family: 'General Sans', system-ui, sans-serif; font-weight: 500; font-size: 16px; letter-spacing: 0.01em; padding: 12px 24px; border: none; border-radius: 6px; cursor: pointer; transition: background 150ms cubic-bezier(0.65, 0, 0.35, 1), transform 150ms cubic-bezier(0.65, 0, 0.35, 1); } .ds-btn-primary:hover { background: #8fbcff; } .ds-btn-primary:focus-visible { outline: 2px solid #6BA5FF; outline-offset: 2px; } .ds-btn-primary:active { transform: translateY(1px); }"
+    },
+    {
+      "name": "Card",
+      "kind": "card",
+      "refersTo": "card",
+      "description": "Elevated by value shift and hairline border only, never by shadow.",
+      "html": "<div class=\"ds-card\"><h3 class=\"ds-card-title\">Card title</h3><p class=\"ds-card-body\">Supporting copy for the card.</p></div>",
+      "css": ".ds-card { background: #1D231B; border: 1px solid #2C332A; border-radius: 20px; padding: 24px; } .ds-card-title { font-family: 'Familjen Grotesk', system-ui, sans-serif; font-weight: 500; font-size: 32px; line-height: 1.2; color: #EAEDE4; margin: 0 0 8px; } .ds-card-body { font-family: 'General Sans', system-ui, sans-serif; font-weight: 400; font-size: 16px; letter-spacing: 0.01em; line-height: 1.55; color: #9BA394; margin: 0; }"
+    },
+    {
+      "name": "Skill Tag",
+      "kind": "chip",
+      "refersTo": "tag",
+      "description": "Terminal-flavored label in mono, pill radius.",
+      "html": "<span class=\"ds-tag\">React</span>",
+      "css": ".ds-tag { display: inline-flex; align-items: center; background: #1D231B; border: 1px solid #2C332A; color: #9BA394; font-family: 'Commit Mono', ui-monospace, monospace; font-size: 13px; letter-spacing: 0.02em; padding: 4px 12px; border-radius: 999px; }"
+    },
+    {
+      "name": "Nav Link",
+      "kind": "nav",
+      "refersTo": "nav-link",
+      "description": "Default nav state in soft ink, Terminal Blue on hover/focus, no underline.",
+      "html": "<a href=\"#\" class=\"ds-nav-link\">Projects</a>",
+      "css": ".ds-nav-link { font-family: 'General Sans', system-ui, sans-serif; font-size: 14px; letter-spacing: 0.01em; color: #9BA394; text-decoration: none; padding: 8px 4px; transition: color 150ms cubic-bezier(0.65, 0, 0.35, 1); } .ds-nav-link:hover, .ds-nav-link:focus-visible { color: #6BA5FF; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Warm Terminal at Night",
+    "overview": "A developer portfolio in coder/hacker visual language, run on a dark, green-tinted ground — but warm and habitable, not the \"hacker movie\" cliché of Matrix green, glows, scanlines, and decorative terminal chrome. The dark background is a deliberate tone choice, not an alternate theme: there is no light/dark toggle.\n\nThe accent blue is derived directly from the illustrated character: his hoodie is #6787B8 (258.7° in OKLCH — the project's operative color space, since index.css and Tailwind v4 both work in OKLCH). The system's primary accent, Código (#6BA5FF, 258.9° OKLCH), sits 0.2° from the hoodie — the same hue, lifted in luminosity and chroma so it reads as legible UI color while still belonging to the character's world. A discarded violet-blue (#7B8CFF, 274.7° OKLCH) marks the line not to cross: at that hue distance it reads as a coordination error, not intentional contrast. Author every color token in OKLCH, not HSL — these hues were originally quoted in HSL (~217°/~232°), and a raw 217 interpreted as an OKLCH hue lands on cyan, not this blue. The warm secondary accent, Señal (#FF6B4A, 34.1° OKLCH), sits roughly opposite both on the wheel.\n\nThe system spends its audacity in exactly one place — the character's hood dropping over his head, played as a scrubbed video tied to scroll position — and stays disciplined everywhere else: section reveals, hover states, and page transitions all run the same restrained snap-ease, no surprises, no bounce or elastic in any role.",
+    "keyCharacteristics": [
+      "Dark, green-tinted ground — never neutral gray, never blue-charcoal, never pure black.",
+      "One accent color at a time: terminal blue by default, warm orange-red only for sparse emphasis, never both on one element.",
+      "No glows, ever — on dark backgrounds glow is the number-one movie-hacker tell.",
+      "Elevation by value shift and hairline border, never by shadow — shadows don't read on a dark ground.",
+      "One animated signature moment (the hood-drop video, scroll-scrubbed); everything else is quiet, deliberate motion."
+    ],
+    "rules": [
+      { "name": "The One Accent Rule", "body": "Terminal Blue and Signal Orange-Red never compete on the same element. Terminal Blue is the default; Signal Orange-Red appears only in isolated moments of emphasis.", "section": "colors" },
+      { "name": "The No-Glow Rule", "body": "No text or border ever carries a color halo (text-shadow, glow, or blur-based emphasis). It's the single biggest tell of the \"hacker movie\" look this system explicitly rejects.", "section": "colors" },
+      { "name": "The Elevation-by-Value Rule", "body": "Shadows don't read on a dark ground — box-shadow is banned as a hierarchy tool. A panel separates by rising to Raised Green Surface and/or a 1px Faint Green Line border, never by shadow.", "section": "colors" },
+      { "name": "The OKLCH-Only Rule", "body": "Author every color token in OKLCH, never HSL — it's the project's operative color space (index.css and Tailwind v4 both work in OKLCH). These hues were originally quoted in HSL; a raw 217 written as an OKLCH hue lands on cyan, not Terminal Blue.", "section": "colors" },
+      { "name": "The No-Inter Rule", "body": "Body copy runs on General Sans, not the reflexive Inter default most AI-generated portfolios reach for.", "section": "typography" },
+      { "name": "The One Weight Step Down Rule", "body": "Any body-range weight that would be 600 on a light background drops to 500 on this dark one; paragraph text never exceeds 400.", "section": "typography" },
+      { "name": "The One Full-Bleed Rule", "body": "Only the hero with the character breaks the container by default, spanning the full viewport width. Any other full-bleed section is an explicit decision, not a free-for-all.", "section": "layout" }
+    ],
+    "dos": [
+      "Do default to Terminal Blue (#6BA5FF) for links, CTAs, and focus states.",
+      "Do separate surfaces with a value shift to Raised Green Surface and/or a Faint Green Line hairline — never a shadow.",
+      "Do keep the hood-drop scroll-scrubbed video as the system's only \"loud\" mechanism — everything else uses the same restrained snap-ease, no bounce or elastic.",
+      "Do vary corner radius by element role per the Shapes section, not uniformly."
+    ],
+    "donts": [
+      "Don't use Terminal Blue and Signal Orange-Red on the same element — pick one per the One Accent Rule.",
+      "Don't default to Matrix green, scanlines, CRT noise, a blinking decorative cursor, a terminal-window frame, or any color text-shadow / glow — the \"hacker movie\" tells this brief explicitly rejects.",
+      "Don't use box-shadow for hierarchy; it doesn't read on this dark ground.",
+      "Don't add a second flashy signature mechanism (e.g., a theme toggle) — it dilutes the hood-drop as the one memorable moment, and there is no light/dark toggle by design.",
+      "Don't use real photography of the person; the illustrated character is the standing substitute.",
+      "Don't reach for uniform border-radius or violet→pink gradients — repo-wide bans, see AGENTS.md."
+    ]
+  }
+}

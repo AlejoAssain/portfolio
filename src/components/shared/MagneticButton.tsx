@@ -64,6 +64,7 @@ export const MagneticButton = forwardRef<HTMLElement, MagneticButtonProps>(
           target="_blank"
           rel="noopener noreferrer"
           onClick={onClick as MouseEventHandler<HTMLAnchorElement>}
+          className="inline-flex transition-transform duration-[var(--duration-micro)] ease-out-snap active:scale-[0.97]"
           {...props}
         >
           {content}
@@ -76,6 +77,7 @@ export const MagneticButton = forwardRef<HTMLElement, MagneticButtonProps>(
         ref={forwardedRef as Ref<HTMLButtonElement>}
         onClick={onClick as MouseEventHandler<HTMLButtonElement>}
         type="button"
+        className="inline-flex transition-transform duration-[var(--duration-micro)] ease-out-snap active:scale-[0.97]"
         {...props}
       >
         {content}

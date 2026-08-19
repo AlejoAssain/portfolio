@@ -37,19 +37,19 @@ export function Hero() {
       <div className="max-w-6xl mx-auto px-6 py-24 relative z-10 w-full">
         <div className="max-w-xl space-y-8">
           <AnimatedSection delay={0}>
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-foreground leading-tight text-balance">
+            <h1 className="font-display text-display text-foreground text-balance">
               {personalInfo.name}
             </h1>
           </AnimatedSection>
 
           <AnimatedSection delay={100}>
-            <h2 className="text-xl sm:text-2xl font-medium text-primary">
+            <h2 className="font-display text-h4 text-primary">
               {personalInfo.title}
             </h2>
           </AnimatedSection>
 
           <AnimatedSection delay={200}>
-            <p className="text-lg text-muted-foreground max-w-lg leading-relaxed text-pretty">
+            <p className="text-body-lg text-muted-foreground max-w-lg text-pretty">
               {personalInfo.tagline}
             </p>
           </AnimatedSection>
@@ -60,13 +60,21 @@ export function Hero() {
         </div>
       </div>
 
-      {/* Character — base flush with the viewport bottom, right side, 75% of viewport height */}
+      {/* Character — base flush with the viewport bottom, right side. Smaller
+          on mobile so it doesn't sit on top of the headline text; full 75vh
+          from lg up where there's room beside the text column. */}
       <div
         ref={characterRef}
         aria-hidden="true"
-        className="pointer-events-none absolute bottom-0 right-0 z-0 hidden h-[75vh] lg:right-[1%] lg:block"
+        className="pointer-events-none absolute bottom-0 right-0 h-[32vh] lg:right-[1%] lg:h-[75vh]"
         style={{ aspectRatio: CHARACTER_ASPECT_RATIO }}
       >
+        {/* Hidden everywhere — it's only a decode source. The visible
+            output is the luma-keyed canvas below, which gives real
+            per-pixel transparency at every breakpoint instead of relying
+            on mix-blend-mode (which only blends within its own stacking
+            context, and leaves the source's black showing through on
+            mobile). */}
         <video
           ref={videoRef}
           src="/character/alejo-hood-transition.mp4"
@@ -75,7 +83,10 @@ export function Hero() {
           playsInline
           preload="auto"
         />
-        <canvas ref={canvasRef} className="absolute inset-0 h-full w-full" />
+        <canvas
+          ref={canvasRef}
+          className="absolute inset-0 h-full w-full"
+        />
 
         {/* Resting state before any scroll: static no-pupils art with a
             cursor-tracking pupils overlay. Pixel-matched to the video's own
@@ -117,7 +128,7 @@ export function Hero() {
           aria-label="Scroll to about section"
         >
           <span className="text-xs uppercase tracking-widest">Scroll</span>
-          <ArrowDown size={16} className="animate-bounce" />
+          <ArrowDown size={16} className="scroll-hint" />
         </button>
       </AnimatedSection>
     </section>

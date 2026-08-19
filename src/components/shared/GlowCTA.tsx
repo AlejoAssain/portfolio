@@ -13,7 +13,7 @@ export function GlowCTA({ onClick, children, className }: GlowCTAProps) {
     <button
       onClick={onClick}
       className={cn(
-        'group relative inline-flex items-center justify-center rounded-full p-px',
+        'group relative inline-flex items-center justify-center rounded-full p-px transition-transform duration-[var(--duration-micro)] ease-out-snap active:scale-[0.97]',
         className,
       )}
     >

@@ -211,13 +211,15 @@ export function ContactFormDialog({
           {triggerLabel}
         </Button>
       </DialogTrigger>
-      <DialogContent className="overflow-hidden border-primary/20 bg-background/95 p-0 shadow-2xl shadow-primary/10 backdrop-blur sm:max-w-[520px]">
+      <DialogContent className="overflow-hidden border-primary/20 bg-background/95 p-0 shadow-none backdrop-blur sm:max-w-[520px]">
         <DialogHeader className="border-b border-border bg-secondary/40 px-6 py-6 pr-12 text-left">
           <div className="mb-2 flex size-11 items-center justify-center rounded-lg bg-primary text-primary-foreground">
             <Send size={20} />
           </div>
-          <DialogTitle className="text-2xl">{title}</DialogTitle>
-          <DialogDescription className="max-w-sm text-sm leading-relaxed">
+          <DialogTitle className="font-display text-h4 font-medium">
+            {title}
+          </DialogTitle>
+          <DialogDescription className="max-w-sm text-body-sm">
             {description}
           </DialogDescription>
         </DialogHeader>
@@ -281,7 +283,7 @@ export function ContactFormDialog({
             />
           </div>
           <div className="space-y-2">
-            <div ref={turnstileContainerRef} />
+            <div ref={turnstileContainerRef} className="min-h-[65px]" />
             {turnstileError && (
               <p className="text-sm text-destructive">{turnstileError}</p>
             )}

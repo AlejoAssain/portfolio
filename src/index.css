@@ -4,71 +4,148 @@
 @custom-variant dark (&:is(.dark *));
 
 @font-face {
-  font-family: 'Instrument Sans';
-  src: url('/Instrument_Sans/InstrumentSans-VariableFont_wdth,wght.ttf') format('truetype-variations');
-  font-weight: 400 700;
-  font-stretch: 75% 100%;
+  font-family: 'General Sans';
+  src: url('/fonts/GeneralSans_Complete/Fonts/WEB/fonts/GeneralSans-Variable.woff2') format('woff2');
+  font-weight: 200 700;
   font-style: normal;
   font-display: swap;
 }
 
 @font-face {
-  font-family: 'Instrument Sans';
-  src: url('/Instrument_Sans/InstrumentSans-Italic-VariableFont_wdth,wght.ttf') format('truetype-variations');
+  font-family: 'General Sans';
+  src: url('/fonts/GeneralSans_Complete/Fonts/WEB/fonts/GeneralSans-VariableItalic.woff2') format('woff2');
+  font-weight: 200 700;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Familjen Grotesk';
+  src: url('/fonts/Familjen_Grotesk/FamiljenGrotesk-VariableFont_wght.woff2') format('woff2');
   font-weight: 400 700;
-  font-stretch: 75% 100%;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Familjen Grotesk';
+  src: url('/fonts/Familjen_Grotesk/FamiljenGrotesk-Italic-VariableFont_wght.woff2') format('woff2');
+  font-weight: 400 700;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Commit Mono';
+  src: url('/fonts/CommitMonoV143/CommitMono-400-Regular.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Commit Mono';
+  src: url('/fonts/CommitMonoV143/CommitMono-400-Italic.woff2') format('woff2');
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Commit Mono';
+  src: url('/fonts/CommitMonoV143/CommitMono-700-Regular.woff2') format('woff2');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Commit Mono';
+  src: url('/fonts/CommitMonoV143/CommitMono-700-Italic.woff2') format('woff2');
+  font-weight: 700;
   font-style: italic;
   font-display: swap;
 }
 
 :root {
-  --background: oklch(0.98 0 0);
-  --foreground: oklch(0.15 0 0);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.15 0 0);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.15 0 0);
-  --primary: oklch(0.45 0.15 220);
-  --primary-foreground: oklch(0.98 0 0);
-  --secondary: oklch(0.95 0 0);
-  --secondary-foreground: oklch(0.15 0 0);
-  --muted: oklch(0.93 0 0);
-  --muted-foreground: oklch(0.45 0 0);
-  --accent: oklch(0.55 0.12 175);
-  --accent-foreground: oklch(0.98 0 0);
-  --destructive: oklch(0.55 0.22 25);
-  --destructive-foreground: oklch(0.98 0 0);
-  --border: oklch(0.88 0 0);
-  --input: oklch(0.88 0 0);
-  --ring: oklch(0.45 0.15 220);
-  --radius: 0.5rem;
-}
+  /* Primitives — design/direction.md, 7 colors, OKLCH (the project's operative color space) */
+  --paper: oklch(21.0% 0.014 140.4); /* #151A14 */
+  --surface: oklch(24.7% 0.017 137.9); /* #1D231B */
+  --ink: oklch(94.1% 0.012 121.7); /* #EAEDE4 */
+  --ink-soft: oklch(70.5% 0.023 130.1); /* #9BA394 */
+  --code: oklch(72.1% 0.145 258.9); /* #6BA5FF */
+  --signal: oklch(70.7% 0.187 34.1); /* #FF6B4A */
+  --line: oklch(31.1% 0.018 138.7); /* #2C332A */
 
-.dark {
-  --background: oklch(0.12 0.015 250);
-  --foreground: oklch(0.93 0.01 250);
-  --card: oklch(0.16 0.015 250);
-  --card-foreground: oklch(0.93 0.01 250);
-  --popover: oklch(0.16 0.015 250);
-  --popover-foreground: oklch(0.93 0.01 250);
-  --primary: oklch(0.65 0.15 175);
-  --primary-foreground: oklch(0.12 0.015 250);
-  --secondary: oklch(0.22 0.015 250);
-  --secondary-foreground: oklch(0.93 0.01 250);
-  --muted: oklch(0.22 0.015 250);
-  --muted-foreground: oklch(0.60 0.01 250);
-  --accent: oklch(0.65 0.15 175);
-  --accent-foreground: oklch(0.12 0.015 250);
+  /* Status green — not one of DESIGN.md's original 7, added for the "available"
+     indicator. Same green family as paper/surface/line (~137-141° OKLCH) but
+     lifted in lightness/chroma to read as a status signal, same treatment as
+     how Código was derived from the hoodie hue. */
+  --success: oklch(74% 0.14 152); /* #5DC47E */
+
+  /* Semantic aliases (shadcn) mapped to the primitives above */
+  --background: var(--paper);
+  --foreground: var(--ink);
+  --card: var(--surface);
+  --card-foreground: var(--ink);
+  --popover: var(--surface);
+  --popover-foreground: var(--ink);
+  --primary: var(--code);
+  --primary-foreground: var(--paper);
+  --secondary: var(--surface);
+  --secondary-foreground: var(--ink);
+  --muted: var(--surface);
+  --muted-foreground: var(--ink-soft);
+  --accent: var(--surface);
+  --accent-foreground: var(--ink);
+  /* Not part of DESIGN.md's palette yet; kept at the value already live behind `.dark` so error states don't regress. */
   --destructive: oklch(0.55 0.22 25);
-  --destructive-foreground: oklch(0.98 0 0);
-  --border: oklch(0.28 0.015 250);
-  --input: oklch(0.28 0.015 250);
-  --ring: oklch(0.65 0.15 175);
+  --destructive-foreground: var(--ink);
+  --border: var(--line);
+  --input: var(--line);
+  --ring: var(--code);
+
+  /* Shapes — deliberately non-uniform, one token per element role */
+  --radius-sharp: 0px;
+  --radius-sm: 6px;
+  --radius-md: 20px;
+  --radius-pill: 999px;
+
+  /* Spacing — base 4px */
+  --spacing-xs: 4px;
+  --spacing-sm: 8px;
+  --spacing-md: 16px;
+  --spacing-lg: 24px;
+  --spacing-xl: 40px;
+  --spacing-2xl: 64px;
+  --spacing-3xl: 96px;
+  --spacing-4xl: 144px;
+
+  /* Easings & durations. ease-out-snap = GSAP power4.out; ease-in-out-soft for hover/micro-interactions. */
+  --ease-out-snap: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out-soft: cubic-bezier(0.65, 0, 0.35, 1);
+  --ease-scroll-linked: linear;
+  --duration-micro: 150ms;
+  --duration-base: 450ms;
+  --duration-signature: 1200ms; /* representative point in the 900-1400ms signature-moment range */
 }
 
 @theme inline {
-  --font-sans: 'Instrument Sans', system-ui, sans-serif;
-  --font-mono: 'JetBrains Mono', monospace;
+  /* Fonts — General Sans (body) / Familjen Grotesk (display) / Commit Mono (mono), self-hosted via @font-face above. */
+  --font-sans: 'General Sans', system-ui, sans-serif;
+  --font-display: 'Familjen Grotesk', system-ui, sans-serif;
+  --font-mono: 'Commit Mono', ui-monospace, monospace;
+
+  /* Colors */
+  --color-paper: var(--paper);
+  --color-surface: var(--surface);
+  --color-ink: var(--ink);
+  --color-ink-soft: var(--ink-soft);
+  --color-code: var(--code);
+  --color-signal: var(--signal);
+  --color-line: var(--line);
+  --color-success: var(--success);
+
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
@@ -88,10 +165,70 @@
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);
-  --radius-sm: calc(var(--radius) - 4px);
-  --radius-md: calc(var(--radius) - 2px);
-  --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) + 4px);
+
+  /* Shapes */
+  --radius-sharp: var(--radius-sharp);
+  --radius-sm: var(--radius-sm);
+  --radius-md: var(--radius-md);
+  --radius-pill: var(--radius-pill);
+
+  /* Spacing is intentionally NOT re-registered here. Tailwind v4 resolves the
+     named max-w, w, h, and gap utility scales through this same spacing
+     namespace, so mirroring xs/sm/md/lg/xl/2xl/3xl/4xl here silently rewrites
+     those utilities app-wide (confirmed: it broke max-w-xs/sm/lg/xl/2xl/3xl
+     across 14 files). The values still exist as plain custom properties in
+     root above for direct var reference; Tailwind's default numeric scale
+     (p-6 = 24px, p-10 = 40px, p-16 = 64px, p-24 = 96px...) already lands on
+     the same pixel values for utility use. */
+
+  /* Typography — 9 scales, each bundling size/line-height/letter-spacing/weight (Tailwind v4 paired sub-properties) */
+  --text-display: clamp(2.5rem, 6vw, 5.5rem);
+  --text-display--line-height: 1.05;
+  --text-display--font-weight: 600;
+
+  --text-h1: clamp(2.5rem, 5vw, 3.75rem);
+  --text-h1--line-height: 1.1;
+  --text-h1--font-weight: 600;
+
+  --text-h2: 2.75rem;
+  --text-h2--line-height: 1.15;
+  --text-h2--font-weight: 500;
+
+  --text-h3: 2rem;
+  --text-h3--line-height: 1.2;
+  --text-h3--font-weight: 500;
+
+  --text-h4: 1.5rem;
+  --text-h4--line-height: 1.25;
+  --text-h4--font-weight: 500;
+
+  --text-body-lg: 1.1875rem;
+  --text-body-lg--line-height: 1.5;
+  --text-body-lg--letter-spacing: 0.01em;
+  --text-body-lg--font-weight: 400;
+
+  --text-body: 1rem;
+  --text-body--line-height: 1.55;
+  --text-body--letter-spacing: 0.01em;
+  --text-body--font-weight: 400;
+
+  --text-body-sm: 0.875rem;
+  --text-body-sm--line-height: 1.5;
+  --text-body-sm--letter-spacing: 0.01em;
+  --text-body-sm--font-weight: 400;
+
+  --text-mono-xs: 0.8125rem;
+  --text-mono-xs--line-height: 1.4;
+  --text-mono-xs--letter-spacing: 0.02em;
+  --text-mono-xs--font-weight: 400;
+
+  /* Motion */
+  --ease-out-snap: var(--ease-out-snap);
+  --ease-in-out-soft: var(--ease-in-out-soft);
+  --ease-scroll-linked: var(--ease-scroll-linked);
+  --duration-micro: var(--duration-micro);
+  --duration-base: var(--duration-base);
+  --duration-signature: var(--duration-signature);
 }
 
 @layer base {
@@ -114,7 +251,7 @@
 
 ::-webkit-scrollbar-thumb {
   background: var(--muted);
-  border-radius: 4px;
+  border-radius: var(--radius-sm);
 }
 
 ::-webkit-scrollbar-thumb:hover {
@@ -151,8 +288,24 @@
   }
 }
 
+/* Scroll cue */
+.scroll-hint {
+  animation: scroll-hint 1.6s var(--ease-in-out-soft) infinite;
+}
+
+@keyframes scroll-hint {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(4px);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
-  .glow-cta-ring {
+  .glow-cta-ring,
+  .scroll-hint {
     animation: none;
   }
 }

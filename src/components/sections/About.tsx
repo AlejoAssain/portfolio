@@ -9,7 +9,7 @@ export function About() {
       <div className="max-w-6xl mx-auto px-6">
         <AnimatedSection>
           <div className="flex items-center gap-4 mb-12">
-            <h2 className="text-2xl font-bold text-foreground">About</h2>
+            <h2 className="font-display text-h2 text-foreground">About</h2>
             <div className="h-px flex-1 bg-border max-w-xs" />
           </div>
         </AnimatedSection>
@@ -19,7 +19,7 @@ export function About() {
             {personalInfo.bio.split('\n\n').map((paragraph, index) => (
               <p
                 key={index}
-                className="text-muted-foreground leading-relaxed text-pretty"
+                className="text-body text-muted-foreground text-pretty"
               >
                 {paragraph.split(/(\*\*.*?\*\*)/).map((part, i) => {
                   if (part.startsWith('**') && part.endsWith('**')) {
@@ -65,7 +65,7 @@ export function About() {
                     Status
                   </dt>
                   <dd className="text-foreground mt-1 flex items-center gap-2">
-                    <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
+                    <span className="w-2 h-2 rounded-full bg-success animate-pulse" />
                     {personalInfo.status}
                   </dd>
                 </div>

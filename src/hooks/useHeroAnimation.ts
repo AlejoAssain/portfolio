@@ -5,7 +5,12 @@ import { gsap } from 'gsap'
 // The source video is composited on pure black. Kling/h264 can leave faint
 // near-black noise, so pixels below the threshold go fully transparent and
 // a short feather band above it blends the cutout edge instead of leaving a
-// hard silhouette line.
+// hard silhouette line. Runs on both breakpoints — mix-blend-mode on the
+// raw <video> was tried for mobile as a cheaper alternative, but it only
+// blends within its own stacking context, so isolated wrapper elements (or
+// any backdrop that isn't a flat, fully opaque color) leave the source's
+// true black showing through. Per-pixel alpha is the only thing that's
+// actually transparent regardless of what's behind it.
 const LUMA_CUTOFF = 32
 const LUMA_FEATHER = 18
 // Internal render resolution is halved before the per-pixel key pass — the
@@ -18,6 +23,17 @@ const HOOD_FINAL_FRAME_TIME = 5.083333
 const PUPIL_INFLUENCE_RADIUS = 220
 const PUPIL_MAX_OFFSET = 6
 
+const DESKTOP_QUERY = '(min-width: 1024px)'
+const DESKTOP_PIN_DISTANCE = '+=140%'
+const MOBILE_PIN_DISTANCE = '+=70%'
+// A plain `scrub: true` snaps the timeline to scroll position instantly, so
+// any fast input — a hard trackpad flick, or scrollToSection's animated
+// jump — blows through the whole hood transition in a couple hundred ms.
+// A numeric scrub adds that many seconds of lag while the timeline catches
+// up to the scroll position, spreading the video out over real time no
+// matter how quickly the underlying scroll position moves.
+const SCRUB_SMOOTHING = 1
+
 export function useHeroAnimation() {
   const containerRef = useRef<HTMLDivElement>(null)
   const characterRef = useRef<HTMLDivElement>(null)
@@ -26,7 +42,7 @@ export function useHeroAnimation() {
   const idleLayerRef = useRef<HTMLDivElement>(null)
   const pupilsWrapRef = useRef<HTMLDivElement>(null)
 
-  useGSAP(
+  const { contextSafe } = useGSAP(
     () => {
       const video = videoRef.current
       const canvas = canvasRef.current
@@ -34,6 +50,20 @@ export function useHeroAnimation() {
 
       const ctx = canvas.getContext('2d', { willReadFrequently: true })
       if (!ctx) return
+
+      // Every deferred video listener goes through here so matchMedia branch
+      // cleanup can always remove it. Under React StrictMode's dev-mode
+      // mount→cleanup→mount, a listener left dangling from the first
+      // (reverted) mount fires again once the second mount's own listener is
+      // also attached — double-running scrub setup and corrupting the pin.
+      const addVideoListener = <K extends keyof HTMLMediaElementEventMap>(
+        type: K,
+        cb: (event: HTMLMediaElementEventMap[K]) => void,
+        options?: AddEventListenerOptions,
+      ) => {
+        video.addEventListener(type, cb, options)
+        return () => video.removeEventListener(type, cb)
+      }
 
       const drawFrame = () => {
         if (video.readyState < 2) return
@@ -67,19 +97,29 @@ export function useHeroAnimation() {
       // isn't available to drawImage until the browser fires `seeked`, so
       // that event (not the tween's onUpdate tick) is what actually keeps
       // the canvas in sync while scrubbing.
-      video.addEventListener('seeked', drawFrame)
+      const enableCanvasDrawing = () => addVideoListener('seeked', drawFrame)
 
       // The idle layer (no-pupils art + cursor-tracking pupils overlay) is
       // the resting state shown before the user has scrolled at all. The
       // video's own first frame is pixel-matched to that same pose (with
       // natural, non-tracking pupils baked in), so the moment scrolling
-      // starts we just hide the idle layer and the canvas underneath reads
-      // as a continuation, not a swap — pupils simply stop following the
-      // cursor and lock into the baked animation.
+      // starts we just hide the idle layer and the video/canvas underneath
+      // reads as a continuation, not a swap.
       const setIdleVisible = (visible: boolean) => {
         if (idleLayerRef.current) {
           idleLayerRef.current.style.opacity = visible ? '1' : '0'
         }
+      }
+
+      // Runs `cb` once metadata is available, synchronously if it already
+      // is. Always returns a cleanup, even in the sync case (no-op there),
+      // so callers can compose it unconditionally.
+      const whenMetadataReady = (cb: () => void) => {
+        if (video.readyState >= 1) {
+          cb()
+          return () => {}
+        }
+        return addVideoListener('loadedmetadata', cb, { once: true })
       }
 
       const getFinalFrameTime = () =>
@@ -99,65 +139,166 @@ export function useHeroAnimation() {
 
       const mm = gsap.matchMedia()
 
-      // Below lg the character is hidden entirely (see Hero.tsx), so the
-      // scroll-jacked pin has nothing to reveal — running it anyway would
-      // freeze the page for +140% of scroll with no visual payoff.
-      mm.add('(min-width: 1024px) and (prefers-reduced-motion: no-preference)', () => {
-        const setupScrub = () => {
-          setIdleVisible(true)
-          if (video.readyState >= 2) {
-            drawFrame()
-          } else {
-            video.addEventListener('loadeddata', drawFrame, { once: true })
-          }
+      mm.add(
+        `${DESKTOP_QUERY} and (prefers-reduced-motion: no-preference)`,
+        () => {
+          const cleanupCanvas = enableCanvasDrawing()
 
-          gsap.timeline({
-            scrollTrigger: {
-              id: 'hero-pin',
-              trigger: containerRef.current,
-              start: 'top top',
-              end: '+=140%',
-              scrub: true,
-              pin: true,
-              onUpdate: (self) => {
-                setIdleVisible(self.progress < 0.01)
-                if (self.progress >= 0.999) drawFinalFrame()
+          // contextSafe: when metadata isn't ready yet, this runs later from
+          // an event callback, outside the synchronous window useGSAP tracks
+          // for auto-revert — without this wrapper the ScrollTrigger it
+          // creates would survive a StrictMode revert as an orphan.
+          const setupScrub = contextSafe(() => {
+            setIdleVisible(true)
+
+            gsap.timeline({
+              scrollTrigger: {
+                id: 'hero-pin',
+                trigger: containerRef.current,
+                start: 'top top',
+                end: DESKTOP_PIN_DISTANCE,
+                scrub: SCRUB_SMOOTHING,
+                pin: true,
+                onUpdate: (self) => {
+                  setIdleVisible(self.progress < 0.01)
+                  if (self.progress >= 0.999) drawFinalFrame()
+                },
               },
-            },
-          }).fromTo(
-            video,
-            { currentTime: 0 },
-            { currentTime: getFinalFrameTime(), ease: 'none' },
+            }).fromTo(
+              video,
+              { currentTime: 0 },
+              { currentTime: getFinalFrameTime(), ease: 'none' },
+            )
+          })
+
+          const cleanupDrawFrame =
+            video.readyState >= 2
+              ? (drawFrame(), () => {})
+              : addVideoListener('loadeddata', drawFrame, { once: true })
+          const cleanupMetadata = whenMetadataReady(setupScrub)
+
+          return () => {
+            cleanupCanvas()
+            cleanupDrawFrame()
+            cleanupMetadata()
+          }
+        },
+      )
+
+      // Same canvas/luma-key pipeline as desktop (see the LUMA_CUTOFF note
+      // above for why mix-blend-mode isn't good enough here) — just a
+      // shorter pin distance since there's less empty space below the fold
+      // to spend on it, plus the iOS playback quirk below.
+      mm.add(
+        `(max-width: 1023px) and (prefers-reduced-motion: no-preference)`,
+        () => {
+          let videoFailed = false
+          const cleanupCanvas = enableCanvasDrawing()
+
+          // iOS can block programmatic currentTime scrubbing until a video
+          // has been "primed" by play() inside a real user gesture — even
+          // though it's muted and never visibly plays here.
+          const unlockPlayback = () => {
+            video.play().then(() => video.pause()).catch(() => {})
+          }
+          window.addEventListener('touchstart', unlockPlayback, {
+            once: true,
+            passive: true,
+          })
+
+          // Never leave an empty gap: if the video can't play at all, keep
+          // the (always-available, image-based) idle layer up for good
+          // instead of handing off to a video that never arrives.
+          const cleanupError = addVideoListener('error', () => {
+            videoFailed = true
+            setIdleVisible(true)
+          })
+
+          const setupScrub = contextSafe(() => {
+            if (videoFailed) return
+            setIdleVisible(true)
+
+            gsap.timeline({
+              scrollTrigger: {
+                id: 'hero-pin',
+                trigger: containerRef.current,
+                start: 'top top',
+                end: MOBILE_PIN_DISTANCE,
+                scrub: SCRUB_SMOOTHING,
+                pin: true,
+                onUpdate: (self) => {
+                  if (videoFailed) return
+                  setIdleVisible(self.progress < 0.01)
+                  if (self.progress >= 0.999) drawFinalFrame()
+                },
+              },
+            }).fromTo(
+              video,
+              { currentTime: 0 },
+              { currentTime: getFinalFrameTime(), ease: 'none' },
+            )
+          })
+
+          const cleanupDrawFrame =
+            video.readyState >= 2
+              ? (drawFrame(), () => {})
+              : addVideoListener('loadeddata', drawFrame, { once: true })
+          const cleanupMetadata = whenMetadataReady(setupScrub)
+
+          return () => {
+            window.removeEventListener('touchstart', unlockPlayback)
+            cleanupCanvas()
+            cleanupError()
+            cleanupDrawFrame()
+            cleanupMetadata()
+          }
+        },
+      )
+
+      mm.add(`${DESKTOP_QUERY} and (prefers-reduced-motion: reduce)`, () => {
+        const cleanupCanvas = enableCanvasDrawing()
+
+        const cleanupMetadata = whenMetadataReady(() => {
+          video.currentTime = getFinalFrameTime()
+        })
+
+        return () => {
+          cleanupCanvas()
+          cleanupMetadata()
+        }
+      })
+
+      mm.add(
+        `(max-width: 1023px) and (prefers-reduced-motion: reduce)`,
+        () => {
+          const cleanupCanvas = enableCanvasDrawing()
+          const cleanupError = addVideoListener('error', () =>
+            setIdleVisible(true),
           )
-        }
+          const cleanupSeeked = addVideoListener('seeked', () =>
+            setIdleVisible(false),
+          )
+          const cleanupMetadata = whenMetadataReady(() => {
+            video.currentTime = getFinalFrameTime()
+          })
 
-        if (video.readyState >= 1) {
-          setupScrub()
-        } else {
-          video.addEventListener('loadedmetadata', setupScrub, { once: true })
-          return () =>
-            video.removeEventListener('loadedmetadata', setupScrub)
-        }
-      })
-
-      mm.add('(prefers-reduced-motion: reduce)', () => {
-        video.currentTime = 0
-        setIdleVisible(true)
-        if (video.readyState >= 2) {
-          drawFrame()
-        } else {
-          video.addEventListener('loadeddata', drawFrame, { once: true })
-        }
-      })
-
-      return () => video.removeEventListener('seeked', drawFrame)
+          return () => {
+            cleanupCanvas()
+            cleanupError()
+            cleanupSeeked()
+            cleanupMetadata()
+          }
+        },
+      )
     },
     { scope: containerRef },
   )
 
   // Pupils drift a few px toward the cursor within the eye sockets baked
   // into the pupils overlay art — a shared offset for both eyes, not
-  // independent per-eye tracking.
+  // independent per-eye tracking. Desktop-only: there's no persistent
+  // cursor on touch, and Pointer Events fire pointermove for touch-drags
+  // too, which would otherwise do this work on every scroll frame on phone.
   useEffect(() => {
     const character = characterRef.current
     const pupils = pupilsWrapRef.current
@@ -185,8 +326,18 @@ export function useHeroAnimation() {
       })
     }
 
-    window.addEventListener('pointermove', onMove)
+    const desktopQuery = window.matchMedia(DESKTOP_QUERY)
+    const syncListener = (matches: boolean) => {
+      window.removeEventListener('pointermove', onMove)
+      if (matches) window.addEventListener('pointermove', onMove)
+    }
+    syncListener(desktopQuery.matches)
+    const onQueryChange = (event: MediaQueryListEvent) =>
+      syncListener(event.matches)
+    desktopQuery.addEventListener('change', onQueryChange)
+
     return () => {
+      desktopQuery.removeEventListener('change', onQueryChange)
       window.removeEventListener('pointermove', onMove)
       if (frame) cancelAnimationFrame(frame)
     }

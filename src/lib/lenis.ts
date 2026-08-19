@@ -42,17 +42,60 @@ export function onScroll(callback: () => void) {
 }
 
 export function isPastHero() {
-  const heroEnd = ScrollTrigger.getById('hero-pin')?.end ?? 0
-  return window.scrollY >= heroEnd
+  const heroTrigger = ScrollTrigger.getById('hero-pin')
+  if (!heroTrigger) return false
+  return window.scrollY >= heroTrigger.end
 }
+
+// Enough real time to watch the hood animation finish during the pin, plus
+// a normal-feeling scroll speed for whatever distance remains beyond it. A
+// flat duration for the whole trip made the visible remainder crawl, since
+// the pinned (visually static) portion ate most of the time budget.
+const PIN_WATCH_DURATION = 2.2
+const POST_PIN_SCROLL_SPEED = 2400 // px/s
 
 // Scrolling away from the hero mid-pin would cut its scroll-scrubbed hood
 // animation off half-played, so a click while still inside that pinned zone
-// gets a slow linear scroll long enough to watch it finish; once past it,
-// scrolling uses Lenis's own default duration/easing.
+// gets a scroll long enough to watch it finish; once past it, scrolling
+// uses Lenis's own default duration/easing.
+//
+// This has to be two separate scrollTo calls, not one scroll eased over the
+// combined distance: an ease-out curve front-loads its velocity, so a
+// single tween covering pin-distance + remaining-distance blows through the
+// pin in the first fraction of a second (racing past `heroEnd` and
+// releasing the pin) long before the hood video is done scrubbing, then
+// crawls through the remainder. Scrolling the pin stretch at constant speed
+// first guarantees the video actually gets its full PIN_WATCH_DURATION
+// before the pin can release, then the leftover distance eases out normally.
 export function scrollToSection(href: string) {
-  lenis.scrollTo(
-    href,
-    isPastHero() ? undefined : { duration: 3, easing: (t: number) => t },
-  )
+  if (isPastHero()) {
+    lenis.scrollTo(href)
+    return
+  }
+
+  const heroTrigger = ScrollTrigger.getById('hero-pin')
+  if (!heroTrigger) {
+    lenis.scrollTo(href)
+    return
+  }
+
+  const heroEnd = heroTrigger.end
+  const target = document.querySelector(href)
+  const targetTop = target
+    ? target.getBoundingClientRect().top + window.scrollY
+    : heroEnd
+  const visibleDistance = Math.max(targetTop - heroEnd, 0)
+
+  ;(lenis as Lenis).scrollTo(heroEnd, {
+    duration: PIN_WATCH_DURATION,
+    easing: (t: number) => t,
+    onComplete: () => {
+      if (visibleDistance <= 0) return
+      lenis.scrollTo(href, {
+        duration: visibleDistance / POST_PIN_SCROLL_SPEED,
+        // ease-out-snap's cubic-bezier is tuned to match GSAP's power4.out.
+        easing: gsap.parseEase('power4.out'),
+      })
+    },
+  })
 }

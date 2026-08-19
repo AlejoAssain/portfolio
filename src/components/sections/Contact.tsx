@@ -6,14 +6,14 @@ export function Contact() {
       <div className="max-w-6xl mx-auto px-6">
         <AnimatedSection>
           <div className="flex items-center gap-4 mb-12">
-            <h2 className="text-2xl font-bold text-foreground">Contact</h2>
+            <h2 className="font-display text-h2 text-foreground">Contact</h2>
             <div className="h-px flex-1 bg-border max-w-xs" />
           </div>
         </AnimatedSection>
 
         <div className="max-w-2xl">
           <AnimatedSection delay={100}>
-            <p className="text-lg text-muted-foreground leading-relaxed mb-8">
+            <p className="text-body-lg text-muted-foreground mb-8">
               Got an idea, a project, or a problem worth solving? Leave me a
               message and I will get back to you.
             </p>

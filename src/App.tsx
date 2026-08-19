@@ -7,7 +7,6 @@ import { AdminAuthBoundary } from '@/components/admin/AdminAuthBoundary';
 import { AdminLayout } from '@/components/admin/AdminLayout';
 import { ProtectedAdminRoute } from '@/components/admin/ProtectedAdminRoute';
 import { Footer, Header } from '@/components/layout';
-import { CursorGlow } from '@/components/shared';
 import { Toaster } from '@/components/ui';
 import { PortfolioContentProvider, usePortfolioContent } from '@/hooks';
 import {
@@ -68,8 +67,6 @@ function PortfolioPage() {
 
   return (
     <div className="relative min-h-screen">
-      <CursorGlow />
-
       <Header />
 
       <main>
