@@ -52,8 +52,8 @@ function ProjectButtons({
           rel="noopener noreferrer"
           className={
             compact
-              ? 'inline-flex h-8 items-center gap-1.5 rounded-md bg-secondary px-2.5 text-xs font-medium text-secondary-foreground transition-all duration-300 hover:bg-primary hover:text-primary-foreground'
-              : 'inline-flex h-9 items-center gap-2 rounded-lg bg-secondary px-3 text-sm font-medium text-secondary-foreground transition-all duration-300 hover:bg-primary hover:text-primary-foreground'
+              ? 'inline-flex h-8 items-center gap-1.5 rounded-md bg-secondary px-2.5 text-xs font-medium text-secondary-foreground transition-all duration-300 hover:bg-primary hover:text-primary-foreground active:scale-[0.97] active:duration-[var(--duration-micro)]'
+              : 'inline-flex h-9 items-center gap-2 rounded-lg bg-secondary px-3 text-sm font-medium text-secondary-foreground transition-all duration-300 hover:bg-primary hover:text-primary-foreground active:scale-[0.97] active:duration-[var(--duration-micro)]'
           }
           aria-label={`View ${project.title} ${label}`}
         >
@@ -78,7 +78,7 @@ export function Projects() {
       <div className="max-w-6xl mx-auto px-6">
         <AnimatedSection>
           <div className="flex items-center gap-4 mb-12">
-            <h2 className="text-2xl font-bold text-foreground">Projects</h2>
+            <h2 className="font-display text-h2 text-foreground">Projects</h2>
             <div className="h-px flex-1 bg-border max-w-xs" />
           </div>
         </AnimatedSection>
@@ -90,17 +90,17 @@ export function Projects() {
                 <div className="space-y-4">
                   <header className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
                     <div>
-                      <span className="text-xs text-primary font-mono uppercase tracking-wider">
+                      <span className="text-mono-xs text-signal font-mono uppercase">
                         Featured Project
                       </span>
-                      <h3 className="text-xl font-semibold text-foreground mt-2 group-hover:text-primary transition-colors">
+                      <h3 className="font-display text-h3 text-foreground mt-2 group-hover:text-primary transition-colors">
                         {project.title}
                       </h3>
                     </div>
                     <ProjectButtons project={project} />
                   </header>
 
-                  <p className="text-muted-foreground leading-relaxed">
+                  <p className="text-body text-muted-foreground">
                     {project.description}
                   </p>
 
@@ -118,7 +118,7 @@ export function Projects() {
         {otherProjects.length > 0 && (
           <>
             <AnimatedSection>
-              <h3 className="text-lg font-semibold text-foreground mb-6">
+              <h3 className="font-display text-h4 text-foreground mb-6">
                 Other Notable Projects
               </h3>
             </AnimatedSection>
@@ -135,11 +135,11 @@ export function Projects() {
                         <ProjectButtons project={project} compact />
                       </header>
 
-                      <h4 className="text-lg font-semibold text-foreground group-hover:text-primary transition-colors mb-2">
+                      <h4 className="font-display text-h3 text-foreground group-hover:text-primary transition-colors mb-2">
                         {project.title}
                       </h4>
 
-                      <p className="text-sm text-muted-foreground leading-relaxed flex-1 mb-4">
+                      <p className="text-body-sm text-muted-foreground flex-1 mb-4">
                         {project.description}
                       </p>
 
@@ -147,7 +147,7 @@ export function Projects() {
                         {project.skills.slice(0, 3).map((skill, skillIndex) => (
                           <span
                             key={skill.id}
-                            className="text-xs text-muted-foreground font-mono"
+                            className="text-mono-xs text-muted-foreground font-mono"
                           >
                             {skill.name}
                             {skillIndex <

@@ -8,7 +8,7 @@ import {
 } from 'react';
 import type { User } from '@supabase/supabase-js';
 
-import { supabase } from '@/lib/supabase';
+import { assertSupabase, supabase } from '@/lib/supabase';
 
 type AuthState = {
   user: User | null;
@@ -103,6 +103,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       loading,
       isAdmin,
       signIn: async (email, password) => {
+        assertSupabase();
         const { data, error } = await supabase.auth.signInWithPassword({
           email,
           password,

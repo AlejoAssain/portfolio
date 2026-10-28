@@ -19,7 +19,7 @@ export function Skills() {
       <div className="max-w-6xl mx-auto px-6">
         <AnimatedSection>
           <div className="flex items-center gap-4 mb-12">
-            <h2 className="text-2xl font-bold text-foreground">Skills</h2>
+            <h2 className="font-display text-h2 text-foreground">Skills</h2>
             <div className="h-px flex-1 bg-border max-w-xs" />
           </div>
         </AnimatedSection>

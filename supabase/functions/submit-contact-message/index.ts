@@ -7,13 +7,16 @@ import { createClient } from "jsr:@supabase/supabase-js@2";
  * `contact_messages`. This lets the server validate bot protection, sanitize
  * the payload, and write to Supabase with server-side credentials.
  */
-type ContactPayload = {
-  name?: string;
-  email?: string;
-  message?: string;
-  turnstileToken?: string;
-  website?: string;
-};
+type ContactPayload = Record<string, unknown>;
+
+/**
+ * Read a payload field as a trimmed string. Anything that isn't a string
+ * (number, object, null) counts as empty instead of crashing `.trim()`.
+ */
+function field(payload: ContactPayload, key: string) {
+  const value = payload[key];
+  return typeof value === "string" ? value.trim() : "";
+}
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -46,13 +49,11 @@ function isValidEmail(email: string) {
  * Ask Cloudflare Turnstile whether the browser-provided token is valid.
  * The secret key lives in Supabase function secrets, never in the frontend.
  */
-async function verifyTurnstile(token: string, ip: string | null) {
-  const secret = Deno.env.get("TURNSTILE_SECRET_KEY");
-
-  if (!secret) {
-    throw new Error("Missing TURNSTILE_SECRET_KEY.");
-  }
-
+async function verifyTurnstile(
+  token: string,
+  ip: string | null,
+  secret: string,
+) {
   const formData = new FormData();
   formData.append("secret", secret);
   formData.append("response", token);
@@ -97,12 +98,16 @@ Deno.serve(async (req) => {
     return jsonResponse({ error: "Invalid request body." }, 400);
   }
 
+  if (!payload || typeof payload !== "object" || Array.isArray(payload)) {
+    return jsonResponse({ error: "Invalid request body." }, 400);
+  }
+
   // Normalize input before validation and storage.
-  const name = payload.name?.trim() ?? "";
-  const email = payload.email?.trim().toLowerCase() ?? "";
-  const message = payload.message?.trim() ?? "";
-  const turnstileToken = payload.turnstileToken ?? "";
-  const website = payload.website?.trim() ?? "";
+  const name = field(payload, "name");
+  const email = field(payload, "email").toLowerCase();
+  const message = field(payload, "message");
+  const turnstileToken = field(payload, "turnstileToken");
+  const website = field(payload, "website");
 
   // Honeypot field. Real users should never fill this hidden field.
   if (website) {
@@ -122,15 +127,33 @@ Deno.serve(async (req) => {
     return jsonResponse({ error: "Invalid message." }, 400);
   }
 
-  if (!turnstileToken) {
+  if (!turnstileToken || turnstileToken.length > 2048) {
     return jsonResponse({ error: "Missing bot check token." }, 400);
   }
 
   // Forward the client IP when available so Turnstile can score the request.
+  // x-forwarded-for is a comma-separated chain; the first entry is the client.
   const ip = req.headers.get("cf-connecting-ip") ??
-    req.headers.get("x-forwarded-for");
+    req.headers.get("x-forwarded-for")?.split(",")[0].trim() ?? null;
 
-  const validTurnstile = await verifyTurnstile(turnstileToken, ip);
+  const turnstileSecret = Deno.env.get("TURNSTILE_SECRET_KEY");
+  if (!turnstileSecret) {
+    console.error("Missing TURNSTILE_SECRET_KEY.");
+    return jsonResponse({ error: "Server configuration error." }, 500);
+  }
+
+  // Network failures or a non-JSON reply from Cloudflare are upstream
+  // outages, not misconfiguration.
+  let validTurnstile: boolean;
+  try {
+    validTurnstile = await verifyTurnstile(turnstileToken, ip, turnstileSecret);
+  } catch (error) {
+    console.error("turnstile siteverify unreachable", error);
+    return jsonResponse(
+      { error: "Bot check is temporarily unavailable. Please try again." },
+      502,
+    );
+  }
 
   if (!validTurnstile) {
     return jsonResponse({ error: "Bot check failed." }, 400);

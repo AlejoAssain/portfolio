@@ -11,8 +11,8 @@ export function Footer() {
             <SocialButtons />
           </AnimatedSection>
 
-          <p className="text-sm text-muted-foreground">
-            {currentYear} — Built with React & TypeScript
+          <p className="text-body-sm text-muted-foreground">
+            {currentYear} — Alejo Assain
           </p>
         </div>
       </div>

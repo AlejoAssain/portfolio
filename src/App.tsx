@@ -1,11 +1,13 @@
 import { lazy, Suspense } from 'react';
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 
+import '@/lib/lenis';
+
 import { AdminAuthBoundary } from '@/components/admin/AdminAuthBoundary';
 import { AdminLayout } from '@/components/admin/AdminLayout';
 import { ProtectedAdminRoute } from '@/components/admin/ProtectedAdminRoute';
 import { Footer, Header } from '@/components/layout';
-import { CursorGlow } from '@/components/shared';
+import { DotGrid } from '@/components/shared';
 import { Toaster } from '@/components/ui';
 import { PortfolioContentProvider, usePortfolioContent } from '@/hooks';
 import {
@@ -66,11 +68,10 @@ function PortfolioPage() {
 
   return (
     <div className="relative min-h-screen">
-      <CursorGlow />
-
+      <DotGrid />
       <Header />
 
-      <main>
+      <main id="main" tabIndex={-1} className="outline-none">
         <Hero />
         {sectionVisibility.about && <About />}
         {sectionVisibility.experience && <Experience />}

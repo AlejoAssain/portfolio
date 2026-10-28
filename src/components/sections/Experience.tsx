@@ -10,7 +10,7 @@ export function Experience() {
       <div className="max-w-6xl mx-auto px-6">
         <AnimatedSection>
           <div className="flex items-center gap-4 mb-12">
-            <h2 className="text-2xl font-bold text-foreground">Experience</h2>
+            <h2 className="font-display text-h2 text-foreground">Experience</h2>
             <div className="h-px flex-1 bg-border max-w-xs" />
           </div>
         </AnimatedSection>
@@ -21,16 +21,16 @@ export function Experience() {
             .map((exp, index) => (
               <AnimatedSection key={exp.id} delay={index * 100}>
                 <article className="group relative grid md:grid-cols-[200px_1fr] gap-6 p-6 rounded-xl hover:bg-card transition-colors duration-300 border border-transparent hover:border-border">
-                  <div className="space-y-2 text-sm text-muted-foreground font-mono">
+                  <div className="space-y-2 text-mono-xs text-muted-foreground font-mono">
                     <div>{exp.period}</div>
                     {exp.location && (
-                      <div className="font-sans text-xs">{exp.location}</div>
+                      <div className="font-sans text-body-sm">{exp.location}</div>
                     )}
                   </div>
 
                   <div className="space-y-4">
                     <header>
-                      <h3 className="text-lg font-semibold text-foreground group-hover:text-primary transition-colors">
+                      <h3 className="font-display text-h3 text-foreground group-hover:text-primary transition-colors">
                         {exp.role}
                         <span className="text-muted-foreground font-normal">
                           {' '}
@@ -52,7 +52,7 @@ export function Experience() {
                       </h3>
                     </header>
 
-                    <p className="text-muted-foreground leading-relaxed">
+                    <p className="text-body text-muted-foreground">
                       {exp.description}
                     </p>
 

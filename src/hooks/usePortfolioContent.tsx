@@ -84,8 +84,8 @@ export function PortfolioContentProvider({
               : new Error('Failed to load portfolio content.');
 
           console.error(
-            'Failed to load portfolio content from Supabase. Using mock fallback data.',
-            error,
+            '[portfolio] Supabase content failed to load; showing mock fallback data.',
+            unknownError,
           );
           setError(error);
           setSource('fallback');

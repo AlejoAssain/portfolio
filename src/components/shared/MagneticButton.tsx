@@ -23,10 +23,10 @@ export const MagneticButton = forwardRef<HTMLElement, MagneticButtonProps>(
     { children, className, href, onClick, strength = 0.3, ...props },
     forwardedRef,
   ) => {
-    const ref = useRef<HTMLDivElement>(null)
+    const ref = useRef<HTMLSpanElement>(null)
     const [position, setPosition] = useState({ x: 0, y: 0 })
 
-    const handleMouseMove = (e: MouseEvent<HTMLDivElement>) => {
+    const handleMouseMove = (e: MouseEvent<HTMLSpanElement>) => {
       if (!ref.current) return
 
       const { left, top, width, height } = ref.current.getBoundingClientRect()
@@ -40,7 +40,7 @@ export const MagneticButton = forwardRef<HTMLElement, MagneticButtonProps>(
     }
 
     const content = (
-      <div
+      <span
         ref={ref}
         onMouseMove={handleMouseMove}
         onMouseLeave={handleMouseLeave}
@@ -53,7 +53,7 @@ export const MagneticButton = forwardRef<HTMLElement, MagneticButtonProps>(
         }}
       >
         {children}
-      </div>
+      </span>
     )
 
     if (href) {
@@ -64,6 +64,7 @@ export const MagneticButton = forwardRef<HTMLElement, MagneticButtonProps>(
           target="_blank"
           rel="noopener noreferrer"
           onClick={onClick as MouseEventHandler<HTMLAnchorElement>}
+          className="inline-flex transition-transform duration-[var(--duration-micro)] ease-out-snap active:scale-[0.97]"
           {...props}
         >
           {content}
@@ -76,6 +77,7 @@ export const MagneticButton = forwardRef<HTMLElement, MagneticButtonProps>(
         ref={forwardedRef as Ref<HTMLButtonElement>}
         onClick={onClick as MouseEventHandler<HTMLButtonElement>}
         type="button"
+        className="inline-flex transition-transform duration-[var(--duration-micro)] ease-out-snap active:scale-[0.97]"
         {...props}
       >
         {content}
