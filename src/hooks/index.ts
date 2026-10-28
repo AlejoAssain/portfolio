@@ -4,3 +4,4 @@ export {
   PortfolioContentProvider,
   usePortfolioContent,
 } from './usePortfolioContent'
+export { useTurnstile } from './useTurnstile'

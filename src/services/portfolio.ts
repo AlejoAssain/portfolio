@@ -1,4 +1,6 @@
-import { supabase } from '@/lib/supabase';
+import { FunctionsHttpError } from '@supabase/supabase-js';
+
+import { assertSupabase, isSupabaseConfigured, supabase } from '@/lib/supabase';
 import {
   mapExperience,
   mapPersonalInfo,
@@ -100,6 +102,7 @@ export async function getPersonalInfo(): Promise<PersonalInfo> {
 export async function createContactMessage(
   input: ContactMessageInput,
 ): Promise<void> {
+  assertSupabase();
   const { data, error } = await supabase.functions.invoke<{
     ok?: boolean;
     error?: string;
@@ -107,8 +110,15 @@ export async function createContactMessage(
     body: input,
   });
 
+  // A non-2xx response carries the function's own `{ error }` body; surface
+  // that instead of supabase-js's generic "non-2xx status code" message.
+  if (error instanceof FunctionsHttpError) {
+    const body = await error.context.json().catch(() => null);
+    throw new Error(body?.error ?? 'Message could not be sent.');
+  }
+
   if (error) {
-    throw error;
+    throw new Error('Message could not be sent. Check your connection.');
   }
 
   if (!data?.ok) {
@@ -138,13 +148,39 @@ export async function getSectionVisibility(): Promise<SectionVisibility> {
   );
 }
 
+// Supabase can hang instead of failing outright; past this the mock content
+// already on screen stays.
+const CONTENT_TIMEOUT_MS = 8000;
+
 export async function getPortfolioContent() {
+  if (!isSupabaseConfigured) {
+    throw new Error('Supabase is not configured.');
+  }
+
+  let timer: ReturnType<typeof setTimeout> | undefined;
+  const timeout = new Promise<never>((_, reject) => {
+    timer = setTimeout(
+      () => reject(new Error('Supabase did not respond in time.')),
+      CONTENT_TIMEOUT_MS,
+    );
+  });
+
+  // ponytail: a hung fetch keeps running after the timeout wins; pass an
+  // AbortSignal into each query if that ever matters.
+  try {
+    return await Promise.race([fetchPortfolioContent(), timeout]);
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
+async function fetchPortfolioContent() {
   const [personalInfo, projects, experiences, skills, sectionVisibility] =
     await Promise.all([
-    getPersonalInfo(),
-    getProjects(),
-    getExperiences(),
-    getSkills(),
+      getPersonalInfo(),
+      getProjects(),
+      getExperiences(),
+      getSkills(),
       getSectionVisibility(),
     ]);
 

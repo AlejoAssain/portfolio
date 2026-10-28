@@ -1,5 +1,6 @@
 export * from './AnimatedSection'
 export * from './ContactFormDialog'
+export * from './DotGrid'
 export * from './GlowCTA'
 export * from './MagneticButton'
 export * from './SkillBadge'

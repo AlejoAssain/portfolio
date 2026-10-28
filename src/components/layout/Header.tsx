@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import { GlowCTA } from '@/components/shared';
 import { usePortfolioContent } from '@/hooks';
 import { cn } from '@/lib/utils';
-import { isPastHero, onScroll, scrollToSection } from '@/lib/lenis';
+import { isScrolled, onScroll, scrollToSection } from '@/lib/lenis';
 import { navItems } from '@/mocks/portfolio';
 
 import { MobileNav } from './MobileNav';
@@ -22,7 +22,7 @@ export function Header() {
 
   useEffect(() => {
     const handleScroll = () => {
-      setIsSolid(isPastHero());
+      setIsSolid(isScrolled());
 
       let current = '';
       for (const sectionId of [...sectionIds].reverse()) {
@@ -45,6 +45,12 @@ export function Header() {
         isSolid && 'bg-background border-b border-border',
       )}
     >
+      <a
+        href="#main"
+        className="sr-only rounded-sm bg-primary px-4 py-2 text-sm font-medium text-primary-foreground focus:not-sr-only focus:absolute focus:left-4 focus:top-4"
+      >
+        Skip to content
+      </a>
       <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
         <a
           href="#"

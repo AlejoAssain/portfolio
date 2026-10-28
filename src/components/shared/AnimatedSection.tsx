@@ -30,7 +30,7 @@ export function AnimatedSection({
     <div
       ref={ref}
       className={cn(
-        'transition-all duration-[var(--duration-base)] ease-out-snap',
+        'transition-all duration-[var(--duration-base)] ease-out-snap motion-reduce:transition-none motion-reduce:translate-none',
         isInView
           ? 'opacity-100 translate-x-0 translate-y-0'
           : `opacity-0 ${directionStyles[direction]}`,

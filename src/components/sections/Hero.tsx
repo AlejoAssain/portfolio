@@ -1,39 +1,27 @@
 import { AnimatedSection, SocialButtons } from '@/components/shared';
 import { ArrowDown } from 'lucide-react';
-import { useHeroAnimation, usePortfolioContent } from '@/hooks';
+import { usePortfolioContent } from '@/hooks';
+import {
+  CHARACTER_LOOP_SRC,
+  CHARACTER_POSTER_SRC,
+  useHeroAnimation,
+} from '@/hooks/useHeroAnimation';
 import { scrollToSection } from '@/lib/lenis';
 
-const CHARACTER_ASPECT_RATIO = '1220 / 1186';
 
 export function Hero() {
   const { personalInfo } = usePortfolioContent();
-  const {
-    containerRef,
-    characterRef,
-    videoRef,
-    canvasRef,
-    idleLayerRef,
-    pupilsWrapRef,
-  } = useHeroAnimation();
+  const { containerRef, characterRef, entranceRef, videoRef } =
+    useHeroAnimation();
 
   const scrollToAbout = () => scrollToSection('#about');
 
   return (
     <section
       ref={containerRef}
-      className="min-h-screen flex flex-col justify-center relative overflow-hidden"
+      id="hero"
+      className="min-h-screen flex flex-col justify-center relative"
     >
-      <div className="absolute inset-0 bg-gradient-to-br from-background via-background to-primary/5 pointer-events-none" />
-
-      <div
-        className="absolute inset-0 opacity-[0.02] pointer-events-none"
-        style={{
-          backgroundImage:
-            'radial-gradient(circle at 1px 1px, currentColor 1px, transparent 0)',
-          backgroundSize: '40px 40px',
-        }}
-      />
-
       <div className="max-w-6xl mx-auto px-6 py-24 relative z-10 w-full">
         <div className="max-w-xl space-y-8">
           <AnimatedSection delay={0}>
@@ -43,9 +31,9 @@ export function Hero() {
           </AnimatedSection>
 
           <AnimatedSection delay={100}>
-            <h2 className="font-display text-h4 text-primary">
+            <p className="font-display text-h4 text-primary">
               {personalInfo.title}
-            </h2>
+            </p>
           </AnimatedSection>
 
           <AnimatedSection delay={200}>
@@ -60,61 +48,28 @@ export function Hero() {
         </div>
       </div>
 
-      {/* Character — base flush with the viewport bottom, right side. Smaller
-          on mobile so it doesn't sit on top of the headline text; full 75vh
-          from lg up where there's room beside the text column. */}
+      {/* Character — fixed to the viewport, leaning on its right edge, behind
+          everything (-z-10 sits under the page's in-flow sections but above
+          the body's canvas color). One fixed size throughout; the hook only
+          dims it into a background presence once the hero scrolls away. The
+          outer box takes the scroll dim, the inner one the load entrance,
+          so the two tweens never fight over the same transform. */}
       <div
         ref={characterRef}
         aria-hidden="true"
-        className="pointer-events-none absolute bottom-0 right-0 h-[32vh] lg:right-[1%] lg:h-[75vh]"
-        style={{ aspectRatio: CHARACTER_ASPECT_RATIO }}
+        className="pointer-events-none fixed right-0 bottom-0 -z-10 aspect-[776/1600] h-[37svh] md:h-[51svh] lg:h-[73svh]"
       >
-        {/* Hidden everywhere — it's only a decode source. The visible
-            output is the luma-keyed canvas below, which gives real
-            per-pixel transparency at every breakpoint instead of relying
-            on mix-blend-mode (which only blends within its own stacking
-            context, and leaves the source's black showing through on
-            mobile). */}
-        <video
-          ref={videoRef}
-          src="/character/alejo-hood-transition.mp4"
-          className="absolute inset-0 h-full w-full opacity-0"
-          muted
-          playsInline
-          preload="auto"
-        />
-        <canvas
-          ref={canvasRef}
-          className="absolute inset-0 h-full w-full"
-        />
-
-        {/* Resting state before any scroll: static no-pupils art with a
-            cursor-tracking pupils overlay. Pixel-matched to the video's own
-            first frame, so hiding this once scrolling starts hands off to
-            the canvas without a visible swap. */}
-        <div
-          ref={idleLayerRef}
-          className="absolute inset-0 h-full w-full transition-opacity duration-300"
-        >
-          <img
-            src="/character/arms-crossed-no-pupils.png"
-            alt=""
-            className="absolute inset-0 h-full w-full"
+        <div ref={entranceRef} className="h-full w-full">
+          <video
+            ref={videoRef}
+            src={CHARACTER_LOOP_SRC}
+            poster={CHARACTER_POSTER_SRC}
+            className="h-full w-full"
+            muted
+            loop
+            playsInline
+            preload="none"
           />
-          <div
-            ref={pupilsWrapRef}
-            className="absolute inset-0 h-full w-full"
-            style={{
-              transform:
-                'translate(var(--pupil-x, 0px), var(--pupil-y, 0px))',
-            }}
-          >
-            <img
-              src="/character/pupils-crossed.png"
-              alt=""
-              className="absolute inset-0 h-full w-full"
-            />
-          </div>
         </div>
       </div>
 

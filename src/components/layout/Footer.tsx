@@ -12,7 +12,7 @@ export function Footer() {
           </AnimatedSection>
 
           <p className="text-body-sm text-muted-foreground">
-            {currentYear} — Built with React & TypeScript
+            {currentYear} — Alejo Assain
           </p>
         </div>
       </div>

@@ -1,7 +1,7 @@
 import { useGSAP } from '@gsap/react';
 import { gsap } from 'gsap';
 import { Menu, X } from 'lucide-react';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 import { cn } from '@/lib/utils';
 import type { NavItem } from '@/types';
@@ -15,6 +15,7 @@ interface MobileNavProps {
 export function MobileNav({ items, activeHref, onNavigate }: MobileNavProps) {
   const [isOpen, setIsOpen] = useState(false);
   const panelRef = useRef<HTMLUListElement>(null);
+  const toggleRef = useRef<HTMLButtonElement>(null);
 
   const { contextSafe } = useGSAP({ scope: panelRef });
 
@@ -33,26 +34,53 @@ export function MobileNav({ items, activeHref, onNavigate }: MobileNavProps) {
     });
   });
 
+  // setOpen is a fresh contextSafe wrapper each render; read it through a ref
+  // so the listener only re-binds when the menu opens or closes.
+  const setOpenRef = useRef(setOpen);
+  setOpenRef.current = setOpen;
+
+  useEffect(() => {
+    if (!isOpen) return;
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key !== 'Escape') return;
+      // The panel goes inert on close; move focus out before it's stranded.
+      if (panelRef.current?.contains(document.activeElement)) {
+        toggleRef.current?.focus();
+      }
+      setOpenRef.current(false);
+    };
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
+  }, [isOpen]);
+
   return (
-    <div className="relative md:hidden">
+    <nav aria-label="Sections" className="relative md:hidden">
       <button
+        ref={toggleRef}
+        type="button"
         onClick={() => setOpen(!isOpen)}
         className="p-2 text-foreground transition-colors hover:text-primary"
-        aria-label="Toggle menu"
+        aria-label={isOpen ? 'Close menu' : 'Open menu'}
         aria-expanded={isOpen}
+        aria-controls="mobile-nav-panel"
       >
         {isOpen ? <X className="size-5" /> : <Menu className="size-5" />}
       </button>
 
       <ul
+        id="mobile-nav-panel"
         ref={panelRef}
+        inert={!isOpen}
         className="absolute right-0 top-full mt-2 w-48 overflow-hidden rounded-2xl border border-border bg-card/95 backdrop-blur-lg"
         style={{ height: 0, opacity: 0 }}
       >
         {items.map((item) => (
           <li key={item.href} className="border-b border-border last:border-0">
-            <button
-              onClick={() => {
+            <a
+              href={item.href}
+              aria-current={activeHref === item.href ? 'location' : undefined}
+              onClick={(event) => {
+                event.preventDefault();
                 onNavigate(item.href);
                 setOpen(false);
               }}
@@ -64,10 +92,10 @@ export function MobileNav({ items, activeHref, onNavigate }: MobileNavProps) {
               )}
             >
               {item.label}
-            </button>
+            </a>
           </li>
         ))}
       </ul>
-    </div>
+    </nav>
   );
 }

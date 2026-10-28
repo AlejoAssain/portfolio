@@ -31,10 +31,14 @@ and then pitched at a business.
 
 ## Operating Context
 
+- Live at `https://portfolio.alejoassain.com/` (Vercel). Not indexed yet:
+  indexing is the next step, see [PENDING.md](PENDING.md).
 - Public content (projects, experience, skills, personal info) is read from
   Supabase at `src/services/portfolio.ts`, mapped via `src/mappers/index.ts`.
-  Local mock data (`src/mocks/portfolio.ts`) is fallback only if the request
-  fails.
+  Local mock data (`src/mocks/portfolio.ts`) renders first and stays if
+  Supabase fails, times out (8s) or isn't configured; the failure is logged
+  to the console as `[portfolio] ...`. Keep the mocks in sync with the real
+  content — they are what a visitor sees when Supabase is down.
 - A protected admin area (Supabase Auth) manages that content: projects,
   experiences, skills, personal info, and ordering/featured toggles.
 - The contact form submits through a Supabase Edge Function
@@ -63,12 +67,13 @@ and then pitched at a business.
 - Name: Alejo Assain. Title: Software Developer. Contact: alejoassain00@gmail.com.
 - Tagline: "Building real solutions, automating repetitive work."
 - Status badge: "Available for work."
-- An illustrated character (hoodie on/off, neutral/relaxed expressions) is an
-  established brand asset at `design/character/`, already wired into the
-  visual world documented in `design/direction.md` (coder/hacker aesthetic in
-  a bright, friendly key; the hood-drop on scroll is the site's one signature
-  motion moment). That document is the standing visual authority — this file
-  records product truth, not the visual world itself.
+- An illustrated 3D character of Alejo (blue hoodie, laptop) is the brand's
+  one signature element: a looping video of him leaning on the right edge of
+  the screen, typing, at `public/character/`. The visual world around it is
+  a friendly coder aesthetic on a dark green-tinted ground, with a quiet
+  cursor-reactive dot grid as background. `design/direction.md` is the
+  standing visual authority — this file records product truth, not the
+  visual world itself.
 
 ## Evidence on Hand
 
@@ -80,6 +85,8 @@ and then pitched at a business.
   Operations), with real dates, locations, and companies — see
   `src/mocks/portfolio.ts`.
 - Real social links: GitHub, LinkedIn, X (`AlejoAssain`).
+- Site: `https://portfolio.alejoassain.com/` (personal domain
+  `alejoassain.com`).
 - No testimonials, press, case studies, or client logos exist. Do not
   fabricate any.
 - No resume/CV file exists yet on the site (see Capabilities and Constraints).

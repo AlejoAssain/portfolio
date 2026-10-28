@@ -184,39 +184,84 @@ Prohibido bounce y elastic en cualquier rol.
 
 ## Elemento firma
 
-La capucha bajando sobre la cabeza del personaje en el hero, disparada por
-ScrollTrigger (pin + scrub). Es el único lugar donde se gasta audacia —
-todo lo demás (reveals de sección, hover states, transiciones de página)
-usa `ease-out-snap` / `duration-base` sin sorpresas.
+El personaje de cuerpo completo apoyado de espaldas contra el borde derecho
+de la pantalla, notebook en mano, tipeando. Es el único lugar donde se
+gasta audacia — todo lo demás (reveals de sección, hover states,
+transiciones de página) usa `ease-out-snap` / `duration-base` sin sorpresas.
 
-**El asset:** `alejo-hood-transition.mp4` — H.264, 1220×1186, 24fps,
-5.56s, 134 frames, 4.2MB. Fondo negro puro `#000000`, sin canal alfa.
-Codificado all-intra: los 134 frames son keyframes, por lo que scrubbea
-sin reencodear.
+Reemplaza a la capucha con pin + scrub (descartada: atar el `currentTime`
+de un video al scroll, con Lenis suavizando encima, nunca se sintió pegado
+a la mano). Regla que sale de ahí: **el scroll maneja transforms y
+opacidad, nunca el tiempo de un video.**
 
-No se reproduce en autoplay: se scrubbea contra el progreso del scroll
-(`currentTime` atado a ScrollTrigger con `scrub`). El usuario controla el
-gesto en ambas direcciones.
+**Comportamiento**
 
-**Composición sobre el fondo:** el negro del video se elimina con
-`mix-blend-mode: screen`, no con canal alfa. Screen contra negro devuelve
-el color de abajo por definición, así que el fondo del video desaparece
-sin recorte, sin WebM y sin la versión HEVC que exigiría Safari. Requiere
-que la superficie detrás sea muy oscura — con Papel `#151A14` funciona;
-sobre cualquier superficie clara, no.
+- `position: fixed`, pegado a `right: 0; bottom: 0`, detrás del contenido
+  (`-z-10`: debajo de las secciones, encima del color del body). La
+  espalda y la suela tocan el borde del viewport — eso es lo que lo lee
+  como "apoyado en la pantalla".
+- **Un solo tamaño en todo el recorrido**, no escala con el scroll:
+  `37svh` mobile, `51svh` tablet (`md`), `73svh` desktop (`lg`).
+- Entrada al cargar: desde `xPercent: 35`, opacidad 0→1,
+  `duration-signature` (1.2s) con `ease-out-snap`. Una sola vez.
+- Al dejar el hero: opacidad 1→0.2 con `scrub: true` (`scroll-linked`),
+  de `top top` a `bottom 30%` del hero. Queda de fondo, atenuado, detrás de
+  todas las secciones.
+- El loop **no se pausa** en el fondo: el personaje está vivo todo el
+  tiempo, por decisión. Solo se detiene con reduced motion.
+- Reduced motion: no se reproduce ni se descarga el video (queda el
+  póster, que es el frame 0), sin entrada, y la atenuación es un toggle
+  corto cuando el hero ya casi salió.
+- Desaparece debajo de superficies opacas (cards, footer) y se ve a media
+  intensidad bajo `bg-card/50`. Es consecuencia del `-z-10` y es correcto.
 
-Verificar en iOS Safari, donde `mix-blend-mode` sobre `<video>` ha tenido
-bugs. Fallback: extraer los 134 frames a WebP con `lumakey` y scrubbear
-sobre canvas.
+**El loop:** tipea sin levantar la vista nunca — mirar a cámara o girar la
+cabeza se probó y se descartó porque el personaje se deforma. Vida =
+manos en el teclado, respiración, parpadeo, un asentimiento chico.
+5s, 24fps, primer y último frame idénticos (el loop no tiene corte).
 
-**Zonas oscuras del personaje.** El pelo y los anteojos son casi negros y
-sobre Papel pueden fundirse con el fondo. Es aceptable y hasta deseable
-como efecto de "personaje emergiendo de la oscuridad", pero es una
-decisión, no un descuido: si se quiere silueta legible, se resuelve con
-rim light en el asset o ubicando al personaje sobre Superficie `#1D231B`.
-Lo que no se hace es agregar glow.
+**Assets** (`public/character/`), con alfa real, no luma key ni
+`mix-blend-mode`:
+
+| Archivo                   | Formato            | Para                                 |
+| ------------------------- | ------------------ | ------------------------------------ |
+| `alejo-loop.webm`         | VP9 + alfa, 680×1400 | Chrome, Firefox, Edge              |
+| `alejo-loop-hevc.mp4`     | HEVC + alfa, 680×1400 | WebKit: Safari y todo browser de iOS |
+| `alejo-loop-poster.webp`  | WebP + alfa        | Póster / reduced motion              |
+
+El formato se elige por user agent, no con `<source>` de fallback: Chrome
+en Mac decodifica HEVC pero tira el alfa (fondo negro), y Safari
+decodifica WebM VP9 pero también tira el alfa.
+
+**Pipeline** (fuentes en `assets/generated/character/`, fuera del repo):
+imagen base nano-banana-2 → video Kling O1 con primer y último frame = la
+imagen base → matte con BiRefNet video → upscale 2x Topaz → `alphamerge`
+y encode con ffmpeg (`libvpx-vp9 yuva420p` / `hevc_videotoolbox
+-alpha_quality`). Para regenerar, mantener la imagen base como primer y
+último frame, o el loop pierde el empalme.
+
+**Zonas oscuras del personaje.** El pelo, los anteojos y el jean son
+oscuros y sobre Papel pueden perder contorno. Si se quiere silueta más
+legible, se resuelve con rim light en el asset. Lo que no se hace es
+agregar glow.
 
 Descartado a propósito: un segundo mecanismo llamativo tipo el toggle
 "GOLD" de ref1 (modo claro/oscuro o duotono del personaje). Sumarlo
-diluiría la capucha como momento único — si en algún momento se quiere
+diluiría al personaje como momento único — si en algún momento se quiere
 igual, es una conversación aparte, no un default de este documento.
+
+## Fondo
+
+Grilla de puntos fija al viewport (`src/hooks/useDotGrid.ts`), adaptada del
+Dot Grid de React Bits. Es la "pantalla" contra la que se apoya el
+personaje: por eso no scrollea con la página y vive debajo de él (`-z-20`).
+Es contexto, no un segundo momento firma — tiene que poder no notarse.
+
+- Puntos en Línea `#2C332A`, radio 1.2px, separación 28px (36px en touch).
+- Cerca del cursor (150px) los puntos pasan a Código, crecen un poco y se
+  corren hasta 6px hacia afuera. Vuelven con un ease-out exponencial
+  (~150ms de constante), sin rebote.
+- Del original se sacó a propósito: glow, rebote (`backOut`), onda de
+  choque al hacer click, intro animada y el render WebGL.
+- Touch y reduced motion: grilla estática, sin interacción ni frames.
+- Sin cursor en movimiento no corre ningún frame.

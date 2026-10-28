@@ -1,5 +1,5 @@
 import { Mail, MessageSquare, Send, User } from 'lucide-react';
-import { useEffect, useRef, useState, type FormEvent } from 'react';
+import { useState, type FormEvent } from 'react';
 import { toast } from 'sonner';
 import {
   Dialog,
@@ -13,83 +13,17 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
+import { useTurnstile } from '@/hooks';
 import { createContactMessage } from '@/services/portfolio';
 import type { ContactMessageInput } from '@/types';
 
 export type ContactFormValues = ContactMessageInput;
-
-type TurnstileWidgetId = string;
-
-type TurnstileApi = {
-  render: (
-    container: HTMLElement,
-    options: {
-      sitekey: string;
-      callback: (token: string) => void;
-      'expired-callback': () => void;
-      'error-callback': () => void;
-    },
-  ) => TurnstileWidgetId;
-  remove: (widgetId: TurnstileWidgetId) => void;
-  reset: (widgetId: TurnstileWidgetId) => void;
-};
-
-declare global {
-  interface Window {
-    turnstile?: TurnstileApi;
-  }
-}
 
 type ContactFormDialogProps = {
   triggerLabel?: string;
   title?: string;
   description?: string;
 };
-
-const turnstileSiteKey = import.meta.env.VITE_TURNSTILE_SITE_KEY;
-const turnstileScriptId = 'cloudflare-turnstile-script';
-
-function loadTurnstileScript() {
-  if (window.turnstile) return Promise.resolve();
-
-  const existingScript = document.getElementById(turnstileScriptId);
-  if (existingScript) {
-    if (existingScript.dataset.loaded === 'true') {
-      return Promise.resolve();
-    }
-
-    return new Promise<void>((resolve, reject) => {
-      existingScript.addEventListener(
-        'load',
-        () => {
-          existingScript.dataset.loaded = 'true';
-          resolve();
-        },
-        { once: true },
-      );
-      existingScript.addEventListener('error', () => reject(), { once: true });
-    });
-  }
-
-  return new Promise<void>((resolve, reject) => {
-    const script = document.createElement('script');
-    script.id = turnstileScriptId;
-    script.src =
-      'https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit';
-    script.async = true;
-    script.defer = true;
-    script.addEventListener(
-      'load',
-      () => {
-        script.dataset.loaded = 'true';
-        resolve();
-      },
-      { once: true },
-    );
-    script.addEventListener('error', () => reject(), { once: true });
-    document.head.appendChild(script);
-  });
-}
 
 export function ContactFormDialog({
   triggerLabel = 'Leave me a message',
@@ -98,75 +32,13 @@ export function ContactFormDialog({
 }: ContactFormDialogProps) {
   const [open, setOpen] = useState(false);
   const [submitting, setSubmitting] = useState(false);
-  const [turnstileToken, setTurnstileToken] = useState('');
-  const [turnstileError, setTurnstileError] = useState('');
-  const turnstileContainerRef = useRef<HTMLDivElement>(null);
-  const turnstileWidgetIdRef = useRef<TurnstileWidgetId | null>(null);
-
-  useEffect(() => {
-    if (!open) {
-      if (turnstileWidgetIdRef.current) {
-        window.turnstile?.remove(turnstileWidgetIdRef.current);
-        turnstileWidgetIdRef.current = null;
-      }
-      setTurnstileToken('');
-      setTurnstileError('');
-      return;
-    }
-
-    if (!turnstileSiteKey) {
-      setTurnstileError('The bot check is not configured.');
-      return;
-    }
-
-    let active = true;
-
-    loadTurnstileScript()
-      .then(() => {
-        if (
-          !active ||
-          !window.turnstile ||
-          !turnstileContainerRef.current ||
-          turnstileWidgetIdRef.current
-        ) {
-          return;
-        }
-
-        turnstileWidgetIdRef.current = window.turnstile.render(
-          turnstileContainerRef.current,
-          {
-            sitekey: turnstileSiteKey,
-            callback: (token) => {
-              setTurnstileToken(token);
-              setTurnstileError('');
-            },
-            'expired-callback': () => {
-              setTurnstileToken('');
-              setTurnstileError('The bot check expired. Please try again.');
-            },
-            'error-callback': () => {
-              setTurnstileToken('');
-              setTurnstileError('The bot check failed to load.');
-            },
-          },
-        );
-      })
-      .catch(() => {
-        if (active) {
-          setTurnstileError('The bot check failed to load.');
-        }
-      });
-
-    return () => {
-      active = false;
-    };
-  }, [open]);
+  const turnstile = useTurnstile(open);
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    if (!turnstileToken) {
-      setTurnstileError('Complete the bot check before sending.');
+    if (!turnstile.token) {
+      turnstile.setError('Complete the bot check before sending.');
       return;
     }
 
@@ -176,7 +48,7 @@ export function ContactFormDialog({
       name: String(formData.get('name') ?? ''),
       email: String(formData.get('email') ?? ''),
       message: String(formData.get('message') ?? ''),
-      turnstileToken,
+      turnstileToken: turnstile.token,
       website: String(formData.get('website') ?? ''),
     };
 
@@ -186,13 +58,9 @@ export function ContactFormDialog({
       toast.success('Thanks! I will contact you soon.');
 
       form.reset();
-      setTurnstileToken('');
       setOpen(false);
     } catch (unknownError) {
-      if (turnstileWidgetIdRef.current) {
-        window.turnstile?.reset(turnstileWidgetIdRef.current);
-        setTurnstileToken('');
-      }
+      turnstile.reset();
       toast.error(
         unknownError instanceof Error
           ? unknownError.message
@@ -228,6 +96,7 @@ export function ContactFormDialog({
             <Label htmlFor="name">Name</Label>
             <div className="relative">
               <User
+                aria-hidden="true"
                 size={16}
                 className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground"
               />
@@ -235,6 +104,8 @@ export function ContactFormDialog({
                 id="name"
                 name="name"
                 required
+                maxLength={120}
+                autoComplete="name"
                 placeholder="Your name"
                 className="h-11 pl-10"
               />
@@ -244,6 +115,7 @@ export function ContactFormDialog({
             <Label htmlFor="email">Email</Label>
             <div className="relative">
               <Mail
+                aria-hidden="true"
                 size={16}
                 className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground"
               />
@@ -252,6 +124,8 @@ export function ContactFormDialog({
                 name="email"
                 type="email"
                 required
+                maxLength={254}
+                autoComplete="email"
                 placeholder="you@example.com"
                 className="h-11 pl-10"
               />
@@ -261,6 +135,7 @@ export function ContactFormDialog({
             <Label htmlFor="message">Message</Label>
             <div className="relative">
               <MessageSquare
+                aria-hidden="true"
                 size={16}
                 className="pointer-events-none absolute left-3 top-3.5 text-muted-foreground"
               />
@@ -268,12 +143,13 @@ export function ContactFormDialog({
                 id="message"
                 name="message"
                 required
+                maxLength={3000}
                 placeholder="What's on your mind?"
                 className="min-h-32 resize-none pl-10"
               />
             </div>
           </div>
-          <div className="hidden">
+          <div className="hidden" aria-hidden="true">
             <Label htmlFor="website">Website</Label>
             <Input
               id="website"
@@ -283,16 +159,18 @@ export function ContactFormDialog({
             />
           </div>
           <div className="space-y-2">
-            <div ref={turnstileContainerRef} className="min-h-[65px]" />
-            {turnstileError && (
-              <p className="text-sm text-destructive">{turnstileError}</p>
+            <div ref={turnstile.containerRef} className="min-h-[65px]" />
+            {turnstile.error && (
+              <p role="alert" className="text-sm text-destructive">
+                {turnstile.error}
+              </p>
             )}
           </div>
           <Button
             type="submit"
             size="lg"
             className="w-full"
-            disabled={submitting || !turnstileToken}
+            disabled={submitting || !turnstile.token}
           >
             <Send />
             {submitting ? 'Sending...' : 'Send message'}

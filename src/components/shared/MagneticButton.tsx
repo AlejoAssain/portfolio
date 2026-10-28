@@ -23,10 +23,10 @@ export const MagneticButton = forwardRef<HTMLElement, MagneticButtonProps>(
     { children, className, href, onClick, strength = 0.3, ...props },
     forwardedRef,
   ) => {
-    const ref = useRef<HTMLDivElement>(null)
+    const ref = useRef<HTMLSpanElement>(null)
     const [position, setPosition] = useState({ x: 0, y: 0 })
 
-    const handleMouseMove = (e: MouseEvent<HTMLDivElement>) => {
+    const handleMouseMove = (e: MouseEvent<HTMLSpanElement>) => {
       if (!ref.current) return
 
       const { left, top, width, height } = ref.current.getBoundingClientRect()
@@ -40,7 +40,7 @@ export const MagneticButton = forwardRef<HTMLElement, MagneticButtonProps>(
     }
 
     const content = (
-      <div
+      <span
         ref={ref}
         onMouseMove={handleMouseMove}
         onMouseLeave={handleMouseLeave}
@@ -53,7 +53,7 @@ export const MagneticButton = forwardRef<HTMLElement, MagneticButtonProps>(
         }}
       >
         {children}
-      </div>
+      </span>
     )
 
     if (href) {

@@ -65,7 +65,7 @@ export function About() {
                     Status
                   </dt>
                   <dd className="text-foreground mt-1 flex items-center gap-2">
-                    <span className="w-2 h-2 rounded-full bg-success animate-pulse" />
+                    <span aria-hidden="true" className="w-2 h-2 rounded-full bg-success motion-safe:animate-pulse" />
                     {personalInfo.status}
                   </dd>
                 </div>

@@ -14,7 +14,7 @@ interface NavPillProps {
 export function NavPill({ items, activeHref, onNavigate }: NavPillProps) {
   const navRef = useRef<HTMLElement>(null);
   const indicatorRef = useRef<HTMLDivElement>(null);
-  const linkRefs = useRef(new Map<string, HTMLButtonElement>());
+  const linkRefs = useRef(new Map<string, HTMLAnchorElement>());
 
   const moveIndicator = (animate: boolean) => {
     const nav = navRef.current;
@@ -56,21 +56,28 @@ export function NavPill({ items, activeHref, onNavigate }: NavPillProps) {
   return (
     <nav
       ref={navRef}
+      aria-label="Sections"
       className="relative hidden items-center gap-1 rounded-full border border-border bg-card/80 px-2 py-2 backdrop-blur-lg md:flex"
     >
       <div
         ref={indicatorRef}
         className="absolute inset-y-2 left-0 rounded-full bg-primary/15"
+        aria-hidden="true"
         style={{ width: 0, opacity: 0 }}
       />
       {items.map((item) => (
-        <button
+        <a
           key={item.href}
+          href={item.href}
+          aria-current={activeHref === item.href ? 'location' : undefined}
           ref={(el) => {
             if (el) linkRefs.current.set(item.href, el);
             else linkRefs.current.delete(item.href);
           }}
-          onClick={() => onNavigate(item.href)}
+          onClick={(event) => {
+            event.preventDefault();
+            onNavigate(item.href);
+          }}
           className={cn(
             'relative z-10 rounded-full px-4 py-2 text-sm font-medium transition-colors',
             activeHref === item.href
@@ -79,7 +86,7 @@ export function NavPill({ items, activeHref, onNavigate }: NavPillProps) {
           )}
         >
           {item.label}
-        </button>
+        </a>
       ))}
     </nav>
   );
