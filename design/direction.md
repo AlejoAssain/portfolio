@@ -255,17 +255,25 @@ igual, es una conversación aparte, no un default de este documento.
 Grilla de puntos fija al viewport (`src/hooks/useDotGrid.ts`), adaptada del
 Dot Grid de React Bits. Es la "pantalla" contra la que se apoya el
 personaje: por eso no scrollea con la página y vive debajo de él (`-z-20`).
-Es contexto, no un segundo momento firma — tiene que poder no notarse.
+Acompaña al personaje: la grilla es la pantalla y responde a su tecleo.
+Se nota, pero sigue siendo contexto; el personaje es el único momento
+firma.
 
 - Puntos en Línea `#2C332A`, radio 1.2px, separación 28px (36px en touch).
 - Cerca del cursor (150px) los puntos pasan a Código, crecen un poco y se
   corren hasta 6px hacia afuera. Vuelven con un ease-out exponencial
   (~150ms de constante), sin rebote.
+- Actividad ambiente (`src/lib/dotActivity.ts`), siempre corriendo:
+  - Teclas: cada 0.12–0.55s sale de la notebook del personaje un anillo
+    corto (alcance 36% de su alto, ~240px en desktop) que se apaga al
+    avanzar.
+  - Pulso: cada 4.5–7s un anillo ancho cruza toda la pantalla desde el
+    mismo punto, perdiendo intensidad con la distancia.
+  - Chispas: hasta 10 puntos sueltos a la vez se encienden (opacidad
+    máx. 0.75) y se apagan en 1.4s.
+  - El origen se lee del DOM (`data-dot-origin` en el Hero), así sigue al
+    personaje en cada breakpoint.
 - Del original se sacó a propósito: glow, rebote (`backOut`), onda de
   choque al hacer click, intro animada y el render WebGL.
-- Actividad ambiente (`src/lib/dotSparks.ts`): hasta 4 puntos sueltos a la
-  vez pasan a Código con opacidad máxima 0.3 y vuelven en un arco de 1.6s
-  (seno, sin rebote). Aparece uno nuevo cada ~0.6s en promedio. Sin cursor
-  en movimiento corre a 30fps; rAF se pausa solo en pestañas ocultas.
-- Touch y reduced motion: grilla estática, sin interacción, sin chispas ni
-  frames.
+- Touch: actividad ambiente a 30fps, sin interacción de cursor.
+- Reduced motion: grilla estática, sin actividad ni frames.

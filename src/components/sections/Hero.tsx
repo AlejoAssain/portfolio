@@ -58,6 +58,7 @@ export function Hero() {
           so the two tweens never fight over the same transform. */}
       <div
         ref={characterRef}
+        data-dot-origin
         aria-hidden="true"
         className="pointer-events-none fixed right-0 bottom-0 -z-10 aspect-[776/1600] h-[37svh] md:h-[51svh] lg:h-[73svh]"
       >

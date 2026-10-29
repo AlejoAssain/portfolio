@@ -52,8 +52,10 @@ export function Header() {
         {t.header.skipToContent}
       </a>
       <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
+        {/* A real navigation to "/": reloads and lands at the top with a clean
+            URL. `#` left a trailing hash and fought Lenis for the scroll. */}
         <a
-          href="#"
+          href="/"
           aria-label={personalInfo.name}
           className="block h-9 w-9 bg-foreground opacity-90 transition-opacity hover:opacity-100 [mask-image:url(/logo.png)] [mask-position:center] [mask-repeat:no-repeat] [mask-size:contain] [-webkit-mask-image:url(/logo.png)] [-webkit-mask-position:center] [-webkit-mask-repeat:no-repeat] [-webkit-mask-size:contain]"
         />
@@ -64,7 +66,7 @@ export function Header() {
           onNavigate={scrollToSection}
         />
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 sm:gap-3">
           <LanguageSwitcher />
           <GlowCTA
             onClick={() => scrollToSection('#contact')}

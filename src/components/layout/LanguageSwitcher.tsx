@@ -1,34 +1,32 @@
-import { languageNames, languages } from '@/i18n/languages';
-import { useLanguage } from '@/i18n/LanguageProvider';
-import { cn } from '@/lib/utils';
+import { ChevronDown } from 'lucide-react';
 
+import { isLang, languageNames, languages } from '@/i18n/languages';
+import { useLanguage } from '@/i18n/LanguageProvider';
+
+// A native select keeps the header compact and gives phones their own picker.
+// Closed, it shows just the code; the real select sits invisible on top of it
+// so clicks, keyboard and screen readers all go to the native control.
 export function LanguageSwitcher() {
   const { lang, setLang, t } = useLanguage();
 
   return (
-    <div
-      role="group"
-      aria-label={t.language.label}
-      className="flex items-center rounded-full border border-border bg-card/80 p-1 backdrop-blur-lg"
-    >
-      {languages.map((code) => (
-        <button
-          key={code}
-          type="button"
-          lang={code}
-          aria-label={languageNames[code]}
-          aria-pressed={lang === code}
-          onClick={() => setLang(code)}
-          className={cn(
-            'rounded-full px-2.5 py-1 font-mono text-mono-xs uppercase transition-colors',
-            lang === code
-              ? 'bg-primary/15 text-foreground'
-              : 'text-muted-foreground hover:text-foreground',
-          )}
-        >
-          {code}
-        </button>
-      ))}
+    <div className="relative flex items-center gap-1 rounded-sm px-2 py-2 font-mono text-mono-xs text-muted-foreground transition-colors duration-[var(--duration-micro)] focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-ring hover:text-foreground">
+      <span aria-hidden="true" className="uppercase">
+        {lang}
+      </span>
+      <ChevronDown aria-hidden="true" className="size-3.5" />
+      <select
+        aria-label={t.language.label}
+        value={lang}
+        onChange={(event) => isLang(event.target.value) && setLang(event.target.value)}
+        className="absolute inset-0 cursor-pointer appearance-none opacity-0 focus-visible:outline-none"
+      >
+        {languages.map((code) => (
+          <option key={code} value={code} lang={code}>
+            {languageNames[code]}
+          </option>
+        ))}
+      </select>
     </div>
   );
 }
