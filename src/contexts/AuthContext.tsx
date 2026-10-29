@@ -84,7 +84,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           return;
         }
 
-        setLoading(true);
+        // Re-verify in the background: flipping `loading` here unmounts the
+        // admin outlet on every tab refocus / token refresh and wipes forms.
         window.setTimeout(() => {
           void syncAuthState(nextUser);
         }, 0);
