@@ -46,6 +46,10 @@ export function mapProject(row: ProjectWithSkillsRow): ProjectContent {
     demo: optional(row.demo),
     landing: optional(row.landing),
     image: optional(row.image),
+    videoUrl: row.video_url ?? undefined,
+    screenshots: row.screenshots ?? (row.image ? [{
+      id: 'legacy', url: row.image, alt: toLocalized(row.title), cover: true,
+    }] : []),
     featured: row.featured,
     skills,
   };
@@ -90,6 +94,7 @@ export function localizeSkill(skill: SkillContent, lang: Lang): Skill {
 export function localizeProject(project: ProjectContent, lang: Lang): Project {
   return {
     ...project,
+    screenshots: project.screenshots?.map((image) => ({ ...image, alt: localize(image.alt, lang) })),
     title: localize(project.title, lang),
     description: localize(project.description, lang),
     skills: project.skills.map((skill) => localizeSkill(skill, lang)),

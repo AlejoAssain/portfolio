@@ -9,18 +9,10 @@ import {
   DialogTitle,
   Switch,
 } from '@/components/ui';
+import { skillCategories } from '@/data/skillCategories';
 import type { Skill, SkillContent } from '@/types';
 import { LocalizedField } from './LocalizedField';
 import { Field } from './shared';
-
-const categories: Skill['category'][] = [
-  'backend',
-  'database',
-  'frontend',
-  'infrastructure',
-  'automation',
-  'product',
-];
 
 export function SkillFormDialog({
   open,
@@ -77,7 +69,7 @@ export function SkillFormDialog({
                 })
               }
             >
-              {categories.map((category) => (
+              {skillCategories.map((category) => (
                 <option key={category}>{category}</option>
               ))}
             </select>

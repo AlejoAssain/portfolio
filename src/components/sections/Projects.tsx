@@ -1,3 +1,5 @@
+import { youtubeUrl } from '@/lib/media';
+import { ProjectGallery } from '@/components/shared/ProjectGallery';
 import { AnimatedSection, SkillBadge, SpotlightCard } from '@/components/shared';
 import { ArrowUpRight, Code2, ExternalLink, PanelsTopLeft } from 'lucide-react';
 import { usePortfolioContent } from '@/hooks';
@@ -16,6 +18,11 @@ function getProjectLinks(
   labels: Dictionary['projects']['links'],
 ): ProjectLink[] {
   return [
+    youtubeUrl(project.videoUrl) && {
+      label: labels.video,
+      href: youtubeUrl(project.videoUrl)!,
+      icon: ExternalLink,
+    },
     project.github && {
       label: labels.github,
       href: project.github,
@@ -95,6 +102,7 @@ export function Projects() {
             <AnimatedSection key={project.id} delay={index * 100}>
               <SpotlightCard className="group">
                 <div className="space-y-4">
+                  <ProjectGallery project={project} />
                   <header className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
                     <div>
                       <span className="text-mono-xs text-signal font-mono uppercase">
@@ -135,6 +143,7 @@ export function Projects() {
                 <AnimatedSection key={project.id} delay={index * 50}>
                   <article className="group h-full p-6 rounded-xl bg-card border border-border hover:border-primary/50 transition-all duration-300">
                     <div className="flex flex-col h-full">
+                      <ProjectGallery project={project} />
                       <header className="flex flex-col gap-4 mb-4 min-[420px]:flex-row min-[420px]:items-start min-[420px]:justify-between">
                         <div className="p-2 rounded-lg bg-secondary">
                           <ArrowUpRight size={20} className="text-primary" />

@@ -313,3 +313,22 @@
     animation: none;
   }
 }
+
+/* Reserve image space before loading; capture contents are never cropped. */
+.screenshot-frame {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--card);
+}
+.screenshot-expanded { height: 55svh; aspect-ratio: auto; }
+.screenshot-dialog { box-shadow: none; }
+.screenshot-dialog[data-state] { animation: none; }
+@media (prefers-reduced-motion: reduce) {
+  body:has(.screenshot-dialog) [data-slot='dialog-overlay'] {
+    animation: none;
+  }
+}

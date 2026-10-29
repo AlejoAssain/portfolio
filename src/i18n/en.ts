@@ -36,10 +36,16 @@ export const en = {
     heading: 'Experience',
   },
   projects: {
+    gallery: {
+      open: 'View screenshots', description: 'Browse project screenshots. Open the original to inspect details.',
+      loading: 'Loading screenshot…', error: 'Screenshot could not load.', retry: 'Retry',
+      previous: 'Previous', next: 'Next', fullSize: 'Open original', close: 'Close',
+    },
     heading: 'Projects',
     featured: 'Featured Project',
     other: 'Other Notable Projects',
     links: {
+      video: 'Watch video',
       github: 'GitHub',
       demo: 'Demo',
       landing: 'Landing',

@@ -3,9 +3,13 @@ import { useEffect, useState, type FormEvent } from 'react';
 import { toast } from 'sonner';
 
 import { Button } from '@/components/ui';
-import { SortableList } from '@/components/admin';
 import { errorMessage } from '@/lib/utils';
-import { deleteSkill, saveSkill, saveSkillOrder } from '@/services/admin';
+import {
+  deleteSkill,
+  saveSkill,
+  saveSkillOrder,
+  setSkillVisibility,
+} from '@/services/admin';
 import { getSkills } from '@/services/portfolio';
 import { defaultLang } from '@/i18n/languages';
 import type { SkillContent } from '@/types';
@@ -17,8 +21,8 @@ import {
   PageHeader,
   Panel,
 } from './shared';
-import { RowActions } from './RowActions';
 import { SkillFormDialog } from './SkillFormDialog';
+import { SkillList } from './SkillList';
 
 const emptySkill: SkillContent = {
   id: '',
@@ -103,6 +107,23 @@ export function AdminSkillsPage() {
     setDialogOpen(true);
   }
 
+  async function toggleVisibility(skill: SkillContent) {
+    const showInSkills = skill.showInSkills === false;
+    const previousItems = items;
+    setItems(
+      items.map((item) =>
+        item.id === skill.id ? { ...item, showInSkills } : item,
+      ),
+    );
+
+    try {
+      await setSkillVisibility(skill.id, showInSkills);
+    } catch (unknownError) {
+      setItems(previousItems);
+      toast.error(errorMessage(unknownError, 'Could not update visibility.'));
+    }
+  }
+
   async function reorder(nextItems: SkillContent[]) {
     const previousItems = items;
     const orderedItems = nextItems.map((item, index) => ({
@@ -142,26 +163,13 @@ export function AdminSkillsPage() {
         ) : items.length === 0 ? (
           <EmptyState>No skills yet.</EmptyState>
         ) : (
-          <SortableList
+          <SkillList
             items={items}
-            onReorder={reorder}
             disabled={reordering}
-            renderItem={(skill) => (
-              <div className="flex items-center justify-between gap-4">
-                <div>
-                  <p className="font-medium">{skill.name[defaultLang]}</p>
-                  <p className="text-xs text-muted-foreground">
-                    {skill.category}
-                    {skill.showInSkills === false && ' · hidden'}
-                  </p>
-                </div>
-                <RowActions
-                  name={skill.name[defaultLang]}
-                  onEdit={() => editSkill(skill)}
-                  onDelete={() => setSkillToDelete(skill)}
-                />
-              </div>
-            )}
+            onReorder={reorder}
+            onToggleVisibility={toggleVisibility}
+            onEdit={editSkill}
+            onDelete={setSkillToDelete}
           />
         )}
       </Panel>

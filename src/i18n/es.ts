@@ -36,10 +36,16 @@ export const es: Dictionary = {
     heading: 'Experiencia',
   },
   projects: {
+    gallery: {
+      open: 'Ver capturas', description: 'Explorá las capturas del proyecto. Abrí el original para ver los detalles.',
+      loading: 'Cargando captura…', error: 'No se pudo cargar la captura.', retry: 'Reintentar',
+      previous: 'Anterior', next: 'Siguiente', fullSize: 'Abrir original', close: 'Cerrar',
+    },
     heading: 'Proyectos',
     featured: 'Proyecto destacado',
     other: 'Otros proyectos',
     links: {
+      video: 'Ver video',
       github: 'GitHub',
       demo: 'Demo',
       landing: 'Landing',

@@ -1,3 +1,4 @@
+import { validateScreenshots, youtubeUrl } from '@/lib/media';
 import { supabase } from '@/lib/supabase';
 import {
   getExperiences,
@@ -92,6 +93,14 @@ export async function saveSkill(input: SkillInput, existingId?: string) {
   throwIfError(error);
 }
 
+export async function setSkillVisibility(id: string, showInSkills: boolean) {
+  const { error } = await supabase
+    .from('skills')
+    .update({ show_in_skills: showInSkills })
+    .eq('id', id);
+  throwIfError(error);
+}
+
 export async function deleteSkill(id: string) {
   const { error } = await supabase.rpc('delete_admin_entity', {
     p_entity: 'skills',
@@ -101,7 +110,12 @@ export async function deleteSkill(id: string) {
 }
 
 export async function saveProject(input: ProjectInput, existingId?: string) {
-  const { error } = await supabase.rpc('save_project_with_skills', {
+  validateScreenshots(input.screenshots ?? []);
+  const video = youtubeUrl(input.videoUrl);
+  if (input.videoUrl?.trim() && !video) throw new Error('Enter a valid YouTube video URL.');
+  const { error } = await supabase.rpc('save_project_with_video', {
+    p_video_url: video ?? null,
+    p_screenshots: input.screenshots ?? [],
     p_existing_id: existingId ?? null,
     p_id: input.id,
     p_display_order: input.displayOrder,
@@ -110,7 +124,7 @@ export async function saveProject(input: ProjectInput, existingId?: string) {
     p_github: input.github || null,
     p_demo: input.demo || null,
     p_landing: input.landing || null,
-    p_image: input.image || null,
+    p_image: input.screenshots?.find((image) => image.cover)?.url ?? null,
     p_featured: Boolean(input.featured),
     p_skill_ids: input.skillIds,
   });

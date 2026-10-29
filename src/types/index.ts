@@ -1,3 +1,4 @@
+import type { ProjectScreenshot, PublicScreenshot } from './media';
 import type { LocalizedText } from '@/i18n/localize';
 
 /**
@@ -27,6 +28,8 @@ export interface Project {
 
   /** Optional project image. */
   image?: string;
+  videoUrl?: string;
+  screenshots?: PublicScreenshot[];
 
   /** Marks the project as featured or as other notable projects. */
   featured?: boolean;
@@ -165,9 +168,9 @@ export type SkillContent = WithLocalized<Skill, 'name'>;
 
 /** Project with every language, as loaded from Supabase and edited in admin. */
 export type ProjectContent = WithLocalized<
-  Omit<Project, 'skills'>,
+  Omit<Project, 'skills' | 'screenshots'>,
   'title' | 'description'
-> & { skills: SkillContent[] };
+> & { skills: SkillContent[]; screenshots?: ProjectScreenshot[] };
 
 /** Experience with every language, as loaded from Supabase and edited in admin. */
 export type ExperienceContent = WithLocalized<
@@ -255,6 +258,8 @@ export type ProjectRow = {
   demo: Nullable<string>;
   landing: Nullable<string>;
   image: Nullable<string>;
+  video_url?: string | null;
+  screenshots?: ProjectScreenshot[] | null;
   featured: boolean;
 };
 
