@@ -1,3 +1,5 @@
+import type { LocalizedText } from '@/i18n/localize';
+
 /**
  * Project shown in the portfolio.
  */
@@ -143,6 +145,30 @@ export interface PersonalInfo {
   status: string;
 }
 
+/**
+ * Stores the given text fields once per language. Optional fields stay optional.
+ */
+type WithLocalized<T, K extends keyof T> = Omit<T, K> & {
+  [P in keyof Pick<T, K>]: undefined extends T[P]
+    ? LocalizedText | undefined
+    : LocalizedText;
+};
+
+/** Project with every language, as loaded from Supabase and edited in admin. */
+export type ProjectContent = WithLocalized<Project, 'title' | 'description'>;
+
+/** Experience with every language, as loaded from Supabase and edited in admin. */
+export type ExperienceContent = WithLocalized<
+  Experience,
+  'role' | 'period' | 'location' | 'description'
+>;
+
+/** Personal info with every language, as loaded from Supabase and edited in admin. */
+export type PersonalInfoContent = WithLocalized<
+  PersonalInfo,
+  'title' | 'tagline' | 'bio' | 'location' | 'status'
+>;
+
 export type SectionVisibility = {
   about: boolean;
   experience: boolean;
@@ -188,6 +214,12 @@ export type ContactMessageInput = Pick<
 type Nullable<T> = T | null;
 
 /**
+ * Translatable text column. Plain text before the i18n migration, jsonb
+ * keyed by language after it.
+ */
+type LocalizableColumn = LocalizedText | string;
+
+/**
  * Skill row returned by Supabase.
  */
 export type SkillRow = {
@@ -203,8 +235,8 @@ export type SkillRow = {
 export type ProjectRow = {
   id: string;
   display_order: number;
-  title: string;
-  description: string;
+  title: LocalizableColumn;
+  description: LocalizableColumn;
   github: Nullable<string>;
   demo: Nullable<string>;
   landing: Nullable<string>;
@@ -233,12 +265,12 @@ export type ProjectWithSkillsRow = ProjectRow & {
 export type ExperienceRow = {
   id: string;
   display_order: number;
-  role: string;
+  role: LocalizableColumn;
   company: string;
   company_url: Nullable<string>;
-  period: string;
-  location: Nullable<string>;
-  description: string;
+  period: LocalizableColumn;
+  location: Nullable<LocalizableColumn>;
+  description: LocalizableColumn;
 };
 
 /**
@@ -261,12 +293,12 @@ export type ExperienceWithSkillsRow = ExperienceRow & {
  */
 export type PersonalInfoRow = {
   name: string;
-  title: string;
-  tagline: string;
-  bio: string;
+  title: LocalizableColumn;
+  tagline: LocalizableColumn;
+  bio: LocalizableColumn;
   email: string;
-  location: string;
-  status: string;
+  location: LocalizableColumn;
+  status: LocalizableColumn;
 };
 
 /**

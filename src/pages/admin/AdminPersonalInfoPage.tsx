@@ -2,9 +2,10 @@ import { useEffect, useState, type FormEvent } from 'react';
 import { toast } from 'sonner';
 
 import { Button } from '@/components/ui';
+import { errorMessage } from '@/lib/utils';
 import { savePersonalInfo } from '@/services/admin';
 import { getPersonalInfo } from '@/services/portfolio';
-import type { PersonalInfo } from '@/types';
+import type { PersonalInfoContent } from '@/types';
 import {
   ErrorMessage,
   Field,
@@ -12,9 +13,10 @@ import {
   PageHeader,
   Panel,
 } from './shared';
+import { LocalizedField } from './LocalizedField';
 
 export function AdminPersonalInfoPage() {
-  const [form, setForm] = useState<PersonalInfo | null>(null);
+  const [form, setForm] = useState<PersonalInfoContent | null>(null);
   const [error, setError] = useState('');
   const [saving, setSaving] = useState(false);
 
@@ -22,9 +24,7 @@ export function AdminPersonalInfoPage() {
     getPersonalInfo()
       .then(setForm)
       .catch((unknownError) =>
-        setError(
-          unknownError instanceof Error ? unknownError.message : 'Load failed.',
-        ),
+        setError(errorMessage(unknownError, 'Load failed.')),
       );
   }, []);
 
@@ -37,9 +37,7 @@ export function AdminPersonalInfoPage() {
       await savePersonalInfo(form);
       toast.success('Personal information updated.');
     } catch (unknownError) {
-      toast.error(
-        unknownError instanceof Error ? unknownError.message : 'Save failed.',
-      );
+      toast.error(errorMessage(unknownError, 'Save failed.'));
     } finally {
       setSaving(false);
     }
@@ -68,33 +66,6 @@ export function AdminPersonalInfoPage() {
                 required
               />
               <Field
-                label="Professional title"
-                value={form.title}
-                onChange={(event) =>
-                  setForm({ ...form, title: event.target.value })
-                }
-                required
-              />
-            </div>
-            <Field
-              label="Tagline"
-              value={form.tagline}
-              onChange={(event) =>
-                setForm({ ...form, tagline: event.target.value })
-              }
-              required
-            />
-            <Field
-              label="Bio"
-              textarea
-              value={form.bio}
-              onChange={(event) =>
-                setForm({ ...form, bio: event.target.value })
-              }
-              required
-            />
-            <div className="grid gap-4 sm:grid-cols-2">
-              <Field
                 label="Email"
                 type="email"
                 value={form.email}
@@ -103,21 +74,36 @@ export function AdminPersonalInfoPage() {
                 }
                 required
               />
-              <Field
-                label="Location"
-                value={form.location}
-                onChange={(event) =>
-                  setForm({ ...form, location: event.target.value })
-                }
-                required
-              />
             </div>
-            <Field
+            <LocalizedField
+              label="Professional title"
+              value={form.title}
+              onChange={(title) => setForm({ ...form, title })}
+              required
+            />
+            <LocalizedField
+              label="Tagline"
+              value={form.tagline}
+              onChange={(tagline) => setForm({ ...form, tagline })}
+              required
+            />
+            <LocalizedField
+              label="Bio"
+              textarea
+              value={form.bio}
+              onChange={(bio) => setForm({ ...form, bio })}
+              required
+            />
+            <LocalizedField
+              label="Location"
+              value={form.location}
+              onChange={(location) => setForm({ ...form, location })}
+              required
+            />
+            <LocalizedField
               label="Status"
               value={form.status}
-              onChange={(event) =>
-                setForm({ ...form, status: event.target.value })
-              }
+              onChange={(status) => setForm({ ...form, status })}
               required
             />
             <div className="flex justify-end">

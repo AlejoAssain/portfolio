@@ -9,11 +9,11 @@ import {
 } from '@/mappers';
 import type {
   ContactMessageInput,
-  Experience,
+  ExperienceContent,
   ExperienceWithSkillsRow,
-  PersonalInfo,
+  PersonalInfoContent,
   PersonalInfoRow,
-  Project,
+  ProjectContent,
   ProjectWithSkillsRow,
   Skill,
   SkillRow,
@@ -41,7 +41,7 @@ export async function getSkills(): Promise<Skill[]> {
   return (data ?? []).map((row) => mapSkill(row as SkillRow));
 }
 
-export async function getProjects(): Promise<Project[]> {
+export async function getProjects(): Promise<ProjectContent[]> {
   const { data, error } = await supabase
     .from('projects')
     .select(
@@ -62,7 +62,7 @@ export async function getProjects(): Promise<Project[]> {
   return (data ?? []).map((row) => mapProject(row as ProjectWithSkillsRow));
 }
 
-export async function getExperiences(): Promise<Experience[]> {
+export async function getExperiences(): Promise<ExperienceContent[]> {
   const { data, error } = await supabase
     .from('experiences')
     .select(
@@ -85,7 +85,7 @@ export async function getExperiences(): Promise<Experience[]> {
   );
 }
 
-export async function getPersonalInfo(): Promise<PersonalInfo> {
+export async function getPersonalInfo(): Promise<PersonalInfoContent> {
   const { data, error } = await supabase
     .from('personal_info')
     .select('*')

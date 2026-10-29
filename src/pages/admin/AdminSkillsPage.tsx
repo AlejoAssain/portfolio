@@ -1,16 +1,10 @@
-import { Pencil, Plus, Trash2 } from 'lucide-react';
+import { Plus } from 'lucide-react';
 import { useEffect, useState, type FormEvent } from 'react';
 import { toast } from 'sonner';
 
-import {
-  Button,
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui';
+import { Button } from '@/components/ui';
 import { SortableList } from '@/components/admin';
+import { errorMessage } from '@/lib/utils';
 import { deleteSkill, saveSkill, saveSkillOrder } from '@/services/admin';
 import { getSkills } from '@/services/portfolio';
 import type { Skill } from '@/types';
@@ -18,20 +12,12 @@ import {
   DeleteConfirmDialog,
   EmptyState,
   ErrorMessage,
-  Field,
   LoadingState,
   PageHeader,
   Panel,
 } from './shared';
-
-const categories: Skill['category'][] = [
-  'backend',
-  'database',
-  'frontend',
-  'infrastructure',
-  'automation',
-  'product',
-];
+import { RowActions } from './RowActions';
+import { SkillFormDialog } from './SkillFormDialog';
 
 const emptySkill: Skill = {
   id: '',
@@ -56,9 +42,7 @@ export function AdminSkillsPage() {
       setItems(await getSkills());
       setError('');
     } catch (unknownError) {
-      setError(
-        unknownError instanceof Error ? unknownError.message : 'Load failed.',
-      );
+      setError(errorMessage(unknownError, 'Load failed.'));
     } finally {
       setLoading(false);
     }
@@ -76,9 +60,7 @@ export function AdminSkillsPage() {
       setDialogOpen(false);
       await load();
     } catch (unknownError) {
-      toast.error(
-        unknownError instanceof Error ? unknownError.message : 'Save failed.',
-      );
+      toast.error(errorMessage(unknownError, 'Save failed.'));
     }
   }
 
@@ -91,9 +73,7 @@ export function AdminSkillsPage() {
       setSkillToDelete(null);
       await load();
     } catch (unknownError) {
-      toast.error(
-        unknownError instanceof Error ? unknownError.message : 'Delete failed.',
-      );
+      toast.error(errorMessage(unknownError, 'Delete failed.'));
     } finally {
       setDeleting(false);
     }
@@ -135,11 +115,7 @@ export function AdminSkillsPage() {
       toast.success('Skill order updated.');
     } catch (unknownError) {
       setItems(previousItems);
-      toast.error(
-        unknownError instanceof Error
-          ? unknownError.message
-          : 'Could not update the order.',
-      );
+      toast.error(errorMessage(unknownError, 'Could not update the order.'));
     } finally {
       setReordering(false);
     }
@@ -176,90 +152,25 @@ export function AdminSkillsPage() {
                     {skill.category}
                   </p>
                 </div>
-                <div className="flex gap-1">
-                  <Button
-                    size="icon-sm"
-                    variant="ghost"
-                    onClick={() => editSkill(skill)}
-                    aria-label={`Edit ${skill.name}`}
-                  >
-                    <Pencil />
-                  </Button>
-                  <Button
-                    size="icon-sm"
-                    variant="ghost"
-                    onClick={() => setSkillToDelete(skill)}
-                    aria-label={`Delete ${skill.name}`}
-                  >
-                    <Trash2 />
-                  </Button>
-                </div>
+                <RowActions
+                  name={skill.name}
+                  onEdit={() => editSkill(skill)}
+                  onDelete={() => setSkillToDelete(skill)}
+                />
               </div>
             )}
           />
         )}
       </Panel>
 
-      <Dialog
+      <SkillFormDialog
         open={dialogOpen}
-        onOpenChange={(open) => (open ? setDialogOpen(true) : closeDialog())}
-      >
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>{editingId ? 'Edit skill' : 'New skill'}</DialogTitle>
-            <DialogDescription>
-              {editingId
-                ? 'Update this skill and save your changes.'
-                : 'Add a new skill to the portfolio.'}
-            </DialogDescription>
-          </DialogHeader>
-          <form className="space-y-4" onSubmit={submit}>
-            <Field
-              label="ID / slug"
-              value={form.id}
-              disabled={Boolean(editingId)}
-              onChange={(event) => setForm({ ...form, id: event.target.value })}
-              required
-            />
-            <Field
-              label="Name"
-              value={form.name}
-              onChange={(event) =>
-                setForm({ ...form, name: event.target.value })
-              }
-              required
-            />
-            <div className="space-y-2">
-              <label className="text-sm font-medium" htmlFor="category">
-                Category
-              </label>
-              <select
-                id="category"
-                className="h-9 w-full rounded-md border bg-background px-3 text-sm"
-                value={form.category}
-                onChange={(event) =>
-                  setForm({
-                    ...form,
-                    category: event.target.value as Skill['category'],
-                  })
-                }
-              >
-                {categories.map((category) => (
-                  <option key={category}>{category}</option>
-                ))}
-              </select>
-            </div>
-            <div className="flex justify-end gap-2">
-              <Button type="button" variant="outline" onClick={closeDialog}>
-                Cancel
-              </Button>
-              <Button>
-                {editingId ? 'Save changes' : 'Create skill'}
-              </Button>
-            </div>
-          </form>
-        </DialogContent>
-      </Dialog>
+        editing={Boolean(editingId)}
+        form={form}
+        onChange={setForm}
+        onSubmit={submit}
+        onClose={closeDialog}
+      />
       <DeleteConfirmDialog
         open={Boolean(skillToDelete)}
         title="Delete skill?"

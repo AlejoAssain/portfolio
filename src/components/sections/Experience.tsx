@@ -1,16 +1,18 @@
 import { AnimatedSection, SkillBadge } from '@/components/shared';
 import { ExternalLink } from 'lucide-react';
 import { usePortfolioContent } from '@/hooks';
+import { useLanguage } from '@/i18n/LanguageProvider';
 
 export function Experience() {
   const { experiences } = usePortfolioContent();
+  const { t } = useLanguage();
 
   return (
     <section id="experience" className="py-24 lg:py-32 bg-card/50">
       <div className="max-w-6xl mx-auto px-6">
         <AnimatedSection>
           <div className="flex items-center gap-4 mb-12">
-            <h2 className="font-display text-h2 text-foreground">Experience</h2>
+            <h2 className="font-display text-h2 text-foreground">{t.experience.heading}</h2>
             <div className="h-px flex-1 bg-border max-w-xs" />
           </div>
         </AnimatedSection>

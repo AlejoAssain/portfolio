@@ -8,15 +8,17 @@ import {
 import type {
   ContactMessage,
   ContactMessageRow,
-  Experience,
-  PersonalInfo,
-  Project,
+  ExperienceContent,
+  PersonalInfoContent,
+  ProjectContent,
   Skill,
 } from '@/types';
 import { mapContactMessage } from '@/mappers';
 
-export type ProjectInput = Omit<Project, 'skills'> & { skillIds: string[] };
-export type ExperienceInput = Omit<Experience, 'skills'> & {
+export type ProjectInput = Omit<ProjectContent, 'skills'> & {
+  skillIds: string[];
+};
+export type ExperienceInput = Omit<ExperienceContent, 'skills'> & {
   skillIds: string[];
 };
 export type SkillInput = Skill;
@@ -133,7 +135,8 @@ export async function saveExperience(
     p_company: input.company,
     p_company_url: input.companyUrl || null,
     p_period: input.period,
-    p_location: input.location || null,
+    // Optional field: no default-language text means no location at all.
+    p_location: input.location?.en.trim() ? input.location : null,
     p_description: input.description,
     p_skill_ids: input.skillIds,
   });
@@ -148,7 +151,7 @@ export async function deleteExperience(id: string) {
   throwIfError(error);
 }
 
-export async function savePersonalInfo(input: PersonalInfo) {
+export async function savePersonalInfo(input: PersonalInfoContent) {
   const { error } = await supabase
     .from('personal_info')
     .update({

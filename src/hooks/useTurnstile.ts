@@ -67,11 +67,18 @@ function loadTurnstileScript() {
   });
 }
 
+/** Error codes, so the UI can show them in the current language. */
+export type TurnstileError =
+  | 'required'
+  | 'notConfigured'
+  | 'expired'
+  | 'failedToLoad';
+
 // Renders the Turnstile widget into `containerRef` while `open` is true and
 // tears it down when it closes.
 export function useTurnstile(open: boolean) {
   const [turnstileToken, setTurnstileToken] = useState('');
-  const [turnstileError, setTurnstileError] = useState('');
+  const [turnstileError, setTurnstileError] = useState<TurnstileError | ''>('');
   const containerRef = useRef<HTMLDivElement>(null);
   const turnstileWidgetIdRef = useRef<TurnstileWidgetId | null>(null);
 
@@ -87,7 +94,7 @@ export function useTurnstile(open: boolean) {
     }
 
     if (!turnstileSiteKey) {
-      setTurnstileError('The bot check is not configured.');
+      setTurnstileError('notConfigured');
       return;
     }
 
@@ -114,18 +121,18 @@ export function useTurnstile(open: boolean) {
             },
             'expired-callback': () => {
               setTurnstileToken('');
-              setTurnstileError('The bot check expired. Please try again.');
+              setTurnstileError('expired');
             },
             'error-callback': () => {
               setTurnstileToken('');
-              setTurnstileError('The bot check failed to load.');
+              setTurnstileError('failedToLoad');
             },
           },
         );
       })
       .catch(() => {
         if (active) {
-          setTurnstileError('The bot check failed to load.');
+          setTurnstileError('failedToLoad');
         }
       });
 

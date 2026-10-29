@@ -1,6 +1,8 @@
 import { AnimatedSection, SkillBadge, SpotlightCard } from '@/components/shared';
 import { ArrowUpRight, Code2, ExternalLink, PanelsTopLeft } from 'lucide-react';
 import { usePortfolioContent } from '@/hooks';
+import type { Dictionary } from '@/i18n/en';
+import { useLanguage } from '@/i18n/LanguageProvider';
 import type { Project } from '@/types';
 
 type ProjectLink = {
@@ -9,20 +11,23 @@ type ProjectLink = {
   icon: typeof Code2;
 };
 
-function getProjectLinks(project: Project): ProjectLink[] {
+function getProjectLinks(
+  project: Project,
+  labels: Dictionary['projects']['links'],
+): ProjectLink[] {
   return [
     project.github && {
-      label: 'GitHub',
+      label: labels.github,
       href: project.github,
       icon: Code2,
     },
     project.demo && {
-      label: 'Demo',
+      label: labels.demo,
       href: project.demo,
       icon: ExternalLink,
     },
     project.landing && {
-      label: 'Landing',
+      label: labels.landing,
       href: project.landing,
       icon: PanelsTopLeft,
     },
@@ -36,7 +41,8 @@ function ProjectButtons({
   project: Project;
   compact?: boolean;
 }) {
-  const links = getProjectLinks(project);
+  const { t } = useLanguage();
+  const links = getProjectLinks(project, t.projects.links);
 
   if (links.length === 0) {
     return null;
@@ -55,7 +61,7 @@ function ProjectButtons({
               ? 'inline-flex h-8 items-center gap-1.5 rounded-md bg-secondary px-2.5 text-xs font-medium text-secondary-foreground transition-all duration-300 hover:bg-primary hover:text-primary-foreground active:scale-[0.97] active:duration-[var(--duration-micro)]'
               : 'inline-flex h-9 items-center gap-2 rounded-lg bg-secondary px-3 text-sm font-medium text-secondary-foreground transition-all duration-300 hover:bg-primary hover:text-primary-foreground active:scale-[0.97] active:duration-[var(--duration-micro)]'
           }
-          aria-label={`View ${project.title} ${label}`}
+          aria-label={t.projects.viewLink(project.title, label)}
         >
           <Icon size={compact ? 14 : 16} />
           <span>{label}</span>
@@ -67,6 +73,7 @@ function ProjectButtons({
 
 export function Projects() {
   const { projects } = usePortfolioContent();
+  const { t } = useLanguage();
   const orderedProjects = [...projects].sort(
     (a, b) => a.displayOrder - b.displayOrder,
   );
@@ -78,7 +85,7 @@ export function Projects() {
       <div className="max-w-6xl mx-auto px-6">
         <AnimatedSection>
           <div className="flex items-center gap-4 mb-12">
-            <h2 className="font-display text-h2 text-foreground">Projects</h2>
+            <h2 className="font-display text-h2 text-foreground">{t.projects.heading}</h2>
             <div className="h-px flex-1 bg-border max-w-xs" />
           </div>
         </AnimatedSection>
@@ -91,7 +98,7 @@ export function Projects() {
                   <header className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
                     <div>
                       <span className="text-mono-xs text-signal font-mono uppercase">
-                        Featured Project
+                        {t.projects.featured}
                       </span>
                       <h3 className="font-display text-h3 text-foreground mt-2 group-hover:text-primary transition-colors">
                         {project.title}
@@ -119,7 +126,7 @@ export function Projects() {
           <>
             <AnimatedSection>
               <h3 className="font-display text-h4 text-foreground mb-6">
-                Other Notable Projects
+                {t.projects.other}
               </h3>
             </AnimatedSection>
 

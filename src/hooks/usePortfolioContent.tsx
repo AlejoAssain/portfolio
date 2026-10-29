@@ -13,6 +13,12 @@ import {
   projects,
   skills,
 } from '@/mocks/portfolio';
+import { useLanguage } from '@/i18n/LanguageProvider';
+import {
+  localizeExperience,
+  localizePersonalInfo,
+  localizeProject,
+} from '@/mappers';
 import { getPortfolioContent } from '@/services/portfolio';
 import type {
   Experience,
@@ -29,6 +35,8 @@ type PortfolioContent = {
   skills: Skill[];
   sectionVisibility: SectionVisibility;
 };
+
+type RemoteContent = Awaited<ReturnType<typeof getPortfolioContent>>;
 
 type PortfolioContentState = PortfolioContent & {
   loading: boolean;
@@ -59,7 +67,8 @@ export function PortfolioContentProvider({
 }: {
   children: ReactNode;
 }) {
-  const [content, setContent] = useState<PortfolioContent>(fallbackContent);
+  const { lang } = useLanguage();
+  const [remote, setRemote] = useState<RemoteContent | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
   const [source, setSource] =
@@ -71,7 +80,7 @@ export function PortfolioContentProvider({
     getPortfolioContent()
       .then((supabaseContent) => {
         if (!ignore) {
-          setContent(supabaseContent);
+          setRemote(supabaseContent);
           setError(null);
           setSource('supabase');
         }
@@ -101,6 +110,24 @@ export function PortfolioContentProvider({
       ignore = true;
     };
   }, []);
+
+  // Every language is loaded up front, so switching only re-resolves.
+  // ponytail: the mock fallback is English-only; translate it if Supabase
+  // outages ever matter for Spanish visitors.
+  const content = useMemo<PortfolioContent>(
+    () =>
+      remote
+        ? {
+            ...remote,
+            personalInfo: localizePersonalInfo(remote.personalInfo, lang),
+            projects: remote.projects.map((p) => localizeProject(p, lang)),
+            experiences: remote.experiences.map((e) =>
+              localizeExperience(e, lang),
+            ),
+          }
+        : fallbackContent,
+    [remote, lang],
+  );
 
   const value = useMemo(
     () => ({

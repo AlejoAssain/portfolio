@@ -1,8 +1,10 @@
 import { useEffect, useRef } from 'react'
+import { createSparks } from '@/lib/dotSparks'
 
 // Adapted from React Bits' Dot Grid, stripped to what direction.md allows:
-// no glow, no bounce, no click shockwave. Dots sit still in Línea; the ones
-// near the cursor ease toward Código and drift a few px away from it.
+// no glow, no bounce, no click shockwave. Dots rest in Línea with a few faint
+// sparks (lib/dotSparks); the ones near the cursor ease toward Código and
+// drift a few px away from it.
 const GAP_FINE = 28 // px between dot centers, mouse devices
 const GAP_COARSE = 36 // touch devices: fewer dots, and no interaction at all
 const DOT_RADIUS = 1.2
@@ -10,6 +12,7 @@ const REACH = 150 // px around the cursor that dots respond to
 const PUSH = 6 // max px a dot drifts away from the cursor
 const SWELL = 0.6 // extra radius at full influence, as a fraction
 const SETTLE = 0.15 // s — exponential time constant, a soft ease-out with no overshoot
+const IDLE_FRAME = 1000 / 30 // ms — sparks alone only need 30fps; the cursor gets every frame
 
 // Older Safari parses oklch in CSS but not in canvas fillStyle, where an
 // unparseable color is silently ignored. Hex mirrors of index.css tokens.
@@ -42,9 +45,12 @@ export function useDotGrid() {
     let xs = new Float32Array(0)
     let ys = new Float32Array(0)
     let influence = new Float32Array(0)
+    let spark = new Float32Array(0)
+    const sparks = createSparks()
     const pointer = { x: 0, y: 0, inside: false }
     let raf = 0
     let last = 0
+    let moving = false
 
     const build = () => {
       // Sized to the large viewport (h-lvh), so mobile toolbars showing or
@@ -65,6 +71,8 @@ export function useDotGrid() {
       xs = new Float32Array(cols * rows)
       ys = new Float32Array(cols * rows)
       influence = new Float32Array(cols * rows)
+      spark = new Float32Array(cols * rows)
+      sparks.reset()
       for (let row = 0; row < rows; row++) {
         for (let col = 0; col < cols; col++) {
           xs[row * cols + col] = offsetX + col * gap
@@ -80,7 +88,7 @@ export function useDotGrid() {
       ctx.fillStyle = baseColor
       ctx.beginPath()
       for (let i = 0; i < xs.length; i++) {
-        if (influence[i] > 0.01) continue
+        if (influence[i] > 0.01 || spark[i] > 0.01) continue
         ctx.moveTo(xs[i] + DOT_RADIUS, ys[i])
         ctx.arc(xs[i], ys[i], DOT_RADIUS, 0, Math.PI * 2)
       }
@@ -88,7 +96,7 @@ export function useDotGrid() {
 
       for (let i = 0; i < xs.length; i++) {
         const amount = influence[i]
-        if (amount <= 0.01) continue
+        if (amount <= 0.01 && spark[i] <= 0.01) continue
         const dx = xs[i] - pointer.x
         const dy = ys[i] - pointer.y
         const distance = Math.hypot(dx, dy) || 1
@@ -101,7 +109,7 @@ export function useDotGrid() {
         ctx.globalAlpha = 1
         ctx.fillStyle = baseColor
         ctx.fill()
-        ctx.globalAlpha = amount
+        ctx.globalAlpha = Math.max(amount, spark[i])
         ctx.fillStyle = activeColor
         ctx.fill()
       }
@@ -109,10 +117,12 @@ export function useDotGrid() {
     }
 
     const frame = (now: number) => {
+      raf = requestAnimationFrame(frame)
+      if (!moving && now - last < IDLE_FRAME) return
       const dt = Math.min(0.05, (now - last) / 1000)
       last = now
       const ease = 1 - Math.exp(-dt / SETTLE)
-      let moving = false
+      moving = false
 
       for (let i = 0; i < xs.length; i++) {
         let target = 0
@@ -124,15 +134,8 @@ export function useDotGrid() {
         if (Math.abs(target - influence[i]) > 0.002) moving = true
       }
 
+      sparks.update(spark, now, dt)
       draw()
-      // Idle once everything has settled: no frames burn while the cursor rests.
-      raf = moving ? requestAnimationFrame(frame) : 0
-    }
-
-    const wake = () => {
-      if (raf) return
-      last = performance.now()
-      raf = requestAnimationFrame(frame)
     }
 
     const onMove = (event: PointerEvent) => {
@@ -140,12 +143,12 @@ export function useDotGrid() {
       pointer.x = event.clientX
       pointer.y = event.clientY
       pointer.inside = true
-      wake()
+      moving = true
     }
 
     const onLeave = () => {
       pointer.inside = false
-      wake()
+      moving = true
     }
 
     const onOut = (event: PointerEvent) => {
@@ -173,6 +176,9 @@ export function useDotGrid() {
     draw()
     window.addEventListener('resize', onResize)
     if (interactive) {
+      // Always running for the sparks; rAF already pauses in hidden tabs.
+      last = performance.now()
+      raf = requestAnimationFrame(frame)
       window.addEventListener('pointermove', onMove, { passive: true })
       window.addEventListener('pointerout', onOut)
       window.addEventListener('blur', onLeave)

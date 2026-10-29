@@ -2,6 +2,7 @@ import { useGSAP } from '@gsap/react';
 import { gsap } from 'gsap';
 import { useRef } from 'react';
 
+import { useLanguage } from '@/i18n/LanguageProvider';
 import { cn } from '@/lib/utils';
 import type { NavItem } from '@/types';
 
@@ -12,9 +13,12 @@ interface NavPillProps {
 }
 
 export function NavPill({ items, activeHref, onNavigate }: NavPillProps) {
+  const { t } = useLanguage();
   const navRef = useRef<HTMLElement>(null);
   const indicatorRef = useRef<HTMLDivElement>(null);
   const linkRefs = useRef(new Map<string, HTMLAnchorElement>());
+  // Labels change width when the language does; the indicator has to follow.
+  const labels = items.map((item) => item.label).join('|');
 
   const moveIndicator = (animate: boolean) => {
     const nav = navRef.current;
@@ -50,13 +54,13 @@ export function NavPill({ items, activeHref, onNavigate }: NavPillProps) {
       window.addEventListener('resize', onResize);
       return () => window.removeEventListener('resize', onResize);
     },
-    { scope: navRef, dependencies: [activeHref] },
+    { scope: navRef, dependencies: [activeHref, labels] },
   );
 
   return (
     <nav
       ref={navRef}
-      aria-label="Sections"
+      aria-label={t.nav.label}
       className="relative hidden items-center gap-1 rounded-full border border-border bg-card/80 px-2 py-2 backdrop-blur-lg md:flex"
     >
       <div

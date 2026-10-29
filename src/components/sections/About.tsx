@@ -1,15 +1,17 @@
 import { AnimatedSection } from '@/components/shared'
 import { usePortfolioContent } from '@/hooks'
+import { useLanguage } from '@/i18n/LanguageProvider'
 
 export function About() {
   const { personalInfo } = usePortfolioContent()
+  const { t } = useLanguage()
 
   return (
     <section id="about" className="py-24 lg:py-32">
       <div className="max-w-6xl mx-auto px-6">
         <AnimatedSection>
           <div className="flex items-center gap-4 mb-12">
-            <h2 className="font-display text-h2 text-foreground">About</h2>
+            <h2 className="font-display text-h2 text-foreground">{t.about.heading}</h2>
             <div className="h-px flex-1 bg-border max-w-xs" />
           </div>
         </AnimatedSection>
@@ -38,18 +40,18 @@ export function About() {
           <AnimatedSection delay={200} direction="left">
             <div className="space-y-6 p-6 rounded-xl bg-card border border-border">
               <h3 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">
-                Quick Info
+                {t.about.quickInfo}
               </h3>
               <dl className="space-y-4">
                 <div>
                   <dt className="text-xs text-muted-foreground uppercase tracking-wider">
-                    Location
+                    {t.about.location}
                   </dt>
                   <dd className="text-foreground mt-1">{personalInfo.location}</dd>
                 </div>
                 <div>
                   <dt className="text-xs text-muted-foreground uppercase tracking-wider">
-                    Email
+                    {t.about.email}
                   </dt>
                   <dd className="mt-1">
                     <a
@@ -62,7 +64,7 @@ export function About() {
                 </div>
                 <div>
                   <dt className="text-xs text-muted-foreground uppercase tracking-wider">
-                    Status
+                    {t.about.status}
                   </dt>
                   <dd className="text-foreground mt-1 flex items-center gap-2">
                     <span aria-hidden="true" className="w-2 h-2 rounded-full bg-success motion-safe:animate-pulse" />

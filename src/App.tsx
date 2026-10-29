@@ -10,6 +10,7 @@ import { Footer, Header } from '@/components/layout';
 import { DotGrid } from '@/components/shared';
 import { Toaster } from '@/components/ui';
 import { PortfolioContentProvider, usePortfolioContent } from '@/hooks';
+import { LanguageProvider } from '@/i18n/LanguageProvider';
 import {
   About,
   Contact,
@@ -87,9 +88,11 @@ function PortfolioPage() {
 
 function PublicPortfolio() {
   return (
-    <PortfolioContentProvider>
-      <PortfolioPage />
-    </PortfolioContentProvider>
+    <LanguageProvider>
+      <PortfolioContentProvider>
+        <PortfolioPage />
+      </PortfolioContentProvider>
+    </LanguageProvider>
   );
 }
 

@@ -2,19 +2,11 @@
 
 import type {
   Experience,
-  NavItem,
   PersonalInfo,
   Project,
   Skill,
   SocialLink,
 } from '@/types';
-
-export const navItems: NavItem[] = [
-  { label: 'About', href: '#about' },
-  { label: 'Experience', href: '#experience' },
-  { label: 'Projects', href: '#projects' },
-  { label: 'Skills', href: '#skills' },
-];
 
 export const skills: Skill[] = [
   // Backend

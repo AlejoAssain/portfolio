@@ -1,22 +1,22 @@
 import { useEffect, useState } from 'react';
 
 import { GlowCTA } from '@/components/shared';
+import { navSections } from '@/data/navigation';
 import { usePortfolioContent } from '@/hooks';
+import { useLanguage } from '@/i18n/LanguageProvider';
 import { cn } from '@/lib/utils';
 import { isScrolled, onScroll, scrollToSection } from '@/lib/lenis';
-import { navItems } from '@/mocks/portfolio';
 
+import { LanguageSwitcher } from './LanguageSwitcher';
 import { MobileNav } from './MobileNav';
 import { NavPill } from './NavPill';
 
-const sectionIds = navItems.map((item) => item.href.replace('#', ''));
-
 export function Header() {
   const { personalInfo, sectionVisibility } = usePortfolioContent();
-  const visibleNavItems = navItems.filter((item) => {
-    const section = item.href.replace('#', '');
-    return sectionVisibility[section as keyof typeof sectionVisibility];
-  });
+  const { t } = useLanguage();
+  const visibleNavItems = navSections
+    .filter((section) => sectionVisibility[section])
+    .map((section) => ({ label: t.nav[section], href: `#${section}` }));
   const [activeSection, setActiveSection] = useState('');
   const [isSolid, setIsSolid] = useState(false);
 
@@ -25,7 +25,7 @@ export function Header() {
       setIsSolid(isScrolled());
 
       let current = '';
-      for (const sectionId of [...sectionIds].reverse()) {
+      for (const sectionId of [...navSections].reverse()) {
         const element = document.getElementById(sectionId);
         if (element && element.getBoundingClientRect().top <= 100) {
           current = sectionId;
@@ -49,7 +49,7 @@ export function Header() {
         href="#main"
         className="sr-only rounded-sm bg-primary px-4 py-2 text-sm font-medium text-primary-foreground focus:not-sr-only focus:absolute focus:left-4 focus:top-4"
       >
-        Skip to content
+        {t.header.skipToContent}
       </a>
       <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
         <a
@@ -65,11 +65,12 @@ export function Header() {
         />
 
         <div className="flex items-center gap-2">
+          <LanguageSwitcher />
           <GlowCTA
             onClick={() => scrollToSection('#contact')}
             className="hidden sm:inline-flex"
           >
-            Say hello
+            {t.header.sayHello}
           </GlowCTA>
           <MobileNav
             items={visibleNavItems}

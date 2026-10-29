@@ -3,6 +3,7 @@ import { gsap } from 'gsap';
 import { Menu, X } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 
+import { useLanguage } from '@/i18n/LanguageProvider';
 import { cn } from '@/lib/utils';
 import type { NavItem } from '@/types';
 
@@ -13,6 +14,7 @@ interface MobileNavProps {
 }
 
 export function MobileNav({ items, activeHref, onNavigate }: MobileNavProps) {
+  const { t } = useLanguage();
   const [isOpen, setIsOpen] = useState(false);
   const panelRef = useRef<HTMLUListElement>(null);
   const toggleRef = useRef<HTMLButtonElement>(null);
@@ -54,13 +56,13 @@ export function MobileNav({ items, activeHref, onNavigate }: MobileNavProps) {
   }, [isOpen]);
 
   return (
-    <nav aria-label="Sections" className="relative md:hidden">
+    <nav aria-label={t.nav.label} className="relative md:hidden">
       <button
         ref={toggleRef}
         type="button"
         onClick={() => setOpen(!isOpen)}
         className="p-2 text-foreground transition-colors hover:text-primary"
-        aria-label={isOpen ? 'Close menu' : 'Open menu'}
+        aria-label={isOpen ? t.nav.closeMenu : t.nav.openMenu}
         aria-expanded={isOpen}
         aria-controls="mobile-nav-panel"
       >

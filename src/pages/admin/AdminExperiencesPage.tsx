@@ -1,16 +1,10 @@
-import { Pencil, Plus, Trash2 } from 'lucide-react';
+import { Plus } from 'lucide-react';
 import { useEffect, useState, type FormEvent } from 'react';
 import { toast } from 'sonner';
 
-import {
-  Button,
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui';
+import { Button } from '@/components/ui';
 import { SortableList } from '@/components/admin';
+import { errorMessage } from '@/lib/utils';
 import {
   deleteExperience,
   saveExperience,
@@ -18,31 +12,31 @@ import {
   type ExperienceInput,
 } from '@/services/admin';
 import { getExperiences, getSkills } from '@/services/portfolio';
-import type { Experience, Skill } from '@/types';
+import type { ExperienceContent, Skill } from '@/types';
 import {
   DeleteConfirmDialog,
   EmptyState,
   ErrorMessage,
-  Field,
   LoadingState,
   PageHeader,
   Panel,
-  SkillPicker,
 } from './shared';
+import { ExperienceFormDialog } from './ExperienceFormDialog';
+import { ExperienceListItem } from './ExperienceListItem';
 
 const emptyExperience: ExperienceInput = {
   id: '',
   displayOrder: 1,
-  role: '',
+  role: { en: '' },
   company: '',
   companyUrl: '',
-  period: '',
-  location: '',
-  description: '',
+  period: { en: '' },
+  location: undefined,
+  description: { en: '' },
   skillIds: [],
 };
 
-function experienceToInput(experience: Experience): ExperienceInput {
+function experienceToInput(experience: ExperienceContent): ExperienceInput {
   return {
     ...experience,
     skillIds: experience.skills.map((skill) => skill.id),
@@ -50,12 +44,12 @@ function experienceToInput(experience: Experience): ExperienceInput {
 }
 
 export function AdminExperiencesPage() {
-  const [items, setItems] = useState<Experience[]>([]);
+  const [items, setItems] = useState<ExperienceContent[]>([]);
   const [skills, setSkills] = useState<Skill[]>([]);
   const [form, setForm] = useState<ExperienceInput>(emptyExperience);
   const [editingId, setEditingId] = useState<string>();
   const [experienceToDelete, setExperienceToDelete] =
-    useState<Experience | null>(null);
+    useState<ExperienceContent | null>(null);
   const [deleting, setDeleting] = useState(false);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [reordering, setReordering] = useState(false);
@@ -72,9 +66,7 @@ export function AdminExperiencesPage() {
       setSkills(skillList);
       setError('');
     } catch (unknownError) {
-      setError(
-        unknownError instanceof Error ? unknownError.message : 'Load failed.',
-      );
+      setError(errorMessage(unknownError, 'Load failed.'));
     } finally {
       setLoading(false);
     }
@@ -92,9 +84,7 @@ export function AdminExperiencesPage() {
       setDialogOpen(false);
       await load();
     } catch (unknownError) {
-      toast.error(
-        unknownError instanceof Error ? unknownError.message : 'Save failed.',
-      );
+      toast.error(errorMessage(unknownError, 'Save failed.'));
     }
   }
 
@@ -107,9 +97,7 @@ export function AdminExperiencesPage() {
       setExperienceToDelete(null);
       await load();
     } catch (unknownError) {
-      toast.error(
-        unknownError instanceof Error ? unknownError.message : 'Delete failed.',
-      );
+      toast.error(errorMessage(unknownError, 'Delete failed.'));
     } finally {
       setDeleting(false);
     }
@@ -131,13 +119,13 @@ export function AdminExperiencesPage() {
     setDialogOpen(true);
   }
 
-  function editExperience(experience: Experience) {
+  function editExperience(experience: ExperienceContent) {
     setEditingId(experience.id);
     setForm(experienceToInput(experience));
     setDialogOpen(true);
   }
 
-  async function reorder(nextItems: Experience[]) {
+  async function reorder(nextItems: ExperienceContent[]) {
     const previousItems = items;
     const orderedItems = nextItems.map((item, index) => ({
       ...item,
@@ -151,11 +139,7 @@ export function AdminExperiencesPage() {
       toast.success('Experience order updated.');
     } catch (unknownError) {
       setItems(previousItems);
-      toast.error(
-        unknownError instanceof Error
-          ? unknownError.message
-          : 'Could not update the order.',
-      );
+      toast.error(errorMessage(unknownError, 'Could not update the order.'));
     } finally {
       setReordering(false);
     }
@@ -185,139 +169,31 @@ export function AdminExperiencesPage() {
             onReorder={reorder}
             disabled={reordering}
             renderItem={(experience) => (
-              <div className="flex items-start justify-between gap-4">
-                <div>
-                  <p className="font-medium">
-                    {experience.role} · {experience.company}
-                  </p>
-                  <p className="mt-1 text-sm text-muted-foreground">
-                    {experience.period}
-                  </p>
-                  <p className="mt-2 text-xs text-muted-foreground">
-                    {experience.skills.length} skills
-                  </p>
-                </div>
-                <div className="flex shrink-0 gap-1">
-                  <Button
-                    size="icon-sm"
-                    variant="ghost"
-                    onClick={() => editExperience(experience)}
-                    aria-label={`Edit ${experience.role}`}
-                  >
-                    <Pencil />
-                  </Button>
-                  <Button
-                    size="icon-sm"
-                    variant="ghost"
-                    onClick={() => setExperienceToDelete(experience)}
-                    aria-label={`Delete ${experience.role}`}
-                  >
-                    <Trash2 />
-                  </Button>
-                </div>
-              </div>
+              <ExperienceListItem
+                experience={experience}
+                onEdit={() => editExperience(experience)}
+                onDelete={() => setExperienceToDelete(experience)}
+              />
             )}
           />
         )}
       </Panel>
 
-      <Dialog
+      <ExperienceFormDialog
         open={dialogOpen}
-        onOpenChange={(open) => (open ? setDialogOpen(true) : closeDialog())}
-      >
-        <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-2xl">
-          <DialogHeader>
-            <DialogTitle>
-              {editingId ? 'Edit experience' : 'New experience'}
-            </DialogTitle>
-            <DialogDescription>
-              {editingId
-                ? 'Update the experience details and related skills.'
-                : 'Add a new experience to the portfolio.'}
-            </DialogDescription>
-          </DialogHeader>
-          <form className="space-y-4" onSubmit={submit}>
-            <Field
-              label="ID / slug"
-              value={form.id}
-              disabled={Boolean(editingId)}
-              onChange={(event) =>
-                setForm({ ...form, id: event.target.value })
-              }
-              required
-            />
-            <div className="grid gap-4 sm:grid-cols-2">
-              <Field
-                label="Role"
-                value={form.role}
-                onChange={(event) =>
-                  setForm({ ...form, role: event.target.value })
-                }
-                required
-              />
-              <Field
-                label="Company"
-                value={form.company}
-                onChange={(event) =>
-                  setForm({ ...form, company: event.target.value })
-                }
-                required
-              />
-              <Field
-                label="Period"
-                value={form.period}
-                onChange={(event) =>
-                  setForm({ ...form, period: event.target.value })
-                }
-                required
-              />
-              <Field
-                label="Location"
-                value={form.location}
-                onChange={(event) =>
-                  setForm({ ...form, location: event.target.value })
-                }
-              />
-            </div>
-            <Field
-              label="Company URL"
-              type="url"
-              value={form.companyUrl}
-              onChange={(event) =>
-                setForm({ ...form, companyUrl: event.target.value })
-              }
-            />
-            <Field
-              label="Description"
-              textarea
-              value={form.description}
-              onChange={(event) =>
-                setForm({ ...form, description: event.target.value })
-              }
-              required
-            />
-            <SkillPicker
-              skills={skills}
-              selected={form.skillIds}
-              onChange={(skillIds) => setForm({ ...form, skillIds })}
-            />
-            <div className="flex justify-end gap-2">
-              <Button type="button" variant="outline" onClick={closeDialog}>
-                Cancel
-              </Button>
-              <Button>
-                {editingId ? 'Save changes' : 'Create experience'}
-              </Button>
-            </div>
-          </form>
-        </DialogContent>
-      </Dialog>
+        editing={Boolean(editingId)}
+        form={form}
+        skills={skills}
+        onChange={setForm}
+        onSubmit={submit}
+        onClose={closeDialog}
+      />
       <DeleteConfirmDialog
         open={Boolean(experienceToDelete)}
         title="Delete experience?"
         description={
           experienceToDelete
-            ? `This will permanently delete "${experienceToDelete.role}" at ${experienceToDelete.company}.`
+            ? `This will permanently delete "${experienceToDelete.role.en}" at ${experienceToDelete.company}.`
             : ''
         }
         deleting={deleting}

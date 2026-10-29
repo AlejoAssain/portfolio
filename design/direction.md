@@ -263,5 +263,9 @@ Es contexto, no un segundo momento firma — tiene que poder no notarse.
   (~150ms de constante), sin rebote.
 - Del original se sacó a propósito: glow, rebote (`backOut`), onda de
   choque al hacer click, intro animada y el render WebGL.
-- Touch y reduced motion: grilla estática, sin interacción ni frames.
-- Sin cursor en movimiento no corre ningún frame.
+- Actividad ambiente (`src/lib/dotSparks.ts`): hasta 4 puntos sueltos a la
+  vez pasan a Código con opacidad máxima 0.3 y vuelven en un arco de 1.6s
+  (seno, sin rebote). Aparece uno nuevo cada ~0.6s en promedio. Sin cursor
+  en movimiento corre a 30fps; rAF se pausa solo en pestañas ocultas.
+- Touch y reduced motion: grilla estática, sin interacción, sin chispas ni
+  frames.

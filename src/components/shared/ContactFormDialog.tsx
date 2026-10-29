@@ -14,6 +14,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { useTurnstile } from '@/hooks';
+import { useLanguage } from '@/i18n/LanguageProvider';
 import { createContactMessage } from '@/services/portfolio';
 import type { ContactMessageInput } from '@/types';
 
@@ -26,19 +27,26 @@ type ContactFormDialogProps = {
 };
 
 export function ContactFormDialog({
-  triggerLabel = 'Leave me a message',
-  title = 'Leave me a message',
-  description = 'Tell me what you are building, fixing, or trying to make less annoying.',
+  triggerLabel,
+  title,
+  description,
 }: ContactFormDialogProps) {
+  const { t } = useLanguage();
   const [open, setOpen] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const turnstile = useTurnstile(open);
+  const botCheckErrors = {
+    required: t.contact.botCheckRequired,
+    notConfigured: t.contact.botCheckNotConfigured,
+    expired: t.contact.botCheckExpired,
+    failedToLoad: t.contact.botCheckFailedToLoad,
+  };
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
     if (!turnstile.token) {
-      turnstile.setError('Complete the bot check before sending.');
+      turnstile.setError('required');
       return;
     }
 
@@ -55,7 +63,7 @@ export function ContactFormDialog({
     setSubmitting(true);
     try {
       await createContactMessage(values);
-      toast.success('Thanks! I will contact you soon.');
+      toast.success(t.contact.sent);
 
       form.reset();
       setOpen(false);
@@ -64,7 +72,7 @@ export function ContactFormDialog({
       toast.error(
         unknownError instanceof Error
           ? unknownError.message
-          : 'Message could not be sent.',
+          : t.contact.sendFailed,
       );
     } finally {
       setSubmitting(false);
@@ -76,7 +84,7 @@ export function ContactFormDialog({
       <DialogTrigger asChild>
         <Button>
           <Send />
-          {triggerLabel}
+          {triggerLabel ?? t.contact.trigger}
         </Button>
       </DialogTrigger>
       <DialogContent className="overflow-hidden border-primary/20 bg-background/95 p-0 shadow-none backdrop-blur sm:max-w-[520px]">
@@ -85,15 +93,15 @@ export function ContactFormDialog({
             <Send size={20} />
           </div>
           <DialogTitle className="font-display text-h4 font-medium">
-            {title}
+            {title ?? t.contact.title}
           </DialogTitle>
           <DialogDescription className="max-w-sm text-body-sm">
-            {description}
+            {description ?? t.contact.description}
           </DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-5 px-6 py-6">
           <div className="grid gap-2">
-            <Label htmlFor="name">Name</Label>
+            <Label htmlFor="name">{t.contact.name}</Label>
             <div className="relative">
               <User
                 aria-hidden="true"
@@ -106,13 +114,13 @@ export function ContactFormDialog({
                 required
                 maxLength={120}
                 autoComplete="name"
-                placeholder="Your name"
+                placeholder={t.contact.namePlaceholder}
                 className="h-11 pl-10"
               />
             </div>
           </div>
           <div className="grid gap-2">
-            <Label htmlFor="email">Email</Label>
+            <Label htmlFor="email">{t.contact.email}</Label>
             <div className="relative">
               <Mail
                 aria-hidden="true"
@@ -126,13 +134,13 @@ export function ContactFormDialog({
                 required
                 maxLength={254}
                 autoComplete="email"
-                placeholder="you@example.com"
+                placeholder={t.contact.emailPlaceholder}
                 className="h-11 pl-10"
               />
             </div>
           </div>
           <div className="grid gap-2">
-            <Label htmlFor="message">Message</Label>
+            <Label htmlFor="message">{t.contact.message}</Label>
             <div className="relative">
               <MessageSquare
                 aria-hidden="true"
@@ -144,7 +152,7 @@ export function ContactFormDialog({
                 name="message"
                 required
                 maxLength={3000}
-                placeholder="What's on your mind?"
+                placeholder={t.contact.messagePlaceholder}
                 className="min-h-32 resize-none pl-10"
               />
             </div>
@@ -162,7 +170,7 @@ export function ContactFormDialog({
             <div ref={turnstile.containerRef} className="min-h-[65px]" />
             {turnstile.error && (
               <p role="alert" className="text-sm text-destructive">
-                {turnstile.error}
+                {botCheckErrors[turnstile.error]}
               </p>
             )}
           </div>
@@ -173,7 +181,7 @@ export function ContactFormDialog({
             disabled={submitting || !turnstile.token}
           >
             <Send />
-            {submitting ? 'Sending...' : 'Send message'}
+            {submitting ? t.contact.sending : t.contact.send}
           </Button>
         </form>
       </DialogContent>

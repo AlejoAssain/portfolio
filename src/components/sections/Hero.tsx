@@ -1,6 +1,7 @@
 import { AnimatedSection, SocialButtons } from '@/components/shared';
 import { ArrowDown } from 'lucide-react';
 import { usePortfolioContent } from '@/hooks';
+import { useLanguage } from '@/i18n/LanguageProvider';
 import {
   CHARACTER_LOOP_SRC,
   CHARACTER_POSTER_SRC,
@@ -11,6 +12,7 @@ import { scrollToSection } from '@/lib/lenis';
 
 export function Hero() {
   const { personalInfo } = usePortfolioContent();
+  const { t } = useLanguage();
   const { containerRef, characterRef, entranceRef, videoRef } =
     useHeroAnimation();
 
@@ -80,9 +82,9 @@ export function Hero() {
         <button
           onClick={scrollToAbout}
           className="flex flex-col items-center gap-2 text-muted-foreground hover:text-primary transition-colors"
-          aria-label="Scroll to about section"
+          aria-label={t.hero.scrollLabel}
         >
-          <span className="text-xs uppercase tracking-widest">Scroll</span>
+          <span className="text-xs uppercase tracking-widest">{t.hero.scroll}</span>
           <ArrowDown size={16} className="scroll-hint" />
         </button>
       </AnimatedSection>
