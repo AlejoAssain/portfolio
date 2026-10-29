@@ -99,14 +99,6 @@ export function ProjectGallery({ project }: { project: Project }) {
             >
               {labels.next}
             </Button>
-            <a
-              className="text-primary underline underline-offset-4"
-              href={image.url}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              {labels.fullSize}
-            </a>
             <Button type="button" onClick={() => setOpen(false)}>
               {labels.close}
             </Button>

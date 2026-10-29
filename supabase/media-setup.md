@@ -98,7 +98,7 @@ No crear cuentas, compartir contraseñas ni exponer una service_role key para es
 - `src/pages/admin/ProjectFormDialog.tsx`: capturas y video; elimina la URL manual de imagen y bloquea edición durante subida/guardado.
 - `src/pages/admin/ProjectScreenshots.tsx`: previsualización, alt EN/ES, orden, portada, desvinculación y reintento.
 - `src/components/shared/ScreenshotImage.tsx`: espacio reservado, imagen completa y estados de carga/error/reintento.
-- `src/components/shared/ProjectGallery.tsx`: galería móvil con flechas, Escape, retorno de foco y original ampliable.
+- `src/components/shared/ProjectGallery.tsx`: galería móvil con flechas, Escape y retorno de foco.
 - `src/components/sections/Projects.tsx`: portadas y enlace de video, manteniendo tarjetas sin imágenes.
 - `src/i18n/en.ts`: textos públicos en inglés.
 - `src/i18n/es.ts`: textos públicos en español.

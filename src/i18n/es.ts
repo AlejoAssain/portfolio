@@ -37,9 +37,9 @@ export const es: Dictionary = {
   },
   projects: {
     gallery: {
-      open: 'Ver capturas', description: 'Explorá las capturas del proyecto. Abrí el original para ver los detalles.',
+      open: 'Ver capturas', description: 'Explorá las capturas del proyecto.',
       loading: 'Cargando captura…', error: 'No se pudo cargar la captura.', retry: 'Reintentar',
-      previous: 'Anterior', next: 'Siguiente', fullSize: 'Abrir original', close: 'Cerrar',
+      previous: 'Anterior', next: 'Siguiente', close: 'Cerrar',
     },
     heading: 'Proyectos',
     featured: 'Proyecto destacado',

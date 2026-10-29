@@ -37,9 +37,9 @@ export const en = {
   },
   projects: {
     gallery: {
-      open: 'View screenshots', description: 'Browse project screenshots. Open the original to inspect details.',
+      open: 'View screenshots', description: 'Browse project screenshots.',
       loading: 'Loading screenshot…', error: 'Screenshot could not load.', retry: 'Retry',
-      previous: 'Previous', next: 'Next', fullSize: 'Open original', close: 'Close',
+      previous: 'Previous', next: 'Next', close: 'Close',
     },
     heading: 'Projects',
     featured: 'Featured Project',
