@@ -154,14 +154,20 @@ type WithLocalized<T, K extends keyof T> = Omit<T, K> & {
     : LocalizedText;
 };
 
+/** Skill with every language, as loaded from Supabase and edited in admin. */
+export type SkillContent = WithLocalized<Skill, 'name'>;
+
 /** Project with every language, as loaded from Supabase and edited in admin. */
-export type ProjectContent = WithLocalized<Project, 'title' | 'description'>;
+export type ProjectContent = WithLocalized<
+  Omit<Project, 'skills'>,
+  'title' | 'description'
+> & { skills: SkillContent[] };
 
 /** Experience with every language, as loaded from Supabase and edited in admin. */
 export type ExperienceContent = WithLocalized<
-  Experience,
+  Omit<Experience, 'skills'>,
   'role' | 'period' | 'location' | 'description'
->;
+> & { skills: SkillContent[] };
 
 /** Personal info with every language, as loaded from Supabase and edited in admin. */
 export type PersonalInfoContent = WithLocalized<
@@ -225,7 +231,7 @@ type LocalizableColumn = LocalizedText | string;
 export type SkillRow = {
   id: string;
   display_order: number;
-  name: string;
+  name: LocalizableColumn;
   category: Skill['category'];
 };
 

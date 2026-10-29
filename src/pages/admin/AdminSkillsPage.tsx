@@ -7,7 +7,8 @@ import { SortableList } from '@/components/admin';
 import { errorMessage } from '@/lib/utils';
 import { deleteSkill, saveSkill, saveSkillOrder } from '@/services/admin';
 import { getSkills } from '@/services/portfolio';
-import type { Skill } from '@/types';
+import { defaultLang } from '@/i18n/languages';
+import type { SkillContent } from '@/types';
 import {
   DeleteConfirmDialog,
   EmptyState,
@@ -19,18 +20,18 @@ import {
 import { RowActions } from './RowActions';
 import { SkillFormDialog } from './SkillFormDialog';
 
-const emptySkill: Skill = {
+const emptySkill: SkillContent = {
   id: '',
   displayOrder: 1,
-  name: '',
+  name: { [defaultLang]: '' },
   category: 'backend',
 };
 
 export function AdminSkillsPage() {
-  const [items, setItems] = useState<Skill[]>([]);
-  const [form, setForm] = useState<Skill>(emptySkill);
+  const [items, setItems] = useState<SkillContent[]>([]);
+  const [form, setForm] = useState<SkillContent>(emptySkill);
   const [editingId, setEditingId] = useState<string>();
-  const [skillToDelete, setSkillToDelete] = useState<Skill | null>(null);
+  const [skillToDelete, setSkillToDelete] = useState<SkillContent | null>(null);
   const [deleting, setDeleting] = useState(false);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [reordering, setReordering] = useState(false);
@@ -95,13 +96,13 @@ export function AdminSkillsPage() {
     setDialogOpen(true);
   }
 
-  function editSkill(skill: Skill) {
+  function editSkill(skill: SkillContent) {
     setEditingId(skill.id);
     setForm(skill);
     setDialogOpen(true);
   }
 
-  async function reorder(nextItems: Skill[]) {
+  async function reorder(nextItems: SkillContent[]) {
     const previousItems = items;
     const orderedItems = nextItems.map((item, index) => ({
       ...item,
@@ -147,13 +148,13 @@ export function AdminSkillsPage() {
             renderItem={(skill) => (
               <div className="flex items-center justify-between gap-4">
                 <div>
-                  <p className="font-medium">{skill.name}</p>
+                  <p className="font-medium">{skill.name[defaultLang]}</p>
                   <p className="text-xs text-muted-foreground">
                     {skill.category}
                   </p>
                 </div>
                 <RowActions
-                  name={skill.name}
+                  name={skill.name[defaultLang]}
                   onEdit={() => editSkill(skill)}
                   onDelete={() => setSkillToDelete(skill)}
                 />
@@ -176,7 +177,7 @@ export function AdminSkillsPage() {
         title="Delete skill?"
         description={
           skillToDelete
-            ? `This will permanently delete "${skillToDelete.name}". Related links may also be removed.`
+            ? `This will permanently delete "${skillToDelete.name[defaultLang]}". Related links may also be removed.`
             : ''
         }
         deleting={deleting}

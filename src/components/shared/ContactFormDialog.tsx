@@ -15,7 +15,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { useTurnstile } from '@/hooks';
 import { useLanguage } from '@/i18n/LanguageProvider';
-import { createContactMessage } from '@/services/portfolio';
+import { ContactError, createContactMessage } from '@/services/portfolio';
 import type { ContactMessageInput } from '@/types';
 
 export type ContactFormValues = ContactMessageInput;
@@ -69,10 +69,10 @@ export function ContactFormDialog({
       setOpen(false);
     } catch (unknownError) {
       turnstile.reset();
+      const errors: Record<string, string> = t.contact.errors;
       toast.error(
-        unknownError instanceof Error
-          ? unknownError.message
-          : t.contact.sendFailed,
+        (unknownError instanceof ContactError && errors[unknownError.code]) ||
+          t.contact.sendFailed,
       );
     } finally {
       setSubmitting(false);

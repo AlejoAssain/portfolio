@@ -10,7 +10,7 @@ import {
   Switch,
 } from '@/components/ui';
 import type { ProjectInput } from '@/services/admin';
-import type { Skill } from '@/types';
+import type { SkillContent } from '@/types';
 import { LocalizedField } from './LocalizedField';
 import { Field, SkillPicker } from './shared';
 
@@ -26,7 +26,7 @@ export function ProjectFormDialog({
   open: boolean;
   editing: boolean;
   form: ProjectInput;
-  skills: Skill[];
+  skills: SkillContent[];
   onChange: (form: ProjectInput) => void;
   onSubmit: (event: FormEvent) => void;
   onClose: () => void;

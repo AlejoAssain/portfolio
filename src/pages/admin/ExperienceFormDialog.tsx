@@ -9,7 +9,7 @@ import {
   DialogTitle,
 } from '@/components/ui';
 import type { ExperienceInput } from '@/services/admin';
-import type { Skill } from '@/types';
+import type { SkillContent } from '@/types';
 import { LocalizedField } from './LocalizedField';
 import { Field, SkillPicker } from './shared';
 
@@ -25,7 +25,7 @@ export function ExperienceFormDialog({
   open: boolean;
   editing: boolean;
   form: ExperienceInput;
-  skills: Skill[];
+  skills: SkillContent[];
   onChange: (form: ExperienceInput) => void;
   onSubmit: (event: FormEvent) => void;
   onClose: () => void;

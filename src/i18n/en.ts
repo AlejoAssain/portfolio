@@ -1,6 +1,11 @@
 import type { Skill } from '@/types';
 
 export const en = {
+  meta: {
+    title: 'Alejo Assain — Software Developer',
+    description:
+      'Alejo Assain, software developer in Córdoba, Argentina. Co-founder of Lymbo, a gym management and access control platform built from running real fitness businesses.',
+  },
   language: {
     label: 'Language',
   },
@@ -71,6 +76,17 @@ export const en = {
     sending: 'Sending...',
     sent: 'Thanks! I will contact you soon.',
     sendFailed: 'Message could not be sent.',
+    // Keyed by the contact function's error codes; unknown codes use sendFailed.
+    errors: {
+      invalid_name: 'Check your name and try again.',
+      invalid_email: 'Check your email and try again.',
+      invalid_message: 'Check your message and try again.',
+      missing_bot_check: 'Complete the bot check before sending.',
+      bot_check_failed: 'The bot check failed. Please try again.',
+      bot_check_unavailable:
+        'The bot check is temporarily unavailable. Please try again.',
+      network: 'Message could not be sent. Check your connection.',
+    },
     botCheckRequired: 'Complete the bot check before sending.',
     botCheckNotConfigured: 'The bot check is not configured.',
     botCheckExpired: 'The bot check expired. Please try again.',

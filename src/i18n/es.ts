@@ -1,6 +1,11 @@
 import type { Dictionary } from './en';
 
 export const es: Dictionary = {
+  meta: {
+    title: 'Alejo Assain — Desarrollo de software',
+    description:
+      'Alejo Assain, desarrollo de software en Córdoba, Argentina. Cocreó Lymbo, una plataforma de gestión y control de acceso para gimnasios, nacida de gestionar gimnasios reales.',
+  },
   language: {
     label: 'Idioma',
   },
@@ -71,6 +76,16 @@ export const es: Dictionary = {
     sending: 'Enviando...',
     sent: '¡Gracias! Te respondo pronto.',
     sendFailed: 'No se pudo enviar el mensaje.',
+    errors: {
+      invalid_name: 'Revisá tu nombre y probá de nuevo.',
+      invalid_email: 'Revisá tu email y probá de nuevo.',
+      invalid_message: 'Revisá tu mensaje y probá de nuevo.',
+      missing_bot_check: 'Completá la verificación antes de enviar.',
+      bot_check_failed: 'La verificación falló. Probá de nuevo.',
+      bot_check_unavailable:
+        'La verificación no está disponible por ahora. Probá de nuevo.',
+      network: 'No se pudo enviar el mensaje. Revisá tu conexión.',
+    },
     botCheckRequired: 'Completá la verificación antes de enviar.',
     botCheckNotConfigured: 'La verificación no está configurada.',
     botCheckExpired: 'La verificación expiró. Probá de nuevo.',

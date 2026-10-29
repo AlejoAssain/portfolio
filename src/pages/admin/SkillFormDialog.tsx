@@ -8,7 +8,8 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui';
-import type { Skill } from '@/types';
+import type { Skill, SkillContent } from '@/types';
+import { LocalizedField } from './LocalizedField';
 import { Field } from './shared';
 
 const categories: Skill['category'][] = [
@@ -30,8 +31,8 @@ export function SkillFormDialog({
 }: {
   open: boolean;
   editing: boolean;
-  form: Skill;
-  onChange: (form: Skill) => void;
+  form: SkillContent;
+  onChange: (form: SkillContent) => void;
   onSubmit: (event: FormEvent) => void;
   onClose: () => void;
 }) {
@@ -54,12 +55,10 @@ export function SkillFormDialog({
             onChange={(event) => onChange({ ...form, id: event.target.value })}
             required
           />
-          <Field
+          <LocalizedField
             label="Name"
             value={form.name}
-            onChange={(event) =>
-              onChange({ ...form, name: event.target.value })
-            }
+            onChange={(name) => onChange({ ...form, name })}
             required
           />
           <div className="space-y-2">

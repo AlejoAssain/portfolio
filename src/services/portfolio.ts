@@ -15,7 +15,7 @@ import type {
   PersonalInfoRow,
   ProjectContent,
   ProjectWithSkillsRow,
-  Skill,
+  SkillContent,
   SkillRow,
   SectionVisibility,
 } from '@/types';
@@ -28,7 +28,7 @@ const defaultSectionVisibility: SectionVisibility = {
   contact: true,
 };
 
-export async function getSkills(): Promise<Skill[]> {
+export async function getSkills(): Promise<SkillContent[]> {
   const { data, error } = await supabase
     .from('skills')
     .select('*')
@@ -99,30 +99,37 @@ export async function getPersonalInfo(): Promise<PersonalInfoContent> {
   return mapPersonalInfo(data as PersonalInfoRow);
 }
 
+/** Carries the contact function's error `code` so the UI can translate it. */
+export class ContactError extends Error {
+  constructor(public code: string) {
+    super(code);
+  }
+}
+
 export async function createContactMessage(
   input: ContactMessageInput,
 ): Promise<void> {
   assertSupabase();
   const { data, error } = await supabase.functions.invoke<{
     ok?: boolean;
-    error?: string;
+    code?: string;
   }>('submit-contact-message', {
     body: input,
   });
 
-  // A non-2xx response carries the function's own `{ error }` body; surface
+  // A non-2xx response carries the function's own `{ code }` body; surface
   // that instead of supabase-js's generic "non-2xx status code" message.
   if (error instanceof FunctionsHttpError) {
     const body = await error.context.json().catch(() => null);
-    throw new Error(body?.error ?? 'Message could not be sent.');
+    throw new ContactError(body?.code ?? 'send_failed');
   }
 
   if (error) {
-    throw new Error('Message could not be sent. Check your connection.');
+    throw new ContactError('network');
   }
 
   if (!data?.ok) {
-    throw new Error(data?.error ?? 'Message could not be sent.');
+    throw new ContactError(data?.code ?? 'send_failed');
   }
 }
 

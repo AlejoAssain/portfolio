@@ -12,7 +12,7 @@ import {
   type ProjectInput,
 } from '@/services/admin';
 import { getProjects, getSkills } from '@/services/portfolio';
-import type { ProjectContent, Skill } from '@/types';
+import type { ProjectContent, SkillContent } from '@/types';
 import {
   DeleteConfirmDialog,
   EmptyState,
@@ -43,7 +43,7 @@ function projectToInput(project: ProjectContent): ProjectInput {
 
 export function AdminProjectsPage() {
   const [items, setItems] = useState<ProjectContent[]>([]);
-  const [skills, setSkills] = useState<Skill[]>([]);
+  const [skills, setSkills] = useState<SkillContent[]>([]);
   const [form, setForm] = useState<ProjectInput>(emptyProject);
   const [editingId, setEditingId] = useState<string>();
   const [projectToDelete, setProjectToDelete] =

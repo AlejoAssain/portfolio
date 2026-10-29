@@ -26,6 +26,10 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     document.documentElement.lang = lang;
+    document.title = dictionaries[lang].meta.title;
+    document
+      .querySelector('meta[name="description"]')
+      ?.setAttribute('content', dictionaries[lang].meta.description);
   }, [lang]);
 
   const value = useMemo(

@@ -13,7 +13,8 @@ import {
   Label,
   Textarea,
 } from '@/components/ui';
-import type { Skill } from '@/types';
+import { defaultLang } from '@/i18n/languages';
+import type { SkillContent } from '@/types';
 
 export function PageHeader({
   title,
@@ -80,7 +81,7 @@ export function SkillPicker({
   selected,
   onChange,
 }: {
-  skills: Skill[];
+  skills: SkillContent[];
   selected: string[];
   onChange: (ids: string[]) => void;
 }) {
@@ -104,7 +105,7 @@ export function SkillPicker({
                 )
               }
             >
-              {skill.name}
+              {skill.name[defaultLang]}
             </Button>
           );
         })}

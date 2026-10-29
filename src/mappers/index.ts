@@ -13,6 +13,7 @@ import type {
   ProjectContent,
   ProjectWithSkillsRow,
   Skill,
+  SkillContent,
   SkillRow,
 } from '@/types';
 
@@ -20,11 +21,11 @@ function optional(value: string | null): string | undefined {
   return value ?? undefined;
 }
 
-export function mapSkill(row: SkillRow): Skill {
+export function mapSkill(row: SkillRow): SkillContent {
   return {
     id: row.id,
     displayOrder: row.display_order,
-    name: row.name,
+    name: toLocalized(row.name),
     category: row.category,
   };
 }
@@ -80,11 +81,16 @@ export function mapPersonalInfo(row: PersonalInfoRow): PersonalInfoContent {
   };
 }
 
+export function localizeSkill(skill: SkillContent, lang: Lang): Skill {
+  return { ...skill, name: localize(skill.name, lang) };
+}
+
 export function localizeProject(project: ProjectContent, lang: Lang): Project {
   return {
     ...project,
     title: localize(project.title, lang),
     description: localize(project.description, lang),
+    skills: project.skills.map((skill) => localizeSkill(skill, lang)),
   };
 }
 
@@ -98,6 +104,7 @@ export function localizeExperience(
     period: localize(experience.period, lang),
     location: experience.location && localize(experience.location, lang),
     description: localize(experience.description, lang),
+    skills: experience.skills.map((skill) => localizeSkill(skill, lang)),
   };
 }
 

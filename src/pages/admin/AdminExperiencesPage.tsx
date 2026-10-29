@@ -12,7 +12,7 @@ import {
   type ExperienceInput,
 } from '@/services/admin';
 import { getExperiences, getSkills } from '@/services/portfolio';
-import type { ExperienceContent, Skill } from '@/types';
+import type { ExperienceContent, SkillContent } from '@/types';
 import {
   DeleteConfirmDialog,
   EmptyState,
@@ -45,7 +45,7 @@ function experienceToInput(experience: ExperienceContent): ExperienceInput {
 
 export function AdminExperiencesPage() {
   const [items, setItems] = useState<ExperienceContent[]>([]);
-  const [skills, setSkills] = useState<Skill[]>([]);
+  const [skills, setSkills] = useState<SkillContent[]>([]);
   const [form, setForm] = useState<ExperienceInput>(emptyExperience);
   const [editingId, setEditingId] = useState<string>();
   const [experienceToDelete, setExperienceToDelete] =

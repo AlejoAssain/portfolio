@@ -11,7 +11,7 @@ import type {
   ExperienceContent,
   PersonalInfoContent,
   ProjectContent,
-  Skill,
+  SkillContent,
 } from '@/types';
 import { mapContactMessage } from '@/mappers';
 
@@ -21,7 +21,7 @@ export type ProjectInput = Omit<ProjectContent, 'skills'> & {
 export type ExperienceInput = Omit<ExperienceContent, 'skills'> & {
   skillIds: string[];
 };
-export type SkillInput = Skill;
+export type SkillInput = SkillContent;
 
 export type SectionKey =
   | 'about'

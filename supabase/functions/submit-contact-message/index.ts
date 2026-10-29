@@ -26,6 +26,8 @@ const corsHeaders = {
 
 /**
  * Return JSON with the CORS headers required by browser requests.
+ * Errors carry a stable `code` the frontend translates; `error` stays as the
+ * English fallback for clients that predate the codes.
  */
 function jsonResponse(body: unknown, status = 200) {
   return new Response(JSON.stringify(body), {
@@ -87,7 +89,7 @@ Deno.serve(async (req) => {
 
   // This endpoint only accepts contact form submissions.
   if (req.method !== "POST") {
-    return jsonResponse({ error: "Method not allowed." }, 405);
+    return jsonResponse({ error: "Method not allowed.", code: "method_not_allowed" }, 405);
   }
 
   let payload: ContactPayload;
@@ -95,11 +97,11 @@ Deno.serve(async (req) => {
   try {
     payload = await req.json();
   } catch {
-    return jsonResponse({ error: "Invalid request body." }, 400);
+    return jsonResponse({ error: "Invalid request body.", code: "invalid_body" }, 400);
   }
 
   if (!payload || typeof payload !== "object" || Array.isArray(payload)) {
-    return jsonResponse({ error: "Invalid request body." }, 400);
+    return jsonResponse({ error: "Invalid request body.", code: "invalid_body" }, 400);
   }
 
   // Normalize input before validation and storage.
@@ -116,19 +118,19 @@ Deno.serve(async (req) => {
 
   // Keep validation strict enough to reject malformed or abusive submissions.
   if (!name || name.length > 120) {
-    return jsonResponse({ error: "Invalid name." }, 400);
+    return jsonResponse({ error: "Invalid name.", code: "invalid_name" }, 400);
   }
 
   if (!email || email.length > 254 || !isValidEmail(email)) {
-    return jsonResponse({ error: "Invalid email." }, 400);
+    return jsonResponse({ error: "Invalid email.", code: "invalid_email" }, 400);
   }
 
   if (!message || message.length > 3000) {
-    return jsonResponse({ error: "Invalid message." }, 400);
+    return jsonResponse({ error: "Invalid message.", code: "invalid_message" }, 400);
   }
 
   if (!turnstileToken || turnstileToken.length > 2048) {
-    return jsonResponse({ error: "Missing bot check token." }, 400);
+    return jsonResponse({ error: "Missing bot check token.", code: "missing_bot_check" }, 400);
   }
 
   // Forward the client IP when available so Turnstile can score the request.
@@ -139,7 +141,7 @@ Deno.serve(async (req) => {
   const turnstileSecret = Deno.env.get("TURNSTILE_SECRET_KEY");
   if (!turnstileSecret) {
     console.error("Missing TURNSTILE_SECRET_KEY.");
-    return jsonResponse({ error: "Server configuration error." }, 500);
+    return jsonResponse({ error: "Server configuration error.", code: "server_error" }, 500);
   }
 
   // Network failures or a non-JSON reply from Cloudflare are upstream
@@ -150,13 +152,13 @@ Deno.serve(async (req) => {
   } catch (error) {
     console.error("turnstile siteverify unreachable", error);
     return jsonResponse(
-      { error: "Bot check is temporarily unavailable. Please try again." },
+      { error: "Bot check is temporarily unavailable. Please try again.", code: "bot_check_unavailable" },
       502,
     );
   }
 
   if (!validTurnstile) {
-    return jsonResponse({ error: "Bot check failed." }, 400);
+    return jsonResponse({ error: "Bot check failed.", code: "bot_check_failed" }, 400);
   }
 
   const supabaseUrl = Deno.env.get("SUPABASE_URL");
@@ -164,7 +166,7 @@ Deno.serve(async (req) => {
 
   // Hosted Supabase Functions expose these secrets automatically.
   if (!supabaseUrl || !serviceRoleKey) {
-    return jsonResponse({ error: "Server configuration error." }, 500);
+    return jsonResponse({ error: "Server configuration error.", code: "server_error" }, 500);
   }
 
   // The service role key is used only inside this server-side function.
@@ -184,7 +186,7 @@ Deno.serve(async (req) => {
 
   if (error) {
     console.error("contact_messages insert failed", error);
-    return jsonResponse({ error: "Message could not be saved." }, 500);
+    return jsonResponse({ error: "Message could not be saved.", code: "save_failed" }, 500);
   }
 
   return jsonResponse({ ok: true });

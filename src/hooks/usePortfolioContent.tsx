@@ -18,6 +18,7 @@ import {
   localizeExperience,
   localizePersonalInfo,
   localizeProject,
+  localizeSkill,
 } from '@/mappers';
 import { getPortfolioContent } from '@/services/portfolio';
 import type {
@@ -124,6 +125,7 @@ export function PortfolioContentProvider({
             experiences: remote.experiences.map((e) =>
               localizeExperience(e, lang),
             ),
+            skills: remote.skills.map((s) => localizeSkill(s, lang)),
           }
         : fallbackContent,
     [remote, lang],
