@@ -25,6 +25,7 @@ const emptySkill: SkillContent = {
   displayOrder: 1,
   name: { [defaultLang]: '' },
   category: 'backend',
+  showInSkills: true,
 };
 
 export function AdminSkillsPage() {
@@ -151,6 +152,7 @@ export function AdminSkillsPage() {
                   <p className="font-medium">{skill.name[defaultLang]}</p>
                   <p className="text-xs text-muted-foreground">
                     {skill.category}
+                    {skill.showInSkills === false && ' · hidden'}
                   </p>
                 </div>
                 <RowActions

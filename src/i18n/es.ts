@@ -28,7 +28,6 @@ export const es: Dictionary = {
   },
   about: {
     heading: 'Sobre mí',
-    quickInfo: 'En resumen',
     location: 'Ubicación',
     email: 'Email',
     status: 'Estado',

@@ -27,6 +27,8 @@ export function mapSkill(row: SkillRow): SkillContent {
     displayOrder: row.display_order,
     name: toLocalized(row.name),
     category: row.category,
+    showInSkills: row.show_in_skills,
+    icon: optional(row.icon),
   };
 }
 

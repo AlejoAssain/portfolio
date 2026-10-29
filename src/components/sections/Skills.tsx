@@ -35,10 +35,13 @@ export function Skills() {
                 </h3>
                 <div className="flex flex-wrap gap-2">
                   {skills
-                    .filter((skill) => skill.category === category)
+                    .filter(
+                      (skill) =>
+                        skill.category === category && skill.showInSkills !== false,
+                    )
                     .sort((a, b) => a.displayOrder - b.displayOrder)
                     .map((skill) => (
-                      <SkillBadge key={skill.id} name={skill.name} />
+                      <SkillBadge key={skill.id} name={skill.name} icon={skill.icon} />
                     ))}
                 </div>
               </div>

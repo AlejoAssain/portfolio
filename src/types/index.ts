@@ -88,6 +88,12 @@ export interface Skill {
     | 'infrastructure'
     | 'automation'
     | 'product';
+
+  /** Shown in the skills section. Hidden skills still appear in projects and experiences. */
+  showInSkills?: boolean;
+
+  /** Icon file name in public/skill-icons/, without extension. */
+  icon?: string;
 }
 
 /**
@@ -233,6 +239,8 @@ export type SkillRow = {
   display_order: number;
   name: LocalizableColumn;
   category: Skill['category'];
+  show_in_skills: boolean;
+  icon: Nullable<string>;
 };
 
 /**

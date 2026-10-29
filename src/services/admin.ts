@@ -81,6 +81,8 @@ export async function saveSkill(input: SkillInput, existingId?: string) {
     display_order: input.displayOrder,
     name: input.name,
     category: input.category,
+    show_in_skills: input.showInSkills ?? true,
+    icon: input.icon || null,
   };
 
   const query = existingId

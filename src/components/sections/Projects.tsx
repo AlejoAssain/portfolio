@@ -113,7 +113,7 @@ export function Projects() {
 
                   <div className="flex flex-wrap gap-2 pt-2">
                     {project.skills.map((skill) => (
-                      <SkillBadge key={skill.id} name={skill.name} />
+                      <SkillBadge key={skill.id} name={skill.name} icon={skill.icon} />
                     ))}
                   </div>
                 </div>

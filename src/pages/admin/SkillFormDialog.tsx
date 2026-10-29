@@ -7,6 +7,7 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
+  Switch,
 } from '@/components/ui';
 import type { Skill, SkillContent } from '@/types';
 import { LocalizedField } from './LocalizedField';
@@ -80,6 +81,31 @@ export function SkillFormDialog({
                 <option key={category}>{category}</option>
               ))}
             </select>
+          </div>
+          <Field
+            id="icon"
+            label="Icon (optional)"
+            placeholder="python"
+            value={form.icon ?? ''}
+            onChange={(event) => onChange({ ...form, icon: event.target.value })}
+          />
+          <p className="-mt-2 text-xs text-muted-foreground">
+            File name in public/skill-icons/, without .svg.
+          </p>
+          <div className="flex items-center justify-between rounded-lg border p-3">
+            <div>
+              <p className="text-sm font-medium">Show in skills section</p>
+              <p className="text-xs text-muted-foreground">
+                Hidden skills still appear in projects and experiences.
+              </p>
+            </div>
+            <Switch
+              checked={form.showInSkills ?? true}
+              onCheckedChange={(showInSkills) =>
+                onChange({ ...form, showInSkills })
+              }
+              aria-label="Show in skills section"
+            />
           </div>
           <div className="flex justify-end gap-2">
             <Button type="button" variant="outline" onClick={onClose}>

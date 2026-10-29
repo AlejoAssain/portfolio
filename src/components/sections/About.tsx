@@ -16,7 +16,7 @@ export function About() {
           </div>
         </AnimatedSection>
 
-        <div className="grid lg:grid-cols-3 gap-12">
+        <div className="grid lg:grid-cols-3 lg:items-center gap-12">
           <AnimatedSection delay={100} className="lg:col-span-2 space-y-6">
             {personalInfo.bio.split('\n\n').map((paragraph, index) => (
               <p
@@ -38,10 +38,7 @@ export function About() {
           </AnimatedSection>
 
           <AnimatedSection delay={200} direction="left">
-            <div className="space-y-6 p-6 rounded-xl bg-card border border-border">
-              <h3 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">
-                {t.about.quickInfo}
-              </h3>
+            <div className="p-6 rounded-xl bg-card border border-border">
               <dl className="space-y-4">
                 <div>
                   <dt className="text-xs text-muted-foreground uppercase tracking-wider">

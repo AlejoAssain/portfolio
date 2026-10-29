@@ -28,7 +28,6 @@ export const en = {
   },
   about: {
     heading: 'About',
-    quickInfo: 'Quick Info',
     location: 'Location',
     email: 'Email',
     status: 'Status',
